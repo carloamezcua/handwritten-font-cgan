@@ -14,7 +14,17 @@ Incluye:
 ## Documentación
 - [Propuesta del Proyecto](docs/propuesta_proyecto.md)
 
-## Inicio Rápido
+## Instalación y Reproducibilidad (Python 3.11+)
+
+1. Crea y activa un entorno virtual (con `venv` o el gestor de tu preferencia):
+```bash
+python -m venv .venv
+# Windows (PowerShell): .\.venv\Scripts\Activate.ps1
+# Linux / macOS: source .venv/bin/activate
+```
+
+2. Instala las dependencias:
 ```bash
 pip install -r requirements.txt
 ```
+> **Nota:** si trabajas en local sin GPU (y entrenas en Google Colab), puedes instalar primero PyTorch CPU (`pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu`) antes de `pip install -r requirements.txt`. En **Google Colab**, basta con ejecutar `!pip install -r requirements.txt`.
