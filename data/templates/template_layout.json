@@ -1,0 +1,4898 @@
+{
+  "charset_size": 75,
+  "repetitions": 4,
+  "total_samples": 300,
+  "test_unseen_chars": [
+    "&",
+    ")",
+    "+",
+    "4",
+    "8",
+    ";",
+    "?",
+    "G",
+    "Q",
+    "k",
+    "z"
+  ],
+  "geometry": {
+    "page_size": [
+      2550,
+      3300
+    ],
+    "cols": 6,
+    "rows": 8,
+    "box_size": 228,
+    "baseline_ratio": 0.72,
+    "markers": {
+      "top_left": [
+        110,
+        110,
+        110,
+        110
+      ],
+      "top_right": [
+        2330,
+        110,
+        110,
+        110
+      ],
+      "bottom_left": [
+        110,
+        3080,
+        110,
+        110
+      ],
+      "bottom_right": [
+        2330,
+        3080,
+        110,
+        110
+      ]
+    }
+  },
+  "pages": [
+    {
+      "page_index": 1,
+      "image": "plantilla_hoja_01.png",
+      "cells": [
+        {
+          "sample_index": 0,
+          "char": "A",
+          "char_code": 65,
+          "class_id": 0,
+          "repetition": 1,
+          "split": "train",
+          "row": 0,
+          "col": 0,
+          "box": [
+            511,
+            386,
+            739,
+            614
+          ]
+        },
+        {
+          "sample_index": 1,
+          "char": "B",
+          "char_code": 66,
+          "class_id": 1,
+          "repetition": 1,
+          "split": "train",
+          "row": 0,
+          "col": 1,
+          "box": [
+            771,
+            386,
+            999,
+            614
+          ]
+        },
+        {
+          "sample_index": 2,
+          "char": "C",
+          "char_code": 67,
+          "class_id": 2,
+          "repetition": 1,
+          "split": "train",
+          "row": 0,
+          "col": 2,
+          "box": [
+            1031,
+            386,
+            1259,
+            614
+          ]
+        },
+        {
+          "sample_index": 3,
+          "char": "D",
+          "char_code": 68,
+          "class_id": 3,
+          "repetition": 1,
+          "split": "train",
+          "row": 0,
+          "col": 3,
+          "box": [
+            1291,
+            386,
+            1519,
+            614
+          ]
+        },
+        {
+          "sample_index": 4,
+          "char": "E",
+          "char_code": 69,
+          "class_id": 4,
+          "repetition": 1,
+          "split": "train",
+          "row": 0,
+          "col": 4,
+          "box": [
+            1551,
+            386,
+            1779,
+            614
+          ]
+        },
+        {
+          "sample_index": 5,
+          "char": "F",
+          "char_code": 70,
+          "class_id": 5,
+          "repetition": 1,
+          "split": "train",
+          "row": 0,
+          "col": 5,
+          "box": [
+            1811,
+            386,
+            2039,
+            614
+          ]
+        },
+        {
+          "sample_index": 6,
+          "char": "G",
+          "char_code": 71,
+          "class_id": 6,
+          "repetition": 1,
+          "split": "test_unseen",
+          "row": 1,
+          "col": 0,
+          "box": [
+            511,
+            728,
+            739,
+            956
+          ]
+        },
+        {
+          "sample_index": 7,
+          "char": "H",
+          "char_code": 72,
+          "class_id": 7,
+          "repetition": 1,
+          "split": "train",
+          "row": 1,
+          "col": 1,
+          "box": [
+            771,
+            728,
+            999,
+            956
+          ]
+        },
+        {
+          "sample_index": 8,
+          "char": "I",
+          "char_code": 73,
+          "class_id": 8,
+          "repetition": 1,
+          "split": "train",
+          "row": 1,
+          "col": 2,
+          "box": [
+            1031,
+            728,
+            1259,
+            956
+          ]
+        },
+        {
+          "sample_index": 9,
+          "char": "J",
+          "char_code": 74,
+          "class_id": 9,
+          "repetition": 1,
+          "split": "train",
+          "row": 1,
+          "col": 3,
+          "box": [
+            1291,
+            728,
+            1519,
+            956
+          ]
+        },
+        {
+          "sample_index": 10,
+          "char": "K",
+          "char_code": 75,
+          "class_id": 10,
+          "repetition": 1,
+          "split": "train",
+          "row": 1,
+          "col": 4,
+          "box": [
+            1551,
+            728,
+            1779,
+            956
+          ]
+        },
+        {
+          "sample_index": 11,
+          "char": "L",
+          "char_code": 76,
+          "class_id": 11,
+          "repetition": 1,
+          "split": "train",
+          "row": 1,
+          "col": 5,
+          "box": [
+            1811,
+            728,
+            2039,
+            956
+          ]
+        },
+        {
+          "sample_index": 12,
+          "char": "M",
+          "char_code": 77,
+          "class_id": 12,
+          "repetition": 1,
+          "split": "train",
+          "row": 2,
+          "col": 0,
+          "box": [
+            511,
+            1070,
+            739,
+            1298
+          ]
+        },
+        {
+          "sample_index": 13,
+          "char": "N",
+          "char_code": 78,
+          "class_id": 13,
+          "repetition": 1,
+          "split": "train",
+          "row": 2,
+          "col": 1,
+          "box": [
+            771,
+            1070,
+            999,
+            1298
+          ]
+        },
+        {
+          "sample_index": 14,
+          "char": "O",
+          "char_code": 79,
+          "class_id": 14,
+          "repetition": 1,
+          "split": "train",
+          "row": 2,
+          "col": 2,
+          "box": [
+            1031,
+            1070,
+            1259,
+            1298
+          ]
+        },
+        {
+          "sample_index": 15,
+          "char": "P",
+          "char_code": 80,
+          "class_id": 15,
+          "repetition": 1,
+          "split": "train",
+          "row": 2,
+          "col": 3,
+          "box": [
+            1291,
+            1070,
+            1519,
+            1298
+          ]
+        },
+        {
+          "sample_index": 16,
+          "char": "Q",
+          "char_code": 81,
+          "class_id": 16,
+          "repetition": 1,
+          "split": "test_unseen",
+          "row": 2,
+          "col": 4,
+          "box": [
+            1551,
+            1070,
+            1779,
+            1298
+          ]
+        },
+        {
+          "sample_index": 17,
+          "char": "R",
+          "char_code": 82,
+          "class_id": 17,
+          "repetition": 1,
+          "split": "train",
+          "row": 2,
+          "col": 5,
+          "box": [
+            1811,
+            1070,
+            2039,
+            1298
+          ]
+        },
+        {
+          "sample_index": 18,
+          "char": "S",
+          "char_code": 83,
+          "class_id": 18,
+          "repetition": 1,
+          "split": "train",
+          "row": 3,
+          "col": 0,
+          "box": [
+            511,
+            1412,
+            739,
+            1640
+          ]
+        },
+        {
+          "sample_index": 19,
+          "char": "T",
+          "char_code": 84,
+          "class_id": 19,
+          "repetition": 1,
+          "split": "train",
+          "row": 3,
+          "col": 1,
+          "box": [
+            771,
+            1412,
+            999,
+            1640
+          ]
+        },
+        {
+          "sample_index": 20,
+          "char": "U",
+          "char_code": 85,
+          "class_id": 20,
+          "repetition": 1,
+          "split": "train",
+          "row": 3,
+          "col": 2,
+          "box": [
+            1031,
+            1412,
+            1259,
+            1640
+          ]
+        },
+        {
+          "sample_index": 21,
+          "char": "V",
+          "char_code": 86,
+          "class_id": 21,
+          "repetition": 1,
+          "split": "train",
+          "row": 3,
+          "col": 3,
+          "box": [
+            1291,
+            1412,
+            1519,
+            1640
+          ]
+        },
+        {
+          "sample_index": 22,
+          "char": "W",
+          "char_code": 87,
+          "class_id": 22,
+          "repetition": 1,
+          "split": "train",
+          "row": 3,
+          "col": 4,
+          "box": [
+            1551,
+            1412,
+            1779,
+            1640
+          ]
+        },
+        {
+          "sample_index": 23,
+          "char": "X",
+          "char_code": 88,
+          "class_id": 23,
+          "repetition": 1,
+          "split": "train",
+          "row": 3,
+          "col": 5,
+          "box": [
+            1811,
+            1412,
+            2039,
+            1640
+          ]
+        },
+        {
+          "sample_index": 24,
+          "char": "Y",
+          "char_code": 89,
+          "class_id": 24,
+          "repetition": 1,
+          "split": "train",
+          "row": 4,
+          "col": 0,
+          "box": [
+            511,
+            1754,
+            739,
+            1982
+          ]
+        },
+        {
+          "sample_index": 25,
+          "char": "Z",
+          "char_code": 90,
+          "class_id": 25,
+          "repetition": 1,
+          "split": "train",
+          "row": 4,
+          "col": 1,
+          "box": [
+            771,
+            1754,
+            999,
+            1982
+          ]
+        },
+        {
+          "sample_index": 26,
+          "char": "a",
+          "char_code": 97,
+          "class_id": 26,
+          "repetition": 1,
+          "split": "train",
+          "row": 4,
+          "col": 2,
+          "box": [
+            1031,
+            1754,
+            1259,
+            1982
+          ]
+        },
+        {
+          "sample_index": 27,
+          "char": "b",
+          "char_code": 98,
+          "class_id": 27,
+          "repetition": 1,
+          "split": "train",
+          "row": 4,
+          "col": 3,
+          "box": [
+            1291,
+            1754,
+            1519,
+            1982
+          ]
+        },
+        {
+          "sample_index": 28,
+          "char": "c",
+          "char_code": 99,
+          "class_id": 28,
+          "repetition": 1,
+          "split": "train",
+          "row": 4,
+          "col": 4,
+          "box": [
+            1551,
+            1754,
+            1779,
+            1982
+          ]
+        },
+        {
+          "sample_index": 29,
+          "char": "d",
+          "char_code": 100,
+          "class_id": 29,
+          "repetition": 1,
+          "split": "train",
+          "row": 4,
+          "col": 5,
+          "box": [
+            1811,
+            1754,
+            2039,
+            1982
+          ]
+        },
+        {
+          "sample_index": 30,
+          "char": "e",
+          "char_code": 101,
+          "class_id": 30,
+          "repetition": 1,
+          "split": "train",
+          "row": 5,
+          "col": 0,
+          "box": [
+            511,
+            2096,
+            739,
+            2324
+          ]
+        },
+        {
+          "sample_index": 31,
+          "char": "f",
+          "char_code": 102,
+          "class_id": 31,
+          "repetition": 1,
+          "split": "train",
+          "row": 5,
+          "col": 1,
+          "box": [
+            771,
+            2096,
+            999,
+            2324
+          ]
+        },
+        {
+          "sample_index": 32,
+          "char": "g",
+          "char_code": 103,
+          "class_id": 32,
+          "repetition": 1,
+          "split": "train",
+          "row": 5,
+          "col": 2,
+          "box": [
+            1031,
+            2096,
+            1259,
+            2324
+          ]
+        },
+        {
+          "sample_index": 33,
+          "char": "h",
+          "char_code": 104,
+          "class_id": 33,
+          "repetition": 1,
+          "split": "train",
+          "row": 5,
+          "col": 3,
+          "box": [
+            1291,
+            2096,
+            1519,
+            2324
+          ]
+        },
+        {
+          "sample_index": 34,
+          "char": "i",
+          "char_code": 105,
+          "class_id": 34,
+          "repetition": 1,
+          "split": "train",
+          "row": 5,
+          "col": 4,
+          "box": [
+            1551,
+            2096,
+            1779,
+            2324
+          ]
+        },
+        {
+          "sample_index": 35,
+          "char": "j",
+          "char_code": 106,
+          "class_id": 35,
+          "repetition": 1,
+          "split": "train",
+          "row": 5,
+          "col": 5,
+          "box": [
+            1811,
+            2096,
+            2039,
+            2324
+          ]
+        },
+        {
+          "sample_index": 36,
+          "char": "k",
+          "char_code": 107,
+          "class_id": 36,
+          "repetition": 1,
+          "split": "test_unseen",
+          "row": 6,
+          "col": 0,
+          "box": [
+            511,
+            2438,
+            739,
+            2666
+          ]
+        },
+        {
+          "sample_index": 37,
+          "char": "l",
+          "char_code": 108,
+          "class_id": 37,
+          "repetition": 1,
+          "split": "train",
+          "row": 6,
+          "col": 1,
+          "box": [
+            771,
+            2438,
+            999,
+            2666
+          ]
+        },
+        {
+          "sample_index": 38,
+          "char": "m",
+          "char_code": 109,
+          "class_id": 38,
+          "repetition": 1,
+          "split": "train",
+          "row": 6,
+          "col": 2,
+          "box": [
+            1031,
+            2438,
+            1259,
+            2666
+          ]
+        },
+        {
+          "sample_index": 39,
+          "char": "n",
+          "char_code": 110,
+          "class_id": 39,
+          "repetition": 1,
+          "split": "train",
+          "row": 6,
+          "col": 3,
+          "box": [
+            1291,
+            2438,
+            1519,
+            2666
+          ]
+        },
+        {
+          "sample_index": 40,
+          "char": "o",
+          "char_code": 111,
+          "class_id": 40,
+          "repetition": 1,
+          "split": "train",
+          "row": 6,
+          "col": 4,
+          "box": [
+            1551,
+            2438,
+            1779,
+            2666
+          ]
+        },
+        {
+          "sample_index": 41,
+          "char": "p",
+          "char_code": 112,
+          "class_id": 41,
+          "repetition": 1,
+          "split": "train",
+          "row": 6,
+          "col": 5,
+          "box": [
+            1811,
+            2438,
+            2039,
+            2666
+          ]
+        },
+        {
+          "sample_index": 42,
+          "char": "q",
+          "char_code": 113,
+          "class_id": 42,
+          "repetition": 1,
+          "split": "train",
+          "row": 7,
+          "col": 0,
+          "box": [
+            511,
+            2780,
+            739,
+            3008
+          ]
+        },
+        {
+          "sample_index": 43,
+          "char": "r",
+          "char_code": 114,
+          "class_id": 43,
+          "repetition": 1,
+          "split": "train",
+          "row": 7,
+          "col": 1,
+          "box": [
+            771,
+            2780,
+            999,
+            3008
+          ]
+        },
+        {
+          "sample_index": 44,
+          "char": "s",
+          "char_code": 115,
+          "class_id": 44,
+          "repetition": 1,
+          "split": "train",
+          "row": 7,
+          "col": 2,
+          "box": [
+            1031,
+            2780,
+            1259,
+            3008
+          ]
+        },
+        {
+          "sample_index": 45,
+          "char": "t",
+          "char_code": 116,
+          "class_id": 45,
+          "repetition": 1,
+          "split": "train",
+          "row": 7,
+          "col": 3,
+          "box": [
+            1291,
+            2780,
+            1519,
+            3008
+          ]
+        },
+        {
+          "sample_index": 46,
+          "char": "u",
+          "char_code": 117,
+          "class_id": 46,
+          "repetition": 1,
+          "split": "train",
+          "row": 7,
+          "col": 4,
+          "box": [
+            1551,
+            2780,
+            1779,
+            3008
+          ]
+        },
+        {
+          "sample_index": 47,
+          "char": "v",
+          "char_code": 118,
+          "class_id": 47,
+          "repetition": 1,
+          "split": "train",
+          "row": 7,
+          "col": 5,
+          "box": [
+            1811,
+            2780,
+            2039,
+            3008
+          ]
+        }
+      ]
+    },
+    {
+      "page_index": 2,
+      "image": "plantilla_hoja_02.png",
+      "cells": [
+        {
+          "sample_index": 48,
+          "char": "w",
+          "char_code": 119,
+          "class_id": 48,
+          "repetition": 1,
+          "split": "train",
+          "row": 0,
+          "col": 0,
+          "box": [
+            511,
+            386,
+            739,
+            614
+          ]
+        },
+        {
+          "sample_index": 49,
+          "char": "x",
+          "char_code": 120,
+          "class_id": 49,
+          "repetition": 1,
+          "split": "train",
+          "row": 0,
+          "col": 1,
+          "box": [
+            771,
+            386,
+            999,
+            614
+          ]
+        },
+        {
+          "sample_index": 50,
+          "char": "y",
+          "char_code": 121,
+          "class_id": 50,
+          "repetition": 1,
+          "split": "train",
+          "row": 0,
+          "col": 2,
+          "box": [
+            1031,
+            386,
+            1259,
+            614
+          ]
+        },
+        {
+          "sample_index": 51,
+          "char": "z",
+          "char_code": 122,
+          "class_id": 51,
+          "repetition": 1,
+          "split": "test_unseen",
+          "row": 0,
+          "col": 3,
+          "box": [
+            1291,
+            386,
+            1519,
+            614
+          ]
+        },
+        {
+          "sample_index": 52,
+          "char": "0",
+          "char_code": 48,
+          "class_id": 52,
+          "repetition": 1,
+          "split": "train",
+          "row": 0,
+          "col": 4,
+          "box": [
+            1551,
+            386,
+            1779,
+            614
+          ]
+        },
+        {
+          "sample_index": 53,
+          "char": "1",
+          "char_code": 49,
+          "class_id": 53,
+          "repetition": 1,
+          "split": "train",
+          "row": 0,
+          "col": 5,
+          "box": [
+            1811,
+            386,
+            2039,
+            614
+          ]
+        },
+        {
+          "sample_index": 54,
+          "char": "2",
+          "char_code": 50,
+          "class_id": 54,
+          "repetition": 1,
+          "split": "train",
+          "row": 1,
+          "col": 0,
+          "box": [
+            511,
+            728,
+            739,
+            956
+          ]
+        },
+        {
+          "sample_index": 55,
+          "char": "3",
+          "char_code": 51,
+          "class_id": 55,
+          "repetition": 1,
+          "split": "train",
+          "row": 1,
+          "col": 1,
+          "box": [
+            771,
+            728,
+            999,
+            956
+          ]
+        },
+        {
+          "sample_index": 56,
+          "char": "4",
+          "char_code": 52,
+          "class_id": 56,
+          "repetition": 1,
+          "split": "test_unseen",
+          "row": 1,
+          "col": 2,
+          "box": [
+            1031,
+            728,
+            1259,
+            956
+          ]
+        },
+        {
+          "sample_index": 57,
+          "char": "5",
+          "char_code": 53,
+          "class_id": 57,
+          "repetition": 1,
+          "split": "train",
+          "row": 1,
+          "col": 3,
+          "box": [
+            1291,
+            728,
+            1519,
+            956
+          ]
+        },
+        {
+          "sample_index": 58,
+          "char": "6",
+          "char_code": 54,
+          "class_id": 58,
+          "repetition": 1,
+          "split": "train",
+          "row": 1,
+          "col": 4,
+          "box": [
+            1551,
+            728,
+            1779,
+            956
+          ]
+        },
+        {
+          "sample_index": 59,
+          "char": "7",
+          "char_code": 55,
+          "class_id": 59,
+          "repetition": 1,
+          "split": "train",
+          "row": 1,
+          "col": 5,
+          "box": [
+            1811,
+            728,
+            2039,
+            956
+          ]
+        },
+        {
+          "sample_index": 60,
+          "char": "8",
+          "char_code": 56,
+          "class_id": 60,
+          "repetition": 1,
+          "split": "test_unseen",
+          "row": 2,
+          "col": 0,
+          "box": [
+            511,
+            1070,
+            739,
+            1298
+          ]
+        },
+        {
+          "sample_index": 61,
+          "char": "9",
+          "char_code": 57,
+          "class_id": 61,
+          "repetition": 1,
+          "split": "train",
+          "row": 2,
+          "col": 1,
+          "box": [
+            771,
+            1070,
+            999,
+            1298
+          ]
+        },
+        {
+          "sample_index": 62,
+          "char": ".",
+          "char_code": 46,
+          "class_id": 62,
+          "repetition": 1,
+          "split": "train",
+          "row": 2,
+          "col": 2,
+          "box": [
+            1031,
+            1070,
+            1259,
+            1298
+          ]
+        },
+        {
+          "sample_index": 63,
+          "char": ",",
+          "char_code": 44,
+          "class_id": 63,
+          "repetition": 1,
+          "split": "train",
+          "row": 2,
+          "col": 3,
+          "box": [
+            1291,
+            1070,
+            1519,
+            1298
+          ]
+        },
+        {
+          "sample_index": 64,
+          "char": "!",
+          "char_code": 33,
+          "class_id": 64,
+          "repetition": 1,
+          "split": "train",
+          "row": 2,
+          "col": 4,
+          "box": [
+            1551,
+            1070,
+            1779,
+            1298
+          ]
+        },
+        {
+          "sample_index": 65,
+          "char": "?",
+          "char_code": 63,
+          "class_id": 65,
+          "repetition": 1,
+          "split": "test_unseen",
+          "row": 2,
+          "col": 5,
+          "box": [
+            1811,
+            1070,
+            2039,
+            1298
+          ]
+        },
+        {
+          "sample_index": 66,
+          "char": "(",
+          "char_code": 40,
+          "class_id": 66,
+          "repetition": 1,
+          "split": "train",
+          "row": 3,
+          "col": 0,
+          "box": [
+            511,
+            1412,
+            739,
+            1640
+          ]
+        },
+        {
+          "sample_index": 67,
+          "char": ")",
+          "char_code": 41,
+          "class_id": 67,
+          "repetition": 1,
+          "split": "test_unseen",
+          "row": 3,
+          "col": 1,
+          "box": [
+            771,
+            1412,
+            999,
+            1640
+          ]
+        },
+        {
+          "sample_index": 68,
+          "char": "+",
+          "char_code": 43,
+          "class_id": 68,
+          "repetition": 1,
+          "split": "test_unseen",
+          "row": 3,
+          "col": 2,
+          "box": [
+            1031,
+            1412,
+            1259,
+            1640
+          ]
+        },
+        {
+          "sample_index": 69,
+          "char": "-",
+          "char_code": 45,
+          "class_id": 69,
+          "repetition": 1,
+          "split": "train",
+          "row": 3,
+          "col": 3,
+          "box": [
+            1291,
+            1412,
+            1519,
+            1640
+          ]
+        },
+        {
+          "sample_index": 70,
+          "char": "=",
+          "char_code": 61,
+          "class_id": 70,
+          "repetition": 1,
+          "split": "train",
+          "row": 3,
+          "col": 4,
+          "box": [
+            1551,
+            1412,
+            1779,
+            1640
+          ]
+        },
+        {
+          "sample_index": 71,
+          "char": "/",
+          "char_code": 47,
+          "class_id": 71,
+          "repetition": 1,
+          "split": "train",
+          "row": 3,
+          "col": 5,
+          "box": [
+            1811,
+            1412,
+            2039,
+            1640
+          ]
+        },
+        {
+          "sample_index": 72,
+          "char": ":",
+          "char_code": 58,
+          "class_id": 72,
+          "repetition": 1,
+          "split": "train",
+          "row": 4,
+          "col": 0,
+          "box": [
+            511,
+            1754,
+            739,
+            1982
+          ]
+        },
+        {
+          "sample_index": 73,
+          "char": ";",
+          "char_code": 59,
+          "class_id": 73,
+          "repetition": 1,
+          "split": "test_unseen",
+          "row": 4,
+          "col": 1,
+          "box": [
+            771,
+            1754,
+            999,
+            1982
+          ]
+        },
+        {
+          "sample_index": 74,
+          "char": "&",
+          "char_code": 38,
+          "class_id": 74,
+          "repetition": 1,
+          "split": "test_unseen",
+          "row": 4,
+          "col": 2,
+          "box": [
+            1031,
+            1754,
+            1259,
+            1982
+          ]
+        },
+        {
+          "sample_index": 75,
+          "char": "A",
+          "char_code": 65,
+          "class_id": 0,
+          "repetition": 2,
+          "split": "train",
+          "row": 4,
+          "col": 3,
+          "box": [
+            1291,
+            1754,
+            1519,
+            1982
+          ]
+        },
+        {
+          "sample_index": 76,
+          "char": "B",
+          "char_code": 66,
+          "class_id": 1,
+          "repetition": 2,
+          "split": "train",
+          "row": 4,
+          "col": 4,
+          "box": [
+            1551,
+            1754,
+            1779,
+            1982
+          ]
+        },
+        {
+          "sample_index": 77,
+          "char": "C",
+          "char_code": 67,
+          "class_id": 2,
+          "repetition": 2,
+          "split": "train",
+          "row": 4,
+          "col": 5,
+          "box": [
+            1811,
+            1754,
+            2039,
+            1982
+          ]
+        },
+        {
+          "sample_index": 78,
+          "char": "D",
+          "char_code": 68,
+          "class_id": 3,
+          "repetition": 2,
+          "split": "train",
+          "row": 5,
+          "col": 0,
+          "box": [
+            511,
+            2096,
+            739,
+            2324
+          ]
+        },
+        {
+          "sample_index": 79,
+          "char": "E",
+          "char_code": 69,
+          "class_id": 4,
+          "repetition": 2,
+          "split": "train",
+          "row": 5,
+          "col": 1,
+          "box": [
+            771,
+            2096,
+            999,
+            2324
+          ]
+        },
+        {
+          "sample_index": 80,
+          "char": "F",
+          "char_code": 70,
+          "class_id": 5,
+          "repetition": 2,
+          "split": "train",
+          "row": 5,
+          "col": 2,
+          "box": [
+            1031,
+            2096,
+            1259,
+            2324
+          ]
+        },
+        {
+          "sample_index": 81,
+          "char": "G",
+          "char_code": 71,
+          "class_id": 6,
+          "repetition": 2,
+          "split": "test_unseen",
+          "row": 5,
+          "col": 3,
+          "box": [
+            1291,
+            2096,
+            1519,
+            2324
+          ]
+        },
+        {
+          "sample_index": 82,
+          "char": "H",
+          "char_code": 72,
+          "class_id": 7,
+          "repetition": 2,
+          "split": "train",
+          "row": 5,
+          "col": 4,
+          "box": [
+            1551,
+            2096,
+            1779,
+            2324
+          ]
+        },
+        {
+          "sample_index": 83,
+          "char": "I",
+          "char_code": 73,
+          "class_id": 8,
+          "repetition": 2,
+          "split": "train",
+          "row": 5,
+          "col": 5,
+          "box": [
+            1811,
+            2096,
+            2039,
+            2324
+          ]
+        },
+        {
+          "sample_index": 84,
+          "char": "J",
+          "char_code": 74,
+          "class_id": 9,
+          "repetition": 2,
+          "split": "train",
+          "row": 6,
+          "col": 0,
+          "box": [
+            511,
+            2438,
+            739,
+            2666
+          ]
+        },
+        {
+          "sample_index": 85,
+          "char": "K",
+          "char_code": 75,
+          "class_id": 10,
+          "repetition": 2,
+          "split": "train",
+          "row": 6,
+          "col": 1,
+          "box": [
+            771,
+            2438,
+            999,
+            2666
+          ]
+        },
+        {
+          "sample_index": 86,
+          "char": "L",
+          "char_code": 76,
+          "class_id": 11,
+          "repetition": 2,
+          "split": "train",
+          "row": 6,
+          "col": 2,
+          "box": [
+            1031,
+            2438,
+            1259,
+            2666
+          ]
+        },
+        {
+          "sample_index": 87,
+          "char": "M",
+          "char_code": 77,
+          "class_id": 12,
+          "repetition": 2,
+          "split": "train",
+          "row": 6,
+          "col": 3,
+          "box": [
+            1291,
+            2438,
+            1519,
+            2666
+          ]
+        },
+        {
+          "sample_index": 88,
+          "char": "N",
+          "char_code": 78,
+          "class_id": 13,
+          "repetition": 2,
+          "split": "train",
+          "row": 6,
+          "col": 4,
+          "box": [
+            1551,
+            2438,
+            1779,
+            2666
+          ]
+        },
+        {
+          "sample_index": 89,
+          "char": "O",
+          "char_code": 79,
+          "class_id": 14,
+          "repetition": 2,
+          "split": "train",
+          "row": 6,
+          "col": 5,
+          "box": [
+            1811,
+            2438,
+            2039,
+            2666
+          ]
+        },
+        {
+          "sample_index": 90,
+          "char": "P",
+          "char_code": 80,
+          "class_id": 15,
+          "repetition": 2,
+          "split": "train",
+          "row": 7,
+          "col": 0,
+          "box": [
+            511,
+            2780,
+            739,
+            3008
+          ]
+        },
+        {
+          "sample_index": 91,
+          "char": "Q",
+          "char_code": 81,
+          "class_id": 16,
+          "repetition": 2,
+          "split": "test_unseen",
+          "row": 7,
+          "col": 1,
+          "box": [
+            771,
+            2780,
+            999,
+            3008
+          ]
+        },
+        {
+          "sample_index": 92,
+          "char": "R",
+          "char_code": 82,
+          "class_id": 17,
+          "repetition": 2,
+          "split": "train",
+          "row": 7,
+          "col": 2,
+          "box": [
+            1031,
+            2780,
+            1259,
+            3008
+          ]
+        },
+        {
+          "sample_index": 93,
+          "char": "S",
+          "char_code": 83,
+          "class_id": 18,
+          "repetition": 2,
+          "split": "train",
+          "row": 7,
+          "col": 3,
+          "box": [
+            1291,
+            2780,
+            1519,
+            3008
+          ]
+        },
+        {
+          "sample_index": 94,
+          "char": "T",
+          "char_code": 84,
+          "class_id": 19,
+          "repetition": 2,
+          "split": "train",
+          "row": 7,
+          "col": 4,
+          "box": [
+            1551,
+            2780,
+            1779,
+            3008
+          ]
+        },
+        {
+          "sample_index": 95,
+          "char": "U",
+          "char_code": 85,
+          "class_id": 20,
+          "repetition": 2,
+          "split": "train",
+          "row": 7,
+          "col": 5,
+          "box": [
+            1811,
+            2780,
+            2039,
+            3008
+          ]
+        }
+      ]
+    },
+    {
+      "page_index": 3,
+      "image": "plantilla_hoja_03.png",
+      "cells": [
+        {
+          "sample_index": 96,
+          "char": "V",
+          "char_code": 86,
+          "class_id": 21,
+          "repetition": 2,
+          "split": "train",
+          "row": 0,
+          "col": 0,
+          "box": [
+            511,
+            386,
+            739,
+            614
+          ]
+        },
+        {
+          "sample_index": 97,
+          "char": "W",
+          "char_code": 87,
+          "class_id": 22,
+          "repetition": 2,
+          "split": "train",
+          "row": 0,
+          "col": 1,
+          "box": [
+            771,
+            386,
+            999,
+            614
+          ]
+        },
+        {
+          "sample_index": 98,
+          "char": "X",
+          "char_code": 88,
+          "class_id": 23,
+          "repetition": 2,
+          "split": "train",
+          "row": 0,
+          "col": 2,
+          "box": [
+            1031,
+            386,
+            1259,
+            614
+          ]
+        },
+        {
+          "sample_index": 99,
+          "char": "Y",
+          "char_code": 89,
+          "class_id": 24,
+          "repetition": 2,
+          "split": "train",
+          "row": 0,
+          "col": 3,
+          "box": [
+            1291,
+            386,
+            1519,
+            614
+          ]
+        },
+        {
+          "sample_index": 100,
+          "char": "Z",
+          "char_code": 90,
+          "class_id": 25,
+          "repetition": 2,
+          "split": "train",
+          "row": 0,
+          "col": 4,
+          "box": [
+            1551,
+            386,
+            1779,
+            614
+          ]
+        },
+        {
+          "sample_index": 101,
+          "char": "a",
+          "char_code": 97,
+          "class_id": 26,
+          "repetition": 2,
+          "split": "train",
+          "row": 0,
+          "col": 5,
+          "box": [
+            1811,
+            386,
+            2039,
+            614
+          ]
+        },
+        {
+          "sample_index": 102,
+          "char": "b",
+          "char_code": 98,
+          "class_id": 27,
+          "repetition": 2,
+          "split": "train",
+          "row": 1,
+          "col": 0,
+          "box": [
+            511,
+            728,
+            739,
+            956
+          ]
+        },
+        {
+          "sample_index": 103,
+          "char": "c",
+          "char_code": 99,
+          "class_id": 28,
+          "repetition": 2,
+          "split": "train",
+          "row": 1,
+          "col": 1,
+          "box": [
+            771,
+            728,
+            999,
+            956
+          ]
+        },
+        {
+          "sample_index": 104,
+          "char": "d",
+          "char_code": 100,
+          "class_id": 29,
+          "repetition": 2,
+          "split": "train",
+          "row": 1,
+          "col": 2,
+          "box": [
+            1031,
+            728,
+            1259,
+            956
+          ]
+        },
+        {
+          "sample_index": 105,
+          "char": "e",
+          "char_code": 101,
+          "class_id": 30,
+          "repetition": 2,
+          "split": "train",
+          "row": 1,
+          "col": 3,
+          "box": [
+            1291,
+            728,
+            1519,
+            956
+          ]
+        },
+        {
+          "sample_index": 106,
+          "char": "f",
+          "char_code": 102,
+          "class_id": 31,
+          "repetition": 2,
+          "split": "train",
+          "row": 1,
+          "col": 4,
+          "box": [
+            1551,
+            728,
+            1779,
+            956
+          ]
+        },
+        {
+          "sample_index": 107,
+          "char": "g",
+          "char_code": 103,
+          "class_id": 32,
+          "repetition": 2,
+          "split": "train",
+          "row": 1,
+          "col": 5,
+          "box": [
+            1811,
+            728,
+            2039,
+            956
+          ]
+        },
+        {
+          "sample_index": 108,
+          "char": "h",
+          "char_code": 104,
+          "class_id": 33,
+          "repetition": 2,
+          "split": "train",
+          "row": 2,
+          "col": 0,
+          "box": [
+            511,
+            1070,
+            739,
+            1298
+          ]
+        },
+        {
+          "sample_index": 109,
+          "char": "i",
+          "char_code": 105,
+          "class_id": 34,
+          "repetition": 2,
+          "split": "train",
+          "row": 2,
+          "col": 1,
+          "box": [
+            771,
+            1070,
+            999,
+            1298
+          ]
+        },
+        {
+          "sample_index": 110,
+          "char": "j",
+          "char_code": 106,
+          "class_id": 35,
+          "repetition": 2,
+          "split": "train",
+          "row": 2,
+          "col": 2,
+          "box": [
+            1031,
+            1070,
+            1259,
+            1298
+          ]
+        },
+        {
+          "sample_index": 111,
+          "char": "k",
+          "char_code": 107,
+          "class_id": 36,
+          "repetition": 2,
+          "split": "test_unseen",
+          "row": 2,
+          "col": 3,
+          "box": [
+            1291,
+            1070,
+            1519,
+            1298
+          ]
+        },
+        {
+          "sample_index": 112,
+          "char": "l",
+          "char_code": 108,
+          "class_id": 37,
+          "repetition": 2,
+          "split": "train",
+          "row": 2,
+          "col": 4,
+          "box": [
+            1551,
+            1070,
+            1779,
+            1298
+          ]
+        },
+        {
+          "sample_index": 113,
+          "char": "m",
+          "char_code": 109,
+          "class_id": 38,
+          "repetition": 2,
+          "split": "train",
+          "row": 2,
+          "col": 5,
+          "box": [
+            1811,
+            1070,
+            2039,
+            1298
+          ]
+        },
+        {
+          "sample_index": 114,
+          "char": "n",
+          "char_code": 110,
+          "class_id": 39,
+          "repetition": 2,
+          "split": "train",
+          "row": 3,
+          "col": 0,
+          "box": [
+            511,
+            1412,
+            739,
+            1640
+          ]
+        },
+        {
+          "sample_index": 115,
+          "char": "o",
+          "char_code": 111,
+          "class_id": 40,
+          "repetition": 2,
+          "split": "train",
+          "row": 3,
+          "col": 1,
+          "box": [
+            771,
+            1412,
+            999,
+            1640
+          ]
+        },
+        {
+          "sample_index": 116,
+          "char": "p",
+          "char_code": 112,
+          "class_id": 41,
+          "repetition": 2,
+          "split": "train",
+          "row": 3,
+          "col": 2,
+          "box": [
+            1031,
+            1412,
+            1259,
+            1640
+          ]
+        },
+        {
+          "sample_index": 117,
+          "char": "q",
+          "char_code": 113,
+          "class_id": 42,
+          "repetition": 2,
+          "split": "train",
+          "row": 3,
+          "col": 3,
+          "box": [
+            1291,
+            1412,
+            1519,
+            1640
+          ]
+        },
+        {
+          "sample_index": 118,
+          "char": "r",
+          "char_code": 114,
+          "class_id": 43,
+          "repetition": 2,
+          "split": "train",
+          "row": 3,
+          "col": 4,
+          "box": [
+            1551,
+            1412,
+            1779,
+            1640
+          ]
+        },
+        {
+          "sample_index": 119,
+          "char": "s",
+          "char_code": 115,
+          "class_id": 44,
+          "repetition": 2,
+          "split": "train",
+          "row": 3,
+          "col": 5,
+          "box": [
+            1811,
+            1412,
+            2039,
+            1640
+          ]
+        },
+        {
+          "sample_index": 120,
+          "char": "t",
+          "char_code": 116,
+          "class_id": 45,
+          "repetition": 2,
+          "split": "train",
+          "row": 4,
+          "col": 0,
+          "box": [
+            511,
+            1754,
+            739,
+            1982
+          ]
+        },
+        {
+          "sample_index": 121,
+          "char": "u",
+          "char_code": 117,
+          "class_id": 46,
+          "repetition": 2,
+          "split": "train",
+          "row": 4,
+          "col": 1,
+          "box": [
+            771,
+            1754,
+            999,
+            1982
+          ]
+        },
+        {
+          "sample_index": 122,
+          "char": "v",
+          "char_code": 118,
+          "class_id": 47,
+          "repetition": 2,
+          "split": "train",
+          "row": 4,
+          "col": 2,
+          "box": [
+            1031,
+            1754,
+            1259,
+            1982
+          ]
+        },
+        {
+          "sample_index": 123,
+          "char": "w",
+          "char_code": 119,
+          "class_id": 48,
+          "repetition": 2,
+          "split": "train",
+          "row": 4,
+          "col": 3,
+          "box": [
+            1291,
+            1754,
+            1519,
+            1982
+          ]
+        },
+        {
+          "sample_index": 124,
+          "char": "x",
+          "char_code": 120,
+          "class_id": 49,
+          "repetition": 2,
+          "split": "train",
+          "row": 4,
+          "col": 4,
+          "box": [
+            1551,
+            1754,
+            1779,
+            1982
+          ]
+        },
+        {
+          "sample_index": 125,
+          "char": "y",
+          "char_code": 121,
+          "class_id": 50,
+          "repetition": 2,
+          "split": "train",
+          "row": 4,
+          "col": 5,
+          "box": [
+            1811,
+            1754,
+            2039,
+            1982
+          ]
+        },
+        {
+          "sample_index": 126,
+          "char": "z",
+          "char_code": 122,
+          "class_id": 51,
+          "repetition": 2,
+          "split": "test_unseen",
+          "row": 5,
+          "col": 0,
+          "box": [
+            511,
+            2096,
+            739,
+            2324
+          ]
+        },
+        {
+          "sample_index": 127,
+          "char": "0",
+          "char_code": 48,
+          "class_id": 52,
+          "repetition": 2,
+          "split": "train",
+          "row": 5,
+          "col": 1,
+          "box": [
+            771,
+            2096,
+            999,
+            2324
+          ]
+        },
+        {
+          "sample_index": 128,
+          "char": "1",
+          "char_code": 49,
+          "class_id": 53,
+          "repetition": 2,
+          "split": "train",
+          "row": 5,
+          "col": 2,
+          "box": [
+            1031,
+            2096,
+            1259,
+            2324
+          ]
+        },
+        {
+          "sample_index": 129,
+          "char": "2",
+          "char_code": 50,
+          "class_id": 54,
+          "repetition": 2,
+          "split": "train",
+          "row": 5,
+          "col": 3,
+          "box": [
+            1291,
+            2096,
+            1519,
+            2324
+          ]
+        },
+        {
+          "sample_index": 130,
+          "char": "3",
+          "char_code": 51,
+          "class_id": 55,
+          "repetition": 2,
+          "split": "train",
+          "row": 5,
+          "col": 4,
+          "box": [
+            1551,
+            2096,
+            1779,
+            2324
+          ]
+        },
+        {
+          "sample_index": 131,
+          "char": "4",
+          "char_code": 52,
+          "class_id": 56,
+          "repetition": 2,
+          "split": "test_unseen",
+          "row": 5,
+          "col": 5,
+          "box": [
+            1811,
+            2096,
+            2039,
+            2324
+          ]
+        },
+        {
+          "sample_index": 132,
+          "char": "5",
+          "char_code": 53,
+          "class_id": 57,
+          "repetition": 2,
+          "split": "train",
+          "row": 6,
+          "col": 0,
+          "box": [
+            511,
+            2438,
+            739,
+            2666
+          ]
+        },
+        {
+          "sample_index": 133,
+          "char": "6",
+          "char_code": 54,
+          "class_id": 58,
+          "repetition": 2,
+          "split": "train",
+          "row": 6,
+          "col": 1,
+          "box": [
+            771,
+            2438,
+            999,
+            2666
+          ]
+        },
+        {
+          "sample_index": 134,
+          "char": "7",
+          "char_code": 55,
+          "class_id": 59,
+          "repetition": 2,
+          "split": "train",
+          "row": 6,
+          "col": 2,
+          "box": [
+            1031,
+            2438,
+            1259,
+            2666
+          ]
+        },
+        {
+          "sample_index": 135,
+          "char": "8",
+          "char_code": 56,
+          "class_id": 60,
+          "repetition": 2,
+          "split": "test_unseen",
+          "row": 6,
+          "col": 3,
+          "box": [
+            1291,
+            2438,
+            1519,
+            2666
+          ]
+        },
+        {
+          "sample_index": 136,
+          "char": "9",
+          "char_code": 57,
+          "class_id": 61,
+          "repetition": 2,
+          "split": "train",
+          "row": 6,
+          "col": 4,
+          "box": [
+            1551,
+            2438,
+            1779,
+            2666
+          ]
+        },
+        {
+          "sample_index": 137,
+          "char": ".",
+          "char_code": 46,
+          "class_id": 62,
+          "repetition": 2,
+          "split": "train",
+          "row": 6,
+          "col": 5,
+          "box": [
+            1811,
+            2438,
+            2039,
+            2666
+          ]
+        },
+        {
+          "sample_index": 138,
+          "char": ",",
+          "char_code": 44,
+          "class_id": 63,
+          "repetition": 2,
+          "split": "train",
+          "row": 7,
+          "col": 0,
+          "box": [
+            511,
+            2780,
+            739,
+            3008
+          ]
+        },
+        {
+          "sample_index": 139,
+          "char": "!",
+          "char_code": 33,
+          "class_id": 64,
+          "repetition": 2,
+          "split": "train",
+          "row": 7,
+          "col": 1,
+          "box": [
+            771,
+            2780,
+            999,
+            3008
+          ]
+        },
+        {
+          "sample_index": 140,
+          "char": "?",
+          "char_code": 63,
+          "class_id": 65,
+          "repetition": 2,
+          "split": "test_unseen",
+          "row": 7,
+          "col": 2,
+          "box": [
+            1031,
+            2780,
+            1259,
+            3008
+          ]
+        },
+        {
+          "sample_index": 141,
+          "char": "(",
+          "char_code": 40,
+          "class_id": 66,
+          "repetition": 2,
+          "split": "train",
+          "row": 7,
+          "col": 3,
+          "box": [
+            1291,
+            2780,
+            1519,
+            3008
+          ]
+        },
+        {
+          "sample_index": 142,
+          "char": ")",
+          "char_code": 41,
+          "class_id": 67,
+          "repetition": 2,
+          "split": "test_unseen",
+          "row": 7,
+          "col": 4,
+          "box": [
+            1551,
+            2780,
+            1779,
+            3008
+          ]
+        },
+        {
+          "sample_index": 143,
+          "char": "+",
+          "char_code": 43,
+          "class_id": 68,
+          "repetition": 2,
+          "split": "test_unseen",
+          "row": 7,
+          "col": 5,
+          "box": [
+            1811,
+            2780,
+            2039,
+            3008
+          ]
+        }
+      ]
+    },
+    {
+      "page_index": 4,
+      "image": "plantilla_hoja_04.png",
+      "cells": [
+        {
+          "sample_index": 144,
+          "char": "-",
+          "char_code": 45,
+          "class_id": 69,
+          "repetition": 2,
+          "split": "train",
+          "row": 0,
+          "col": 0,
+          "box": [
+            511,
+            386,
+            739,
+            614
+          ]
+        },
+        {
+          "sample_index": 145,
+          "char": "=",
+          "char_code": 61,
+          "class_id": 70,
+          "repetition": 2,
+          "split": "train",
+          "row": 0,
+          "col": 1,
+          "box": [
+            771,
+            386,
+            999,
+            614
+          ]
+        },
+        {
+          "sample_index": 146,
+          "char": "/",
+          "char_code": 47,
+          "class_id": 71,
+          "repetition": 2,
+          "split": "train",
+          "row": 0,
+          "col": 2,
+          "box": [
+            1031,
+            386,
+            1259,
+            614
+          ]
+        },
+        {
+          "sample_index": 147,
+          "char": ":",
+          "char_code": 58,
+          "class_id": 72,
+          "repetition": 2,
+          "split": "train",
+          "row": 0,
+          "col": 3,
+          "box": [
+            1291,
+            386,
+            1519,
+            614
+          ]
+        },
+        {
+          "sample_index": 148,
+          "char": ";",
+          "char_code": 59,
+          "class_id": 73,
+          "repetition": 2,
+          "split": "test_unseen",
+          "row": 0,
+          "col": 4,
+          "box": [
+            1551,
+            386,
+            1779,
+            614
+          ]
+        },
+        {
+          "sample_index": 149,
+          "char": "&",
+          "char_code": 38,
+          "class_id": 74,
+          "repetition": 2,
+          "split": "test_unseen",
+          "row": 0,
+          "col": 5,
+          "box": [
+            1811,
+            386,
+            2039,
+            614
+          ]
+        },
+        {
+          "sample_index": 150,
+          "char": "A",
+          "char_code": 65,
+          "class_id": 0,
+          "repetition": 3,
+          "split": "train",
+          "row": 1,
+          "col": 0,
+          "box": [
+            511,
+            728,
+            739,
+            956
+          ]
+        },
+        {
+          "sample_index": 151,
+          "char": "B",
+          "char_code": 66,
+          "class_id": 1,
+          "repetition": 3,
+          "split": "train",
+          "row": 1,
+          "col": 1,
+          "box": [
+            771,
+            728,
+            999,
+            956
+          ]
+        },
+        {
+          "sample_index": 152,
+          "char": "C",
+          "char_code": 67,
+          "class_id": 2,
+          "repetition": 3,
+          "split": "train",
+          "row": 1,
+          "col": 2,
+          "box": [
+            1031,
+            728,
+            1259,
+            956
+          ]
+        },
+        {
+          "sample_index": 153,
+          "char": "D",
+          "char_code": 68,
+          "class_id": 3,
+          "repetition": 3,
+          "split": "train",
+          "row": 1,
+          "col": 3,
+          "box": [
+            1291,
+            728,
+            1519,
+            956
+          ]
+        },
+        {
+          "sample_index": 154,
+          "char": "E",
+          "char_code": 69,
+          "class_id": 4,
+          "repetition": 3,
+          "split": "train",
+          "row": 1,
+          "col": 4,
+          "box": [
+            1551,
+            728,
+            1779,
+            956
+          ]
+        },
+        {
+          "sample_index": 155,
+          "char": "F",
+          "char_code": 70,
+          "class_id": 5,
+          "repetition": 3,
+          "split": "train",
+          "row": 1,
+          "col": 5,
+          "box": [
+            1811,
+            728,
+            2039,
+            956
+          ]
+        },
+        {
+          "sample_index": 156,
+          "char": "G",
+          "char_code": 71,
+          "class_id": 6,
+          "repetition": 3,
+          "split": "test_unseen",
+          "row": 2,
+          "col": 0,
+          "box": [
+            511,
+            1070,
+            739,
+            1298
+          ]
+        },
+        {
+          "sample_index": 157,
+          "char": "H",
+          "char_code": 72,
+          "class_id": 7,
+          "repetition": 3,
+          "split": "train",
+          "row": 2,
+          "col": 1,
+          "box": [
+            771,
+            1070,
+            999,
+            1298
+          ]
+        },
+        {
+          "sample_index": 158,
+          "char": "I",
+          "char_code": 73,
+          "class_id": 8,
+          "repetition": 3,
+          "split": "train",
+          "row": 2,
+          "col": 2,
+          "box": [
+            1031,
+            1070,
+            1259,
+            1298
+          ]
+        },
+        {
+          "sample_index": 159,
+          "char": "J",
+          "char_code": 74,
+          "class_id": 9,
+          "repetition": 3,
+          "split": "train",
+          "row": 2,
+          "col": 3,
+          "box": [
+            1291,
+            1070,
+            1519,
+            1298
+          ]
+        },
+        {
+          "sample_index": 160,
+          "char": "K",
+          "char_code": 75,
+          "class_id": 10,
+          "repetition": 3,
+          "split": "train",
+          "row": 2,
+          "col": 4,
+          "box": [
+            1551,
+            1070,
+            1779,
+            1298
+          ]
+        },
+        {
+          "sample_index": 161,
+          "char": "L",
+          "char_code": 76,
+          "class_id": 11,
+          "repetition": 3,
+          "split": "train",
+          "row": 2,
+          "col": 5,
+          "box": [
+            1811,
+            1070,
+            2039,
+            1298
+          ]
+        },
+        {
+          "sample_index": 162,
+          "char": "M",
+          "char_code": 77,
+          "class_id": 12,
+          "repetition": 3,
+          "split": "train",
+          "row": 3,
+          "col": 0,
+          "box": [
+            511,
+            1412,
+            739,
+            1640
+          ]
+        },
+        {
+          "sample_index": 163,
+          "char": "N",
+          "char_code": 78,
+          "class_id": 13,
+          "repetition": 3,
+          "split": "train",
+          "row": 3,
+          "col": 1,
+          "box": [
+            771,
+            1412,
+            999,
+            1640
+          ]
+        },
+        {
+          "sample_index": 164,
+          "char": "O",
+          "char_code": 79,
+          "class_id": 14,
+          "repetition": 3,
+          "split": "train",
+          "row": 3,
+          "col": 2,
+          "box": [
+            1031,
+            1412,
+            1259,
+            1640
+          ]
+        },
+        {
+          "sample_index": 165,
+          "char": "P",
+          "char_code": 80,
+          "class_id": 15,
+          "repetition": 3,
+          "split": "train",
+          "row": 3,
+          "col": 3,
+          "box": [
+            1291,
+            1412,
+            1519,
+            1640
+          ]
+        },
+        {
+          "sample_index": 166,
+          "char": "Q",
+          "char_code": 81,
+          "class_id": 16,
+          "repetition": 3,
+          "split": "test_unseen",
+          "row": 3,
+          "col": 4,
+          "box": [
+            1551,
+            1412,
+            1779,
+            1640
+          ]
+        },
+        {
+          "sample_index": 167,
+          "char": "R",
+          "char_code": 82,
+          "class_id": 17,
+          "repetition": 3,
+          "split": "train",
+          "row": 3,
+          "col": 5,
+          "box": [
+            1811,
+            1412,
+            2039,
+            1640
+          ]
+        },
+        {
+          "sample_index": 168,
+          "char": "S",
+          "char_code": 83,
+          "class_id": 18,
+          "repetition": 3,
+          "split": "train",
+          "row": 4,
+          "col": 0,
+          "box": [
+            511,
+            1754,
+            739,
+            1982
+          ]
+        },
+        {
+          "sample_index": 169,
+          "char": "T",
+          "char_code": 84,
+          "class_id": 19,
+          "repetition": 3,
+          "split": "train",
+          "row": 4,
+          "col": 1,
+          "box": [
+            771,
+            1754,
+            999,
+            1982
+          ]
+        },
+        {
+          "sample_index": 170,
+          "char": "U",
+          "char_code": 85,
+          "class_id": 20,
+          "repetition": 3,
+          "split": "train",
+          "row": 4,
+          "col": 2,
+          "box": [
+            1031,
+            1754,
+            1259,
+            1982
+          ]
+        },
+        {
+          "sample_index": 171,
+          "char": "V",
+          "char_code": 86,
+          "class_id": 21,
+          "repetition": 3,
+          "split": "train",
+          "row": 4,
+          "col": 3,
+          "box": [
+            1291,
+            1754,
+            1519,
+            1982
+          ]
+        },
+        {
+          "sample_index": 172,
+          "char": "W",
+          "char_code": 87,
+          "class_id": 22,
+          "repetition": 3,
+          "split": "train",
+          "row": 4,
+          "col": 4,
+          "box": [
+            1551,
+            1754,
+            1779,
+            1982
+          ]
+        },
+        {
+          "sample_index": 173,
+          "char": "X",
+          "char_code": 88,
+          "class_id": 23,
+          "repetition": 3,
+          "split": "train",
+          "row": 4,
+          "col": 5,
+          "box": [
+            1811,
+            1754,
+            2039,
+            1982
+          ]
+        },
+        {
+          "sample_index": 174,
+          "char": "Y",
+          "char_code": 89,
+          "class_id": 24,
+          "repetition": 3,
+          "split": "train",
+          "row": 5,
+          "col": 0,
+          "box": [
+            511,
+            2096,
+            739,
+            2324
+          ]
+        },
+        {
+          "sample_index": 175,
+          "char": "Z",
+          "char_code": 90,
+          "class_id": 25,
+          "repetition": 3,
+          "split": "train",
+          "row": 5,
+          "col": 1,
+          "box": [
+            771,
+            2096,
+            999,
+            2324
+          ]
+        },
+        {
+          "sample_index": 176,
+          "char": "a",
+          "char_code": 97,
+          "class_id": 26,
+          "repetition": 3,
+          "split": "train",
+          "row": 5,
+          "col": 2,
+          "box": [
+            1031,
+            2096,
+            1259,
+            2324
+          ]
+        },
+        {
+          "sample_index": 177,
+          "char": "b",
+          "char_code": 98,
+          "class_id": 27,
+          "repetition": 3,
+          "split": "train",
+          "row": 5,
+          "col": 3,
+          "box": [
+            1291,
+            2096,
+            1519,
+            2324
+          ]
+        },
+        {
+          "sample_index": 178,
+          "char": "c",
+          "char_code": 99,
+          "class_id": 28,
+          "repetition": 3,
+          "split": "train",
+          "row": 5,
+          "col": 4,
+          "box": [
+            1551,
+            2096,
+            1779,
+            2324
+          ]
+        },
+        {
+          "sample_index": 179,
+          "char": "d",
+          "char_code": 100,
+          "class_id": 29,
+          "repetition": 3,
+          "split": "train",
+          "row": 5,
+          "col": 5,
+          "box": [
+            1811,
+            2096,
+            2039,
+            2324
+          ]
+        },
+        {
+          "sample_index": 180,
+          "char": "e",
+          "char_code": 101,
+          "class_id": 30,
+          "repetition": 3,
+          "split": "train",
+          "row": 6,
+          "col": 0,
+          "box": [
+            511,
+            2438,
+            739,
+            2666
+          ]
+        },
+        {
+          "sample_index": 181,
+          "char": "f",
+          "char_code": 102,
+          "class_id": 31,
+          "repetition": 3,
+          "split": "train",
+          "row": 6,
+          "col": 1,
+          "box": [
+            771,
+            2438,
+            999,
+            2666
+          ]
+        },
+        {
+          "sample_index": 182,
+          "char": "g",
+          "char_code": 103,
+          "class_id": 32,
+          "repetition": 3,
+          "split": "train",
+          "row": 6,
+          "col": 2,
+          "box": [
+            1031,
+            2438,
+            1259,
+            2666
+          ]
+        },
+        {
+          "sample_index": 183,
+          "char": "h",
+          "char_code": 104,
+          "class_id": 33,
+          "repetition": 3,
+          "split": "train",
+          "row": 6,
+          "col": 3,
+          "box": [
+            1291,
+            2438,
+            1519,
+            2666
+          ]
+        },
+        {
+          "sample_index": 184,
+          "char": "i",
+          "char_code": 105,
+          "class_id": 34,
+          "repetition": 3,
+          "split": "train",
+          "row": 6,
+          "col": 4,
+          "box": [
+            1551,
+            2438,
+            1779,
+            2666
+          ]
+        },
+        {
+          "sample_index": 185,
+          "char": "j",
+          "char_code": 106,
+          "class_id": 35,
+          "repetition": 3,
+          "split": "train",
+          "row": 6,
+          "col": 5,
+          "box": [
+            1811,
+            2438,
+            2039,
+            2666
+          ]
+        },
+        {
+          "sample_index": 186,
+          "char": "k",
+          "char_code": 107,
+          "class_id": 36,
+          "repetition": 3,
+          "split": "test_unseen",
+          "row": 7,
+          "col": 0,
+          "box": [
+            511,
+            2780,
+            739,
+            3008
+          ]
+        },
+        {
+          "sample_index": 187,
+          "char": "l",
+          "char_code": 108,
+          "class_id": 37,
+          "repetition": 3,
+          "split": "train",
+          "row": 7,
+          "col": 1,
+          "box": [
+            771,
+            2780,
+            999,
+            3008
+          ]
+        },
+        {
+          "sample_index": 188,
+          "char": "m",
+          "char_code": 109,
+          "class_id": 38,
+          "repetition": 3,
+          "split": "train",
+          "row": 7,
+          "col": 2,
+          "box": [
+            1031,
+            2780,
+            1259,
+            3008
+          ]
+        },
+        {
+          "sample_index": 189,
+          "char": "n",
+          "char_code": 110,
+          "class_id": 39,
+          "repetition": 3,
+          "split": "train",
+          "row": 7,
+          "col": 3,
+          "box": [
+            1291,
+            2780,
+            1519,
+            3008
+          ]
+        },
+        {
+          "sample_index": 190,
+          "char": "o",
+          "char_code": 111,
+          "class_id": 40,
+          "repetition": 3,
+          "split": "train",
+          "row": 7,
+          "col": 4,
+          "box": [
+            1551,
+            2780,
+            1779,
+            3008
+          ]
+        },
+        {
+          "sample_index": 191,
+          "char": "p",
+          "char_code": 112,
+          "class_id": 41,
+          "repetition": 3,
+          "split": "train",
+          "row": 7,
+          "col": 5,
+          "box": [
+            1811,
+            2780,
+            2039,
+            3008
+          ]
+        }
+      ]
+    },
+    {
+      "page_index": 5,
+      "image": "plantilla_hoja_05.png",
+      "cells": [
+        {
+          "sample_index": 192,
+          "char": "q",
+          "char_code": 113,
+          "class_id": 42,
+          "repetition": 3,
+          "split": "train",
+          "row": 0,
+          "col": 0,
+          "box": [
+            511,
+            386,
+            739,
+            614
+          ]
+        },
+        {
+          "sample_index": 193,
+          "char": "r",
+          "char_code": 114,
+          "class_id": 43,
+          "repetition": 3,
+          "split": "train",
+          "row": 0,
+          "col": 1,
+          "box": [
+            771,
+            386,
+            999,
+            614
+          ]
+        },
+        {
+          "sample_index": 194,
+          "char": "s",
+          "char_code": 115,
+          "class_id": 44,
+          "repetition": 3,
+          "split": "train",
+          "row": 0,
+          "col": 2,
+          "box": [
+            1031,
+            386,
+            1259,
+            614
+          ]
+        },
+        {
+          "sample_index": 195,
+          "char": "t",
+          "char_code": 116,
+          "class_id": 45,
+          "repetition": 3,
+          "split": "train",
+          "row": 0,
+          "col": 3,
+          "box": [
+            1291,
+            386,
+            1519,
+            614
+          ]
+        },
+        {
+          "sample_index": 196,
+          "char": "u",
+          "char_code": 117,
+          "class_id": 46,
+          "repetition": 3,
+          "split": "train",
+          "row": 0,
+          "col": 4,
+          "box": [
+            1551,
+            386,
+            1779,
+            614
+          ]
+        },
+        {
+          "sample_index": 197,
+          "char": "v",
+          "char_code": 118,
+          "class_id": 47,
+          "repetition": 3,
+          "split": "train",
+          "row": 0,
+          "col": 5,
+          "box": [
+            1811,
+            386,
+            2039,
+            614
+          ]
+        },
+        {
+          "sample_index": 198,
+          "char": "w",
+          "char_code": 119,
+          "class_id": 48,
+          "repetition": 3,
+          "split": "train",
+          "row": 1,
+          "col": 0,
+          "box": [
+            511,
+            728,
+            739,
+            956
+          ]
+        },
+        {
+          "sample_index": 199,
+          "char": "x",
+          "char_code": 120,
+          "class_id": 49,
+          "repetition": 3,
+          "split": "train",
+          "row": 1,
+          "col": 1,
+          "box": [
+            771,
+            728,
+            999,
+            956
+          ]
+        },
+        {
+          "sample_index": 200,
+          "char": "y",
+          "char_code": 121,
+          "class_id": 50,
+          "repetition": 3,
+          "split": "train",
+          "row": 1,
+          "col": 2,
+          "box": [
+            1031,
+            728,
+            1259,
+            956
+          ]
+        },
+        {
+          "sample_index": 201,
+          "char": "z",
+          "char_code": 122,
+          "class_id": 51,
+          "repetition": 3,
+          "split": "test_unseen",
+          "row": 1,
+          "col": 3,
+          "box": [
+            1291,
+            728,
+            1519,
+            956
+          ]
+        },
+        {
+          "sample_index": 202,
+          "char": "0",
+          "char_code": 48,
+          "class_id": 52,
+          "repetition": 3,
+          "split": "train",
+          "row": 1,
+          "col": 4,
+          "box": [
+            1551,
+            728,
+            1779,
+            956
+          ]
+        },
+        {
+          "sample_index": 203,
+          "char": "1",
+          "char_code": 49,
+          "class_id": 53,
+          "repetition": 3,
+          "split": "train",
+          "row": 1,
+          "col": 5,
+          "box": [
+            1811,
+            728,
+            2039,
+            956
+          ]
+        },
+        {
+          "sample_index": 204,
+          "char": "2",
+          "char_code": 50,
+          "class_id": 54,
+          "repetition": 3,
+          "split": "train",
+          "row": 2,
+          "col": 0,
+          "box": [
+            511,
+            1070,
+            739,
+            1298
+          ]
+        },
+        {
+          "sample_index": 205,
+          "char": "3",
+          "char_code": 51,
+          "class_id": 55,
+          "repetition": 3,
+          "split": "train",
+          "row": 2,
+          "col": 1,
+          "box": [
+            771,
+            1070,
+            999,
+            1298
+          ]
+        },
+        {
+          "sample_index": 206,
+          "char": "4",
+          "char_code": 52,
+          "class_id": 56,
+          "repetition": 3,
+          "split": "test_unseen",
+          "row": 2,
+          "col": 2,
+          "box": [
+            1031,
+            1070,
+            1259,
+            1298
+          ]
+        },
+        {
+          "sample_index": 207,
+          "char": "5",
+          "char_code": 53,
+          "class_id": 57,
+          "repetition": 3,
+          "split": "train",
+          "row": 2,
+          "col": 3,
+          "box": [
+            1291,
+            1070,
+            1519,
+            1298
+          ]
+        },
+        {
+          "sample_index": 208,
+          "char": "6",
+          "char_code": 54,
+          "class_id": 58,
+          "repetition": 3,
+          "split": "train",
+          "row": 2,
+          "col": 4,
+          "box": [
+            1551,
+            1070,
+            1779,
+            1298
+          ]
+        },
+        {
+          "sample_index": 209,
+          "char": "7",
+          "char_code": 55,
+          "class_id": 59,
+          "repetition": 3,
+          "split": "train",
+          "row": 2,
+          "col": 5,
+          "box": [
+            1811,
+            1070,
+            2039,
+            1298
+          ]
+        },
+        {
+          "sample_index": 210,
+          "char": "8",
+          "char_code": 56,
+          "class_id": 60,
+          "repetition": 3,
+          "split": "test_unseen",
+          "row": 3,
+          "col": 0,
+          "box": [
+            511,
+            1412,
+            739,
+            1640
+          ]
+        },
+        {
+          "sample_index": 211,
+          "char": "9",
+          "char_code": 57,
+          "class_id": 61,
+          "repetition": 3,
+          "split": "train",
+          "row": 3,
+          "col": 1,
+          "box": [
+            771,
+            1412,
+            999,
+            1640
+          ]
+        },
+        {
+          "sample_index": 212,
+          "char": ".",
+          "char_code": 46,
+          "class_id": 62,
+          "repetition": 3,
+          "split": "train",
+          "row": 3,
+          "col": 2,
+          "box": [
+            1031,
+            1412,
+            1259,
+            1640
+          ]
+        },
+        {
+          "sample_index": 213,
+          "char": ",",
+          "char_code": 44,
+          "class_id": 63,
+          "repetition": 3,
+          "split": "train",
+          "row": 3,
+          "col": 3,
+          "box": [
+            1291,
+            1412,
+            1519,
+            1640
+          ]
+        },
+        {
+          "sample_index": 214,
+          "char": "!",
+          "char_code": 33,
+          "class_id": 64,
+          "repetition": 3,
+          "split": "train",
+          "row": 3,
+          "col": 4,
+          "box": [
+            1551,
+            1412,
+            1779,
+            1640
+          ]
+        },
+        {
+          "sample_index": 215,
+          "char": "?",
+          "char_code": 63,
+          "class_id": 65,
+          "repetition": 3,
+          "split": "test_unseen",
+          "row": 3,
+          "col": 5,
+          "box": [
+            1811,
+            1412,
+            2039,
+            1640
+          ]
+        },
+        {
+          "sample_index": 216,
+          "char": "(",
+          "char_code": 40,
+          "class_id": 66,
+          "repetition": 3,
+          "split": "train",
+          "row": 4,
+          "col": 0,
+          "box": [
+            511,
+            1754,
+            739,
+            1982
+          ]
+        },
+        {
+          "sample_index": 217,
+          "char": ")",
+          "char_code": 41,
+          "class_id": 67,
+          "repetition": 3,
+          "split": "test_unseen",
+          "row": 4,
+          "col": 1,
+          "box": [
+            771,
+            1754,
+            999,
+            1982
+          ]
+        },
+        {
+          "sample_index": 218,
+          "char": "+",
+          "char_code": 43,
+          "class_id": 68,
+          "repetition": 3,
+          "split": "test_unseen",
+          "row": 4,
+          "col": 2,
+          "box": [
+            1031,
+            1754,
+            1259,
+            1982
+          ]
+        },
+        {
+          "sample_index": 219,
+          "char": "-",
+          "char_code": 45,
+          "class_id": 69,
+          "repetition": 3,
+          "split": "train",
+          "row": 4,
+          "col": 3,
+          "box": [
+            1291,
+            1754,
+            1519,
+            1982
+          ]
+        },
+        {
+          "sample_index": 220,
+          "char": "=",
+          "char_code": 61,
+          "class_id": 70,
+          "repetition": 3,
+          "split": "train",
+          "row": 4,
+          "col": 4,
+          "box": [
+            1551,
+            1754,
+            1779,
+            1982
+          ]
+        },
+        {
+          "sample_index": 221,
+          "char": "/",
+          "char_code": 47,
+          "class_id": 71,
+          "repetition": 3,
+          "split": "train",
+          "row": 4,
+          "col": 5,
+          "box": [
+            1811,
+            1754,
+            2039,
+            1982
+          ]
+        },
+        {
+          "sample_index": 222,
+          "char": ":",
+          "char_code": 58,
+          "class_id": 72,
+          "repetition": 3,
+          "split": "train",
+          "row": 5,
+          "col": 0,
+          "box": [
+            511,
+            2096,
+            739,
+            2324
+          ]
+        },
+        {
+          "sample_index": 223,
+          "char": ";",
+          "char_code": 59,
+          "class_id": 73,
+          "repetition": 3,
+          "split": "test_unseen",
+          "row": 5,
+          "col": 1,
+          "box": [
+            771,
+            2096,
+            999,
+            2324
+          ]
+        },
+        {
+          "sample_index": 224,
+          "char": "&",
+          "char_code": 38,
+          "class_id": 74,
+          "repetition": 3,
+          "split": "test_unseen",
+          "row": 5,
+          "col": 2,
+          "box": [
+            1031,
+            2096,
+            1259,
+            2324
+          ]
+        },
+        {
+          "sample_index": 225,
+          "char": "A",
+          "char_code": 65,
+          "class_id": 0,
+          "repetition": 4,
+          "split": "val",
+          "row": 5,
+          "col": 3,
+          "box": [
+            1291,
+            2096,
+            1519,
+            2324
+          ]
+        },
+        {
+          "sample_index": 226,
+          "char": "B",
+          "char_code": 66,
+          "class_id": 1,
+          "repetition": 4,
+          "split": "val",
+          "row": 5,
+          "col": 4,
+          "box": [
+            1551,
+            2096,
+            1779,
+            2324
+          ]
+        },
+        {
+          "sample_index": 227,
+          "char": "C",
+          "char_code": 67,
+          "class_id": 2,
+          "repetition": 4,
+          "split": "val",
+          "row": 5,
+          "col": 5,
+          "box": [
+            1811,
+            2096,
+            2039,
+            2324
+          ]
+        },
+        {
+          "sample_index": 228,
+          "char": "D",
+          "char_code": 68,
+          "class_id": 3,
+          "repetition": 4,
+          "split": "val",
+          "row": 6,
+          "col": 0,
+          "box": [
+            511,
+            2438,
+            739,
+            2666
+          ]
+        },
+        {
+          "sample_index": 229,
+          "char": "E",
+          "char_code": 69,
+          "class_id": 4,
+          "repetition": 4,
+          "split": "val",
+          "row": 6,
+          "col": 1,
+          "box": [
+            771,
+            2438,
+            999,
+            2666
+          ]
+        },
+        {
+          "sample_index": 230,
+          "char": "F",
+          "char_code": 70,
+          "class_id": 5,
+          "repetition": 4,
+          "split": "val",
+          "row": 6,
+          "col": 2,
+          "box": [
+            1031,
+            2438,
+            1259,
+            2666
+          ]
+        },
+        {
+          "sample_index": 231,
+          "char": "G",
+          "char_code": 71,
+          "class_id": 6,
+          "repetition": 4,
+          "split": "test_unseen",
+          "row": 6,
+          "col": 3,
+          "box": [
+            1291,
+            2438,
+            1519,
+            2666
+          ]
+        },
+        {
+          "sample_index": 232,
+          "char": "H",
+          "char_code": 72,
+          "class_id": 7,
+          "repetition": 4,
+          "split": "val",
+          "row": 6,
+          "col": 4,
+          "box": [
+            1551,
+            2438,
+            1779,
+            2666
+          ]
+        },
+        {
+          "sample_index": 233,
+          "char": "I",
+          "char_code": 73,
+          "class_id": 8,
+          "repetition": 4,
+          "split": "val",
+          "row": 6,
+          "col": 5,
+          "box": [
+            1811,
+            2438,
+            2039,
+            2666
+          ]
+        },
+        {
+          "sample_index": 234,
+          "char": "J",
+          "char_code": 74,
+          "class_id": 9,
+          "repetition": 4,
+          "split": "val",
+          "row": 7,
+          "col": 0,
+          "box": [
+            511,
+            2780,
+            739,
+            3008
+          ]
+        },
+        {
+          "sample_index": 235,
+          "char": "K",
+          "char_code": 75,
+          "class_id": 10,
+          "repetition": 4,
+          "split": "val",
+          "row": 7,
+          "col": 1,
+          "box": [
+            771,
+            2780,
+            999,
+            3008
+          ]
+        },
+        {
+          "sample_index": 236,
+          "char": "L",
+          "char_code": 76,
+          "class_id": 11,
+          "repetition": 4,
+          "split": "val",
+          "row": 7,
+          "col": 2,
+          "box": [
+            1031,
+            2780,
+            1259,
+            3008
+          ]
+        },
+        {
+          "sample_index": 237,
+          "char": "M",
+          "char_code": 77,
+          "class_id": 12,
+          "repetition": 4,
+          "split": "val",
+          "row": 7,
+          "col": 3,
+          "box": [
+            1291,
+            2780,
+            1519,
+            3008
+          ]
+        },
+        {
+          "sample_index": 238,
+          "char": "N",
+          "char_code": 78,
+          "class_id": 13,
+          "repetition": 4,
+          "split": "val",
+          "row": 7,
+          "col": 4,
+          "box": [
+            1551,
+            2780,
+            1779,
+            3008
+          ]
+        },
+        {
+          "sample_index": 239,
+          "char": "O",
+          "char_code": 79,
+          "class_id": 14,
+          "repetition": 4,
+          "split": "val",
+          "row": 7,
+          "col": 5,
+          "box": [
+            1811,
+            2780,
+            2039,
+            3008
+          ]
+        }
+      ]
+    },
+    {
+      "page_index": 6,
+      "image": "plantilla_hoja_06.png",
+      "cells": [
+        {
+          "sample_index": 240,
+          "char": "P",
+          "char_code": 80,
+          "class_id": 15,
+          "repetition": 4,
+          "split": "val",
+          "row": 0,
+          "col": 0,
+          "box": [
+            511,
+            386,
+            739,
+            614
+          ]
+        },
+        {
+          "sample_index": 241,
+          "char": "Q",
+          "char_code": 81,
+          "class_id": 16,
+          "repetition": 4,
+          "split": "test_unseen",
+          "row": 0,
+          "col": 1,
+          "box": [
+            771,
+            386,
+            999,
+            614
+          ]
+        },
+        {
+          "sample_index": 242,
+          "char": "R",
+          "char_code": 82,
+          "class_id": 17,
+          "repetition": 4,
+          "split": "val",
+          "row": 0,
+          "col": 2,
+          "box": [
+            1031,
+            386,
+            1259,
+            614
+          ]
+        },
+        {
+          "sample_index": 243,
+          "char": "S",
+          "char_code": 83,
+          "class_id": 18,
+          "repetition": 4,
+          "split": "val",
+          "row": 0,
+          "col": 3,
+          "box": [
+            1291,
+            386,
+            1519,
+            614
+          ]
+        },
+        {
+          "sample_index": 244,
+          "char": "T",
+          "char_code": 84,
+          "class_id": 19,
+          "repetition": 4,
+          "split": "val",
+          "row": 0,
+          "col": 4,
+          "box": [
+            1551,
+            386,
+            1779,
+            614
+          ]
+        },
+        {
+          "sample_index": 245,
+          "char": "U",
+          "char_code": 85,
+          "class_id": 20,
+          "repetition": 4,
+          "split": "val",
+          "row": 0,
+          "col": 5,
+          "box": [
+            1811,
+            386,
+            2039,
+            614
+          ]
+        },
+        {
+          "sample_index": 246,
+          "char": "V",
+          "char_code": 86,
+          "class_id": 21,
+          "repetition": 4,
+          "split": "val",
+          "row": 1,
+          "col": 0,
+          "box": [
+            511,
+            728,
+            739,
+            956
+          ]
+        },
+        {
+          "sample_index": 247,
+          "char": "W",
+          "char_code": 87,
+          "class_id": 22,
+          "repetition": 4,
+          "split": "val",
+          "row": 1,
+          "col": 1,
+          "box": [
+            771,
+            728,
+            999,
+            956
+          ]
+        },
+        {
+          "sample_index": 248,
+          "char": "X",
+          "char_code": 88,
+          "class_id": 23,
+          "repetition": 4,
+          "split": "val",
+          "row": 1,
+          "col": 2,
+          "box": [
+            1031,
+            728,
+            1259,
+            956
+          ]
+        },
+        {
+          "sample_index": 249,
+          "char": "Y",
+          "char_code": 89,
+          "class_id": 24,
+          "repetition": 4,
+          "split": "val",
+          "row": 1,
+          "col": 3,
+          "box": [
+            1291,
+            728,
+            1519,
+            956
+          ]
+        },
+        {
+          "sample_index": 250,
+          "char": "Z",
+          "char_code": 90,
+          "class_id": 25,
+          "repetition": 4,
+          "split": "val",
+          "row": 1,
+          "col": 4,
+          "box": [
+            1551,
+            728,
+            1779,
+            956
+          ]
+        },
+        {
+          "sample_index": 251,
+          "char": "a",
+          "char_code": 97,
+          "class_id": 26,
+          "repetition": 4,
+          "split": "val",
+          "row": 1,
+          "col": 5,
+          "box": [
+            1811,
+            728,
+            2039,
+            956
+          ]
+        },
+        {
+          "sample_index": 252,
+          "char": "b",
+          "char_code": 98,
+          "class_id": 27,
+          "repetition": 4,
+          "split": "val",
+          "row": 2,
+          "col": 0,
+          "box": [
+            511,
+            1070,
+            739,
+            1298
+          ]
+        },
+        {
+          "sample_index": 253,
+          "char": "c",
+          "char_code": 99,
+          "class_id": 28,
+          "repetition": 4,
+          "split": "val",
+          "row": 2,
+          "col": 1,
+          "box": [
+            771,
+            1070,
+            999,
+            1298
+          ]
+        },
+        {
+          "sample_index": 254,
+          "char": "d",
+          "char_code": 100,
+          "class_id": 29,
+          "repetition": 4,
+          "split": "val",
+          "row": 2,
+          "col": 2,
+          "box": [
+            1031,
+            1070,
+            1259,
+            1298
+          ]
+        },
+        {
+          "sample_index": 255,
+          "char": "e",
+          "char_code": 101,
+          "class_id": 30,
+          "repetition": 4,
+          "split": "val",
+          "row": 2,
+          "col": 3,
+          "box": [
+            1291,
+            1070,
+            1519,
+            1298
+          ]
+        },
+        {
+          "sample_index": 256,
+          "char": "f",
+          "char_code": 102,
+          "class_id": 31,
+          "repetition": 4,
+          "split": "val",
+          "row": 2,
+          "col": 4,
+          "box": [
+            1551,
+            1070,
+            1779,
+            1298
+          ]
+        },
+        {
+          "sample_index": 257,
+          "char": "g",
+          "char_code": 103,
+          "class_id": 32,
+          "repetition": 4,
+          "split": "val",
+          "row": 2,
+          "col": 5,
+          "box": [
+            1811,
+            1070,
+            2039,
+            1298
+          ]
+        },
+        {
+          "sample_index": 258,
+          "char": "h",
+          "char_code": 104,
+          "class_id": 33,
+          "repetition": 4,
+          "split": "val",
+          "row": 3,
+          "col": 0,
+          "box": [
+            511,
+            1412,
+            739,
+            1640
+          ]
+        },
+        {
+          "sample_index": 259,
+          "char": "i",
+          "char_code": 105,
+          "class_id": 34,
+          "repetition": 4,
+          "split": "val",
+          "row": 3,
+          "col": 1,
+          "box": [
+            771,
+            1412,
+            999,
+            1640
+          ]
+        },
+        {
+          "sample_index": 260,
+          "char": "j",
+          "char_code": 106,
+          "class_id": 35,
+          "repetition": 4,
+          "split": "val",
+          "row": 3,
+          "col": 2,
+          "box": [
+            1031,
+            1412,
+            1259,
+            1640
+          ]
+        },
+        {
+          "sample_index": 261,
+          "char": "k",
+          "char_code": 107,
+          "class_id": 36,
+          "repetition": 4,
+          "split": "test_unseen",
+          "row": 3,
+          "col": 3,
+          "box": [
+            1291,
+            1412,
+            1519,
+            1640
+          ]
+        },
+        {
+          "sample_index": 262,
+          "char": "l",
+          "char_code": 108,
+          "class_id": 37,
+          "repetition": 4,
+          "split": "val",
+          "row": 3,
+          "col": 4,
+          "box": [
+            1551,
+            1412,
+            1779,
+            1640
+          ]
+        },
+        {
+          "sample_index": 263,
+          "char": "m",
+          "char_code": 109,
+          "class_id": 38,
+          "repetition": 4,
+          "split": "val",
+          "row": 3,
+          "col": 5,
+          "box": [
+            1811,
+            1412,
+            2039,
+            1640
+          ]
+        },
+        {
+          "sample_index": 264,
+          "char": "n",
+          "char_code": 110,
+          "class_id": 39,
+          "repetition": 4,
+          "split": "val",
+          "row": 4,
+          "col": 0,
+          "box": [
+            511,
+            1754,
+            739,
+            1982
+          ]
+        },
+        {
+          "sample_index": 265,
+          "char": "o",
+          "char_code": 111,
+          "class_id": 40,
+          "repetition": 4,
+          "split": "val",
+          "row": 4,
+          "col": 1,
+          "box": [
+            771,
+            1754,
+            999,
+            1982
+          ]
+        },
+        {
+          "sample_index": 266,
+          "char": "p",
+          "char_code": 112,
+          "class_id": 41,
+          "repetition": 4,
+          "split": "val",
+          "row": 4,
+          "col": 2,
+          "box": [
+            1031,
+            1754,
+            1259,
+            1982
+          ]
+        },
+        {
+          "sample_index": 267,
+          "char": "q",
+          "char_code": 113,
+          "class_id": 42,
+          "repetition": 4,
+          "split": "val",
+          "row": 4,
+          "col": 3,
+          "box": [
+            1291,
+            1754,
+            1519,
+            1982
+          ]
+        },
+        {
+          "sample_index": 268,
+          "char": "r",
+          "char_code": 114,
+          "class_id": 43,
+          "repetition": 4,
+          "split": "val",
+          "row": 4,
+          "col": 4,
+          "box": [
+            1551,
+            1754,
+            1779,
+            1982
+          ]
+        },
+        {
+          "sample_index": 269,
+          "char": "s",
+          "char_code": 115,
+          "class_id": 44,
+          "repetition": 4,
+          "split": "val",
+          "row": 4,
+          "col": 5,
+          "box": [
+            1811,
+            1754,
+            2039,
+            1982
+          ]
+        },
+        {
+          "sample_index": 270,
+          "char": "t",
+          "char_code": 116,
+          "class_id": 45,
+          "repetition": 4,
+          "split": "val",
+          "row": 5,
+          "col": 0,
+          "box": [
+            511,
+            2096,
+            739,
+            2324
+          ]
+        },
+        {
+          "sample_index": 271,
+          "char": "u",
+          "char_code": 117,
+          "class_id": 46,
+          "repetition": 4,
+          "split": "val",
+          "row": 5,
+          "col": 1,
+          "box": [
+            771,
+            2096,
+            999,
+            2324
+          ]
+        },
+        {
+          "sample_index": 272,
+          "char": "v",
+          "char_code": 118,
+          "class_id": 47,
+          "repetition": 4,
+          "split": "val",
+          "row": 5,
+          "col": 2,
+          "box": [
+            1031,
+            2096,
+            1259,
+            2324
+          ]
+        },
+        {
+          "sample_index": 273,
+          "char": "w",
+          "char_code": 119,
+          "class_id": 48,
+          "repetition": 4,
+          "split": "val",
+          "row": 5,
+          "col": 3,
+          "box": [
+            1291,
+            2096,
+            1519,
+            2324
+          ]
+        },
+        {
+          "sample_index": 274,
+          "char": "x",
+          "char_code": 120,
+          "class_id": 49,
+          "repetition": 4,
+          "split": "val",
+          "row": 5,
+          "col": 4,
+          "box": [
+            1551,
+            2096,
+            1779,
+            2324
+          ]
+        },
+        {
+          "sample_index": 275,
+          "char": "y",
+          "char_code": 121,
+          "class_id": 50,
+          "repetition": 4,
+          "split": "val",
+          "row": 5,
+          "col": 5,
+          "box": [
+            1811,
+            2096,
+            2039,
+            2324
+          ]
+        },
+        {
+          "sample_index": 276,
+          "char": "z",
+          "char_code": 122,
+          "class_id": 51,
+          "repetition": 4,
+          "split": "test_unseen",
+          "row": 6,
+          "col": 0,
+          "box": [
+            511,
+            2438,
+            739,
+            2666
+          ]
+        },
+        {
+          "sample_index": 277,
+          "char": "0",
+          "char_code": 48,
+          "class_id": 52,
+          "repetition": 4,
+          "split": "val",
+          "row": 6,
+          "col": 1,
+          "box": [
+            771,
+            2438,
+            999,
+            2666
+          ]
+        },
+        {
+          "sample_index": 278,
+          "char": "1",
+          "char_code": 49,
+          "class_id": 53,
+          "repetition": 4,
+          "split": "val",
+          "row": 6,
+          "col": 2,
+          "box": [
+            1031,
+            2438,
+            1259,
+            2666
+          ]
+        },
+        {
+          "sample_index": 279,
+          "char": "2",
+          "char_code": 50,
+          "class_id": 54,
+          "repetition": 4,
+          "split": "val",
+          "row": 6,
+          "col": 3,
+          "box": [
+            1291,
+            2438,
+            1519,
+            2666
+          ]
+        },
+        {
+          "sample_index": 280,
+          "char": "3",
+          "char_code": 51,
+          "class_id": 55,
+          "repetition": 4,
+          "split": "val",
+          "row": 6,
+          "col": 4,
+          "box": [
+            1551,
+            2438,
+            1779,
+            2666
+          ]
+        },
+        {
+          "sample_index": 281,
+          "char": "4",
+          "char_code": 52,
+          "class_id": 56,
+          "repetition": 4,
+          "split": "test_unseen",
+          "row": 6,
+          "col": 5,
+          "box": [
+            1811,
+            2438,
+            2039,
+            2666
+          ]
+        },
+        {
+          "sample_index": 282,
+          "char": "5",
+          "char_code": 53,
+          "class_id": 57,
+          "repetition": 4,
+          "split": "val",
+          "row": 7,
+          "col": 0,
+          "box": [
+            511,
+            2780,
+            739,
+            3008
+          ]
+        },
+        {
+          "sample_index": 283,
+          "char": "6",
+          "char_code": 54,
+          "class_id": 58,
+          "repetition": 4,
+          "split": "val",
+          "row": 7,
+          "col": 1,
+          "box": [
+            771,
+            2780,
+            999,
+            3008
+          ]
+        },
+        {
+          "sample_index": 284,
+          "char": "7",
+          "char_code": 55,
+          "class_id": 59,
+          "repetition": 4,
+          "split": "val",
+          "row": 7,
+          "col": 2,
+          "box": [
+            1031,
+            2780,
+            1259,
+            3008
+          ]
+        },
+        {
+          "sample_index": 285,
+          "char": "8",
+          "char_code": 56,
+          "class_id": 60,
+          "repetition": 4,
+          "split": "test_unseen",
+          "row": 7,
+          "col": 3,
+          "box": [
+            1291,
+            2780,
+            1519,
+            3008
+          ]
+        },
+        {
+          "sample_index": 286,
+          "char": "9",
+          "char_code": 57,
+          "class_id": 61,
+          "repetition": 4,
+          "split": "val",
+          "row": 7,
+          "col": 4,
+          "box": [
+            1551,
+            2780,
+            1779,
+            3008
+          ]
+        },
+        {
+          "sample_index": 287,
+          "char": ".",
+          "char_code": 46,
+          "class_id": 62,
+          "repetition": 4,
+          "split": "val",
+          "row": 7,
+          "col": 5,
+          "box": [
+            1811,
+            2780,
+            2039,
+            3008
+          ]
+        }
+      ]
+    },
+    {
+      "page_index": 7,
+      "image": "plantilla_hoja_07.png",
+      "cells": [
+        {
+          "sample_index": 288,
+          "char": ",",
+          "char_code": 44,
+          "class_id": 63,
+          "repetition": 4,
+          "split": "val",
+          "row": 0,
+          "col": 0,
+          "box": [
+            511,
+            386,
+            739,
+            614
+          ]
+        },
+        {
+          "sample_index": 289,
+          "char": "!",
+          "char_code": 33,
+          "class_id": 64,
+          "repetition": 4,
+          "split": "val",
+          "row": 0,
+          "col": 1,
+          "box": [
+            771,
+            386,
+            999,
+            614
+          ]
+        },
+        {
+          "sample_index": 290,
+          "char": "?",
+          "char_code": 63,
+          "class_id": 65,
+          "repetition": 4,
+          "split": "test_unseen",
+          "row": 0,
+          "col": 2,
+          "box": [
+            1031,
+            386,
+            1259,
+            614
+          ]
+        },
+        {
+          "sample_index": 291,
+          "char": "(",
+          "char_code": 40,
+          "class_id": 66,
+          "repetition": 4,
+          "split": "val",
+          "row": 0,
+          "col": 3,
+          "box": [
+            1291,
+            386,
+            1519,
+            614
+          ]
+        },
+        {
+          "sample_index": 292,
+          "char": ")",
+          "char_code": 41,
+          "class_id": 67,
+          "repetition": 4,
+          "split": "test_unseen",
+          "row": 0,
+          "col": 4,
+          "box": [
+            1551,
+            386,
+            1779,
+            614
+          ]
+        },
+        {
+          "sample_index": 293,
+          "char": "+",
+          "char_code": 43,
+          "class_id": 68,
+          "repetition": 4,
+          "split": "test_unseen",
+          "row": 0,
+          "col": 5,
+          "box": [
+            1811,
+            386,
+            2039,
+            614
+          ]
+        },
+        {
+          "sample_index": 294,
+          "char": "-",
+          "char_code": 45,
+          "class_id": 69,
+          "repetition": 4,
+          "split": "val",
+          "row": 1,
+          "col": 0,
+          "box": [
+            511,
+            728,
+            739,
+            956
+          ]
+        },
+        {
+          "sample_index": 295,
+          "char": "=",
+          "char_code": 61,
+          "class_id": 70,
+          "repetition": 4,
+          "split": "val",
+          "row": 1,
+          "col": 1,
+          "box": [
+            771,
+            728,
+            999,
+            956
+          ]
+        },
+        {
+          "sample_index": 296,
+          "char": "/",
+          "char_code": 47,
+          "class_id": 71,
+          "repetition": 4,
+          "split": "val",
+          "row": 1,
+          "col": 2,
+          "box": [
+            1031,
+            728,
+            1259,
+            956
+          ]
+        },
+        {
+          "sample_index": 297,
+          "char": ":",
+          "char_code": 58,
+          "class_id": 72,
+          "repetition": 4,
+          "split": "val",
+          "row": 1,
+          "col": 3,
+          "box": [
+            1291,
+            728,
+            1519,
+            956
+          ]
+        },
+        {
+          "sample_index": 298,
+          "char": ";",
+          "char_code": 59,
+          "class_id": 73,
+          "repetition": 4,
+          "split": "test_unseen",
+          "row": 1,
+          "col": 4,
+          "box": [
+            1551,
+            728,
+            1779,
+            956
+          ]
+        },
+        {
+          "sample_index": 299,
+          "char": "&",
+          "char_code": 38,
+          "class_id": 74,
+          "repetition": 4,
+          "split": "test_unseen",
+          "row": 1,
+          "col": 5,
+          "box": [
+            1811,
+            728,
+            2039,
+            956
+          ]
+        }
+      ]
+    }
+  ]
+}
