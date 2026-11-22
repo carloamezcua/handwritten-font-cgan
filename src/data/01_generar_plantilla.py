@@ -18,14 +18,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 # Charset de 75 símbolos
-UPPERCASE = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-LOWERCASE = list("abcdefghijklmnopqrstuvwxyz")
-DIGITS = list("0123456789")
-PUNCTUATION = list(".,!?()+-=/:;&")
-CHARSET = UPPERCASE + LOWERCASE + DIGITS + PUNCTUATION
-
-# ~15% de símbolos reservados para evaluación Zero-Shot (nunca vistos en entrenamiento)
-TEST_UNSEEN_CHARS = set("GQkz48?&+;)")
+from src.config import CHARSET, TEST_UNSEEN_CHARS
 
 # Geometría de página tamaño Carta a 300 DPI
 PAGE_W = 2550
