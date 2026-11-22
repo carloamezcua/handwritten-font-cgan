@@ -36,8 +36,9 @@ checkpoints/
 *.ts
 *.torchscript
 
-# Salidas pesadas y fuentes compiladas
+# Salidas pesadas, documentos exportados y fuentes compiladas
 results/
+docs/*.pdf
 *.ttf
 *.otf
 
