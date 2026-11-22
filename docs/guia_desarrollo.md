@@ -87,7 +87,7 @@ final-project_CV/
 ```powershell
 python -c "from src.config import CHARSET, TEST_UNSEEN_CHARS; assert len(CHARSET)==75 and len(TEST_UNSEEN_CHARS)==11; print('Config OK')"
 ```
-> Hacer `git commit -m "chore: add base config, utils and project structure"`.
+> Hacer `git commit -m "chore: agregar configuración base, utilidades y estructura del proyecto"`.
 
 ---
 
@@ -120,7 +120,7 @@ python -c "from src.config import CHARSET, TEST_UNSEEN_CHARS; assert len(CHARSET
 3. **Prueba simulada del extractor OpenCV:** tomar `plantilla_hoja_01.png`, dibujar letras sintéticas dentro de 6 celdas, rotarla 5° con perspectiva simulada y pasarla por `02_extraer_recortes.py`; confirmar que los 6 recortes salen alineados y limpios.
 4. **Notebook EDA inicial (`notebooks/01_eda_datos.ipynb`):** graficar distribución de clases y verificar balance (Rúbrica B4).
 
-> Hacer `git commit -m "feat(data): add synthetic generator, OpenCV extractor, OOD set and Dataset"`.
+> Hacer `git commit -m "feat(data): agregar generador sintético, extractor OpenCV, set OOD y Dataset"`.
 
 ---
 
@@ -140,7 +140,7 @@ python -c "from src.config import CHARSET, TEST_UNSEEN_CHARS; assert len(CHARSET
 - [ ] Correr un script de prueba que pase un tensor aleatorio `[4, 1, 128, 128]` por `UNetGenerator`, `PatchGANDiscriminator`, `ResNet-18` y `EfficientNet-B0`, verifique *shapes* exactos y ejecute 1 paso de `loss.backward()` sin NaNs.
 - [ ] Correr **2 épocas de prueba** sobre un subconjunto de 32 imágenes sintéticas en local (CPU) para confirmar que el loop de entrenamiento guarda checkpoints y curvas de pérdida sin errores.
 
-> Hacer `git commit -m "feat(models): implement Pix2Pix U-Net/PatchGAN and ResNet18/EfficientNetB0 judges"`.
+> Hacer `git commit -m "feat(models): implementar Pix2Pix U-Net/PatchGAN y jueces ResNet-18/EfficientNet-B0"`.
 
 ---
 
@@ -184,7 +184,7 @@ python -c "from src.config import CHARSET, TEST_UNSEEN_CHARS; assert len(CHARSET
 - [ ] La demo arranca en **1 solo comando** (`python app/demo_realtime.py`), corre sin caerse al cambiar de modo (`M`), cambiar umbral (`+`/`-`) o tapar la cámara, y marca **≥10 FPS** en pantalla.
 - [ ] Instalar el `.ttf` generado de prueba en Windows (o abrirlo en un visor de fuentes) y verificar que se puede escribir una frase legible.
 
-> Hacer `git commit -m "feat(deploy): add ONNX export, realtime OpenCV demo and TTF builder"`.
+> Hacer `git commit -m "feat(deploy): agregar exportación ONNX, demo OpenCV en tiempo real y constructor TTF"`.
 
 ---
 
