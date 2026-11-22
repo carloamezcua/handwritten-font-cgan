@@ -1,0 +1,23 @@
+# Core Deep Learning
+torch>=2.2.0
+torchvision>=0.17.0
+
+# Visión por computadora y gráficos
+opencv-python>=4.9.0
+pillow>=10.2.0
+matplotlib>=3.8.0
+seaborn>=0.13.0
+
+# Ciencia de datos y métricas
+numpy>=1.26.0
+pandas>=2.2.0
+scikit-learn>=1.4.0
+scipy>=1.12.0
+
+# Optimización e inferencia en tiempo real
+onnx>=1.15.0
+onnxruntime>=1.17.0
+
+# Exportación de tipografía (.ttf)
+fonttools>=4.49.0
+vtracer>=0.6.11

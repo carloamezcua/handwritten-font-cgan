@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+build/
+dist/
+*.egg-info/
+
+# Jupyter / Colab
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/
+
+# Datasets y artefactos pesados (no versionar en Git)
+data/raw_scans/
+data/real_pairs/
+data/synthetic_pairs/
+data/ood/
+data/templates/*.pdf
+data/templates/*.png
+data/fonts/*.ttf
+data/fonts/*.otf
+!data/README.md
+
+# Pesos y modelos exportados
+checkpoints/
+*.pt
+*.pth
+*.onnx
+*.onnx.data
+*.ts
+*.torchscript
+
+# Salidas pesadas y fuentes compiladas
+results/
+*.ttf
+*.otf
+
+# Agente local / IDE / OS
+.agents/
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
