@@ -21,3 +21,6 @@ onnxruntime>=1.17.0
 # Exportación de tipografía (.ttf)
 fonttools>=4.49.0
 vtracer>=0.6.11
+
+# Notebooks
+ipykernel>=6.29.0
