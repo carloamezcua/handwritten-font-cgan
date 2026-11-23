@@ -1,5 +1,10 @@
 """Captura guiada de glifos manuscritos con tableta Wacom (o mouse).
 
+Por defecto abre una interfaz local fluida en el navegador (Windows Ink +
+`getCoalescedEvents` + presión del lápiz + suavizado Bézier estilo OneNote, con
+grosor fino y tamaño de recuadro ajustable). También conserva `--opencv` como
+modo clásico de respaldo.
+
 Muestra carácter por carácter según `data/templates/template_layout.json` (300 muestras:
 75 símbolos × 4 repeticiones), guarda el progreso automáticamente en
 `data/raw_scans/_wacom_cells/` y compone cada glifo dentro de las 7 plantillas originales
@@ -9,19 +14,21 @@ Muestra carácter por carácter según `data/templates/template_layout.json` (30
 Así el pipeline completo de extracción OpenCV (`src.data.02_extraer_recortes`) funciona
 exactamente igual que con hojas impresas y escaneadas.
 
-Controles (teclado o clic/lápiz en los botones en pantalla):
+Controles:
     - Lápiz Wacom / clic izquierdo: dibujar en el lienzo.
     - Espacio / Enter / botón [Guardar y Sig.]: guarda el trazo y avanza al siguiente.
-    - Z / botón [Deshacer]: deshace el último trazo.
+    - Z / borrador del lápiz / clic derecho / botón [Deshacer]: deshace el último trazo.
     - R / C / botón [Limpiar]: borra el lienzo actual.
     - Flecha Izq / Backspace / botón [Anterior]: regresa al glifo anterior.
     - Flecha Der / botón [Saltar]: avanza sin modificar (útil al revisar glifos).
-    - + / - (o ] / [): ajusta el grosor del trazo (default 12 px en plantilla).
+    - + / -: ajusta el grosor del trazo (default 6.5 px en plantilla ≈ pluma 0.5 mm).
+    - [ / ]: reduce o agranda el tamaño del recuadro de dibujo en pantalla.
     - E: exporta en ese momento las 7 hojas rellenas a `data/raw_scans/`.
-    - ESC / Q / cerrar ventana: guarda progreso, exporta hojas rellenas y sale.
 
 Uso:
     python -m src.data.captura_wacom
+    python -m src.data.captura_wacom --brush 6.5 --canvas-size 320
+    python -m src.data.captura_wacom --opencv
     python -m src.data.captura_wacom --export-only
 """
 
@@ -42,6 +49,7 @@ import cv2
 import numpy as np
 
 from src.data.glyph_render import get_default_base_font_path, render_glyph
+from src.data.wacom_web_ui import run_web_capture
 
 WINDOW_NAME = "Captura Wacom — Plantillas Manuscritas (300 glifos)"
 
@@ -104,6 +112,28 @@ def load_layout(layout_path: Path) -> tuple[dict, list[dict]]:
     return layout, flat_cells
 
 
+def imread_unicode(path: Path, flags: int) -> np.ndarray | None:
+    """Lee una imagen soportando rutas Windows con acentos/Unicode (evita fallo de cv2.imread)."""
+    try:
+        data = np.fromfile(str(path), dtype=np.uint8)
+        if data.size == 0:
+            return None
+        return cv2.imdecode(data, flags)
+    except OSError:
+        return None
+
+
+def imwrite_unicode(path: Path, img: np.ndarray) -> bool:
+    """Escribe una imagen soportando rutas Windows con acentos/Unicode."""
+    ext = path.suffix or ".png"
+    ok, buf = cv2.imencode(ext, img)
+    if not ok:
+        return False
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(buf.tobytes())
+    return True
+
+
 def cell_path(cells_dir: Path, sample_index: int) -> Path:
     return cells_dir / f"cell_{sample_index:04d}.png"
 
@@ -129,7 +159,7 @@ def export_filled_templates(
         if not tpl_path.exists():
             raise FileNotFoundError(f"No se encontró la plantilla base: '{tpl_path}'.")
 
-        page_img = cv2.imread(str(tpl_path), cv2.IMREAD_COLOR)
+        page_img = imread_unicode(tpl_path, cv2.IMREAD_COLOR)
         if page_img is None:
             raise RuntimeError(f"No se pudo leer la plantilla: '{tpl_path}'.")
 
@@ -137,7 +167,7 @@ def export_filled_templates(
             cpath = cell_path(cells_dir, cell["sample_index"])
             if not cpath.exists():
                 continue
-            cell_gray = cv2.imread(str(cpath), cv2.IMREAD_GRAYSCALE)
+            cell_gray = imread_unicode(cpath, cv2.IMREAD_GRAYSCALE)
             if cell_gray is None:
                 continue
 
@@ -161,7 +191,7 @@ def export_filled_templates(
             total_placed += 1
 
         out_path = scans_dir / f"hoja_{page_idx:02d}.png"
-        cv2.imwrite(str(out_path), page_img)
+        imwrite_unicode(out_path, page_img)
         pages_written += 1
 
     return pages_written, total_placed
@@ -202,8 +232,8 @@ class WacomCaptureApp:
         self.win_w = self.canvas_x1 + PAD
         self.win_h = self.canvas_y1 + PAD + BUTTON_BAR_H + FOOTER_H
 
-        # Grosor en píxeles de la plantilla (228 px). Rango seguro para adaptiveThreshold(35): 6..20
-        self.brush_tpl_px = max(6, min(20, brush_tpl_px))
+        # Grosor en píxeles de la plantilla (228 px). Rango seguro para adaptiveThreshold(35): 4..20
+        self.brush_tpl_px = max(4, min(20, int(round(brush_tpl_px))))
 
         # Fuente base para renderizar el glifo de referencia
         self.base_font = get_default_base_font_path()
@@ -285,7 +315,7 @@ class WacomCaptureApp:
             if prev_cell["char"] == ch and prev_cell["repetition"] < cur_rep:
                 p = cell_path(self.cells_dir, prev_cell["sample_index"])
                 if p.exists():
-                    img = cv2.imread(str(p), cv2.IMREAD_GRAYSCALE)
+                    img = imread_unicode(p, cv2.IMREAD_GRAYSCALE)
                     if img is not None:
                         return img
         return None
@@ -297,7 +327,7 @@ class WacomCaptureApp:
         self.drawing = False
         self.prev_pt = None
         if p.exists():
-            saved = cv2.imread(str(p), cv2.IMREAD_GRAYSCALE)
+            saved = imread_unicode(p, cv2.IMREAD_GRAYSCALE)
             if saved is not None:
                 self.canvas = cv2.resize(
                     saved,
@@ -323,7 +353,7 @@ class WacomCaptureApp:
             interpolation=cv2.INTER_AREA,
         )
         p = cell_path(self.cells_dir, cell["sample_index"])
-        cv2.imwrite(str(p), downscaled)
+        imwrite_unicode(p, downscaled)
         return True
 
     def _action_save_and_next(self) -> None:
@@ -729,7 +759,7 @@ class WacomCaptureApp:
                     self.brush_tpl_px = min(20, self.brush_tpl_px + 1)
                     self._set_status(f"Grosor del pincel: {self.brush_tpl_px} px", (180, 220, 240), 1.5)
                 elif k in (ord("-"), ord("_"), ord("[")):
-                    self.brush_tpl_px = max(6, self.brush_tpl_px - 1)
+                    self.brush_tpl_px = max(4, self.brush_tpl_px - 1)
                     self._set_status(f"Grosor del pincel: {self.brush_tpl_px} px", (180, 220, 240), 1.5)
                 elif k in (ord("e"), ord("E")):
                     self._action_export()
@@ -748,7 +778,34 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--templates-dir", type=Path, default=Path("data/templates"))
     parser.add_argument("--scans-dir", type=Path, default=Path("data/raw_scans"))
     parser.add_argument("--output-pairs-dir", type=Path, default=Path("data/real_pairs"))
-    parser.add_argument("--brush", type=int, default=12, help="Grosor inicial del trazo (6..20 px).")
+    parser.add_argument(
+        "--brush",
+        type=float,
+        default=6.5,
+        help="Grosor inicial del trazo en px de plantilla (3.5..16, default 6.5 ≈ pluma 0.5 mm).",
+    )
+    parser.add_argument(
+        "--canvas-size",
+        type=int,
+        default=320,
+        help="Tamaño inicial del recuadro de dibujo en pantalla en px (200..540, default 320).",
+    )
+    parser.add_argument(
+        "--port",
+        type=int,
+        default=0,
+        help="Puerto local para la interfaz fluida en navegador (0 = automático).",
+    )
+    parser.add_argument(
+        "--no-browser",
+        action="store_true",
+        help="No abre el navegador automáticamente (imprime la URL local).",
+    )
+    parser.add_argument(
+        "--opencv",
+        action="store_true",
+        help="Usa la ventana clásica de OpenCV en lugar de la interfaz fluida en navegador.",
+    )
     parser.add_argument(
         "--start-index",
         type=int,
@@ -779,17 +836,36 @@ def main() -> None:
         print(f"Plantillas exportadas: {pages} hojas ({placed}/{len(flat_cells)} glifos) en {args.scans_dir}")
         return
 
-    app = WacomCaptureApp(
-        layout=layout,
-        flat_cells=flat_cells,
-        templates_dir=args.templates_dir,
-        cells_dir=cells_dir,
-        scans_dir=args.scans_dir,
-        output_pairs_dir=args.output_pairs_dir,
-        brush_tpl_px=args.brush,
-        start_index=args.start_index,
-    )
-    pages, placed = app.run()
+    if args.opencv:
+        app = WacomCaptureApp(
+            layout=layout,
+            flat_cells=flat_cells,
+            templates_dir=args.templates_dir,
+            cells_dir=cells_dir,
+            scans_dir=args.scans_dir,
+            output_pairs_dir=args.output_pairs_dir,
+            brush_tpl_px=int(round(args.brush)),
+            start_index=args.start_index,
+        )
+        pages, placed = app.run()
+    else:
+        pages, placed = run_web_capture(
+            layout=layout,
+            flat_cells=flat_cells,
+            templates_dir=args.templates_dir,
+            cells_dir=cells_dir,
+            scans_dir=args.scans_dir,
+            describe_char_fn=describe_char,
+            cell_path_fn=cell_path,
+            has_ink_fn=has_ink,
+            export_fn=export_filled_templates,
+            default_brush_px=args.brush,
+            default_canvas_px=args.canvas_size,
+            start_index=args.start_index,
+            port=args.port,
+            open_browser=not args.no_browser,
+        )
+
     print(f"\n[OK] Exportadas {pages} plantillas con {placed}/{len(flat_cells)} glifos en '{args.scans_dir}'.")
 
     if placed == len(flat_cells):
