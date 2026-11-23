@@ -1,0 +1,569 @@
+"""Demo interactiva en tiempo real (OpenCV + ONNX Runtime) — Rúbrica C1–C4.
+
+Ventana triple:
+    [ Entrada x (Canvas / Webcam ROI) | Glifo generado ŷ | Predicción + Confianza + FPS ]
+
+Controles:
+    - Cualquier carácter imprimible (`A-Z`, `a-z`, `0-9`, signos): cambia el glifo en Canvas.
+    - Mouse (clic izquierdo arrastrando en panel Entrada x): dibujo libre sobre el Canvas.
+    - `M` / `Tab`: alterna entre modo CANVAS y modo WEBCAM ROI.
+    - `+` / `-`: ajusta el umbral de confianza OOD (default 0.70).
+    - `C`: limpia el dibujo libre y vuelve al carácter base.
+    - `S`: guarda una captura de la ventana en `results/demo_capture.png`.
+    - `ESC`: salir (también `Ctrl+Q` o cerrar ventana).
+
+Arranque en 1 solo comando:
+    python app/demo_realtime.py
+"""
+
+from __future__ import annotations
+
+import argparse
+import sys
+import time
+from pathlib import Path
+
+# Garantizar importación de `src.*` al ejecutar `python app/demo_realtime.py`
+ROOT_DIR = Path(__file__).resolve().parent.parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
+import cv2
+import numpy as np
+import onnxruntime as ort
+
+from src.config import CHARSET, IDX_TO_CHAR, IMG_SIZE
+from src.data.glyph_render import get_default_base_font_path, render_glyph
+
+PANEL_SIZE = 320
+HEADER_H = 44
+FOOTER_H = 54
+WINDOW_NAME = "Handwritten Font cGAN — Demo Tiempo Real (ONNX)"
+
+
+def _softmax(logits: np.ndarray) -> np.ndarray:
+    shifted = logits - np.max(logits)
+    exp = np.exp(shifted)
+    return exp / np.sum(exp)
+
+
+def _create_ort_session(onnx_path: Path) -> ort.InferenceSession:
+    if not onnx_path.exists():
+        raise FileNotFoundError(
+            f"No se encontró '{onnx_path}'. Ejecuta primero `python -m src.export.export_onnx`."
+        )
+    opts = ort.SessionOptions()
+    opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
+    return ort.InferenceSession(
+        str(onnx_path),
+        sess_options=opts,
+        providers=["CPUExecutionProvider"],
+    )
+
+
+def _preprocess_webcam_roi(roi_bgr: np.ndarray) -> tuple[np.ndarray, bool]:
+    """Convierte un ROI BGR de webcam a glifo 128x128 (fondo 255, trazo 0) y detecta entrada válida."""
+    gray = cv2.cvtColor(roi_bgr, cv2.COLOR_BGR2GRAY)
+    # Detectar cámara tapada o escena sin contraste
+    if float(gray.std()) < 8.0 or float(gray.mean()) < 20.0:
+        return np.full((IMG_SIZE, IMG_SIZE), 255, dtype=np.uint8), False
+
+    blur = cv2.GaussianBlur(gray, (5, 5), 0)
+    binary = cv2.adaptiveThreshold(
+        blur,
+        255,
+        cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+        cv2.THRESH_BINARY,
+        31,
+        12,
+    )
+    resized = cv2.resize(binary, (IMG_SIZE, IMG_SIZE), interpolation=cv2.INTER_AREA)
+    ink_ratio = float(np.mean(resized < 128))
+    is_valid = 0.005 <= ink_ratio <= 0.70
+    return resized, is_valid
+
+
+def _draw_panel_header(panel: np.ndarray, text: str) -> None:
+    cv2.rectangle(panel, (0, 0), (panel.shape[1], 32), (35, 35, 40), -1)
+    cv2.putText(
+        panel,
+        text,
+        (10, 22),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.58,
+        (240, 240, 240),
+        1,
+        cv2.LINE_AA,
+    )
+
+
+def _build_info_panel(
+    pred_char: str,
+    confidence: float,
+    top3: list[tuple[str, float]],
+    threshold: float,
+    is_valid_input: bool,
+    latency_ms: float,
+    fps: float,
+    mode: str,
+    target_char: str,
+    webcam_error: str | None = None,
+) -> np.ndarray:
+    """Construye el 3er panel: Predicción, Confianza, Alerta OOD y métricas de tiempo real."""
+    panel = np.full((PANEL_SIZE, PANEL_SIZE, 3), 24, dtype=np.uint8)
+    _draw_panel_header(panel, "3. Evaluacion & Tiempo Real")
+
+    is_ok = is_valid_input and (confidence >= threshold)
+    status_color = (60, 200, 80) if is_ok else (55, 65, 235)
+    if not is_valid_input:
+        status_text = "SIN ENTRADA / OOD"
+    elif is_ok:
+        status_text = "OK (CONFIABLE)"
+    else:
+        status_text = "BAJA CONFIANZA (OOD)"
+
+    # Banner de estado
+    cv2.rectangle(panel, (14, 42), (PANEL_SIZE - 14, 82), status_color, -1)
+    cv2.putText(
+        panel,
+        status_text,
+        (24, 68),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.62,
+        (255, 255, 255),
+        2,
+        cv2.LINE_AA,
+    )
+
+    # Predicción principal
+    shown_pred = pred_char if is_valid_input else "-"
+    cv2.putText(
+        panel,
+        f"Prediccion: '{shown_pred}'",
+        (16, 114),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.72,
+        (245, 245, 245),
+        2,
+        cv2.LINE_AA,
+    )
+    cv2.putText(
+        panel,
+        f"Confianza:  {confidence * 100:5.1f}%  (Umbral: {threshold:.2f})",
+        (16, 140),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.48,
+        (210, 210, 210),
+        1,
+        cv2.LINE_AA,
+    )
+
+    # Barra de confianza con marca del umbral
+    bar_x1, bar_x2, bar_y1, bar_y2 = 16, PANEL_SIZE - 16, 150, 170
+    cv2.rectangle(panel, (bar_x1, bar_y1), (bar_x2, bar_y2), (60, 60, 65), -1)
+    fill_x = bar_x1 + int((bar_x2 - bar_x1) * np.clip(confidence, 0.0, 1.0))
+    cv2.rectangle(panel, (bar_x1, bar_y1), (fill_x, bar_y2), status_color, -1)
+    thr_x = bar_x1 + int((bar_x2 - bar_x1) * np.clip(threshold, 0.0, 1.0))
+    cv2.line(panel, (thr_x, bar_y1 - 3), (thr_x, bar_y2 + 3), (0, 220, 255), 2)
+
+    # Top-3 predicciones
+    cv2.putText(
+        panel,
+        "Top-3 Juez (ResNet-18):",
+        (16, 198),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.48,
+        (180, 180, 185),
+        1,
+        cv2.LINE_AA,
+    )
+    for i, (ch, prob) in enumerate(top3[:3]):
+        cv2.putText(
+            panel,
+            f"  {i + 1}. '{ch}'  ->  {prob * 100:5.1f}%",
+            (18, 220 + i * 20),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.46,
+            (225, 225, 225),
+            1,
+            cv2.LINE_AA,
+        )
+
+    # FPS y latencia
+    fps_color = (70, 220, 100) if fps >= 10.0 else (60, 140, 255)
+    cv2.line(panel, (14, 276), (PANEL_SIZE - 14, 276), (70, 70, 75), 1)
+    cv2.putText(
+        panel,
+        f"FPS: {fps:5.1f}  |  Latencia: {latency_ms:5.1f} ms",
+        (16, 298),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.52,
+        fps_color,
+        1,
+        cv2.LINE_AA,
+    )
+    extra = webcam_error if webcam_error else f"Modo: {mode} | Char base: '{target_char}'"
+    cv2.putText(
+        panel,
+        extra[:38],
+        (16, 314),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.40,
+        (170, 170, 180),
+        1,
+        cv2.LINE_AA,
+    )
+    return panel
+
+
+class RealtimeDemo:
+    """Controlador de la demo triple en tiempo real con Canvas y Webcam ROI."""
+
+    def __init__(
+        self,
+        generator_onnx: Path,
+        judge_onnx: Path,
+        threshold: float = 0.70,
+        camera_index: int = 0,
+    ) -> None:
+        self.gen_sess = _create_ort_session(generator_onnx)
+        self.judge_sess = _create_ort_session(judge_onnx)
+        self.base_font = get_default_base_font_path()
+
+        self.threshold = float(np.clip(threshold, 0.10, 0.95))
+        self.camera_index = camera_index
+        self.mode = "CANVAS"  # "CANVAS" | "WEBCAM"
+        self.char_idx = 0
+        self.current_char = CHARSET[self.char_idx]
+        self.freehand_active = False
+        self.drawing = False
+        self.last_pt: tuple[int, int] | None = None
+
+        self.canvas_u8 = render_glyph(self.current_char, self.base_font, img_size=IMG_SIZE)
+        self.cap: cv2.VideoCapture | None = None
+        self.webcam_error: str | None = None
+        self.ema_ms: float | None = None
+
+    def set_char(self, ch: str) -> None:
+        self.current_char = ch
+        if ch in CHARSET:
+            self.char_idx = CHARSET.index(ch)
+        self.freehand_active = False
+        self.canvas_u8 = render_glyph(ch, self.base_font, img_size=IMG_SIZE)
+
+    def clear_canvas(self) -> None:
+        self.freehand_active = True
+        self.canvas_u8 = np.full((IMG_SIZE, IMG_SIZE), 255, dtype=np.uint8)
+
+    def toggle_mode(self) -> None:
+        if self.mode == "CANVAS":
+            self.mode = "WEBCAM"
+            self.webcam_error = None
+            if self.cap is None or not self.cap.isOpened():
+                self.cap = cv2.VideoCapture(self.camera_index)
+                if not self.cap.isOpened():
+                    self.webcam_error = "Webcam no disponible (pulsa Tab/M)"
+        else:
+            self.mode = "CANVAS"
+            self.webcam_error = None
+            if self.cap is not None and self.cap.isOpened():
+                self.cap.release()
+                self.cap = None
+
+    def adjust_threshold(self, delta: float) -> None:
+        self.threshold = round(float(np.clip(self.threshold + delta, 0.10, 0.95)), 2)
+
+    def on_mouse(self, event: int, x: int, y: int, flags: int, param: object) -> None:
+        """Permite dibujar a mano alzada en el panel 1 cuando está en modo CANVAS."""
+        if self.mode != "CANVAS":
+            return
+        local_y = y - HEADER_H
+        if not (0 <= x < PANEL_SIZE and 32 <= local_y < PANEL_SIZE):
+            if event == cv2.EVENT_LBUTTONUP:
+                self.drawing = False
+                self.last_pt = None
+            return
+
+        gx = int(np.clip(x * IMG_SIZE / PANEL_SIZE, 0, IMG_SIZE - 1))
+        gy = int(np.clip((local_y - 32) * IMG_SIZE / (PANEL_SIZE - 32), 0, IMG_SIZE - 1))
+
+        if event == cv2.EVENT_LBUTTONDOWN:
+            if not self.freehand_active:
+                self.clear_canvas()
+            self.drawing = True
+            self.last_pt = (gx, gy)
+            cv2.circle(self.canvas_u8, (gx, gy), 3, 0, -1)
+        elif event == cv2.EVENT_MOUSEMOVE and self.drawing and self.last_pt is not None:
+            cv2.line(self.canvas_u8, self.last_pt, (gx, gy), 0, thickness=6)
+            self.last_pt = (gx, gy)
+        elif event == cv2.EVENT_LBUTTONUP:
+            self.drawing = False
+            self.last_pt = None
+
+    def step_frame(self) -> tuple[np.ndarray, float, float]:
+        """Ejecuta 1 ciclo completo (adquisición + inferencia ONNX + renderizado de ventana)."""
+        t0 = time.perf_counter()
+
+        # 1. Obtener entrada x (128x128 uint8) y panel izquierdo
+        if self.mode == "WEBCAM":
+            if self.cap is not None and self.cap.isOpened():
+                ok, frame = self.cap.read()
+            else:
+                ok, frame = False, None
+
+            if ok and frame is not None:
+                h, w = frame.shape[:2]
+                side = min(h, w) // 2
+                cx, cy = w // 2, h // 2
+                x1, y1 = max(cx - side // 2, 0), max(cy - side // 2, 0)
+                x2, y2 = min(x1 + side, w), min(y1 + side, h)
+                roi = frame[y1:y2, x1:x2]
+                x_u8, is_valid = _preprocess_webcam_roi(roi)
+
+                vis = frame.copy()
+                cv2.rectangle(vis, (x1, y1), (x2, y2), (0, 220, 90), 2)
+                left_body = cv2.resize(vis, (PANEL_SIZE, PANEL_SIZE - 32))
+                # Miniatura del ROI binarizado en esquina inferior derecha
+                thumb = cv2.cvtColor(cv2.resize(x_u8, (84, 84)), cv2.COLOR_GRAY2BGR)
+                left_body[-88:-4, -88:-4] = thumb
+                cv2.rectangle(
+                    left_body,
+                    (PANEL_SIZE - 88, PANEL_SIZE - 32 - 88),
+                    (PANEL_SIZE - 4, PANEL_SIZE - 32 - 4),
+                    (0, 220, 90),
+                    1,
+                )
+            else:
+                self.webcam_error = "Webcam no disponible (pulsa Tab/M)"
+                x_u8 = np.full((IMG_SIZE, IMG_SIZE), 255, dtype=np.uint8)
+                is_valid = False
+                left_body = np.full((PANEL_SIZE - 32, PANEL_SIZE, 3), 40, dtype=np.uint8)
+                cv2.putText(
+                    left_body,
+                    "Sin senal de camara",
+                    (55, 145),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.65,
+                    (120, 120, 240),
+                    2,
+                    cv2.LINE_AA,
+                )
+            left_title = "1. Entrada x (Webcam ROI)"
+        else:
+            x_u8 = self.canvas_u8
+            ink_ratio = float(np.mean(x_u8 < 180))
+            is_valid = 0.003 <= ink_ratio <= 0.85
+            left_body = cv2.cvtColor(
+                cv2.resize(x_u8, (PANEL_SIZE, PANEL_SIZE - 32), interpolation=cv2.INTER_NEAREST),
+                cv2.COLOR_GRAY2BGR,
+            )
+            left_title = (
+                "1. Entrada x (Dibujo libre)"
+                if self.freehand_active
+                else f"1. Entrada x (Canvas: '{self.current_char}')"
+            )
+
+        # 2. Inferencia ONNX (Generador + Juez)
+        x_norm = (x_u8.astype(np.float32) / 127.5) - 1.0
+        x_in = x_norm[None, None, :, :]
+
+        y_hat = self.gen_sess.run(["y_hat"], {"x": x_in})[0]
+        logits = self.judge_sess.run(["logits"], {"glyph": y_hat})[0][0]
+        probs = _softmax(logits)
+
+        top_indices = np.argsort(probs)[::-1][:3]
+        top3 = [(IDX_TO_CHAR[int(i)], float(probs[int(i)])) for i in top_indices]
+        pred_char, confidence = top3[0]
+        if not is_valid:
+            confidence = 0.0
+
+        elapsed_ms = (time.perf_counter() - t0) * 1000.0
+        self.ema_ms = elapsed_ms if self.ema_ms is None else (0.8 * self.ema_ms + 0.2 * elapsed_ms)
+        fps = 1000.0 / max(self.ema_ms, 1e-6)
+
+        # 3. Componer los 3 paneles
+        panel_left = np.zeros((PANEL_SIZE, PANEL_SIZE, 3), dtype=np.uint8)
+        _draw_panel_header(panel_left, left_title)
+        panel_left[32:, :] = left_body
+
+        y_u8 = np.clip((y_hat[0, 0] + 1.0) * 127.5, 0.0, 255.0).astype(np.uint8)
+        panel_mid = np.zeros((PANEL_SIZE, PANEL_SIZE, 3), dtype=np.uint8)
+        _draw_panel_header(panel_mid, "2. Glifo generado y_hat (Pix2Pix)")
+        panel_mid[32:, :] = cv2.cvtColor(
+            cv2.resize(y_u8, (PANEL_SIZE, PANEL_SIZE - 32), interpolation=cv2.INTER_LINEAR),
+            cv2.COLOR_GRAY2BGR,
+        )
+
+        panel_right = _build_info_panel(
+            pred_char=pred_char,
+            confidence=confidence,
+            top3=top3,
+            threshold=self.threshold,
+            is_valid_input=is_valid,
+            latency_ms=self.ema_ms,
+            fps=fps,
+            mode=self.mode,
+            target_char=self.current_char,
+            webcam_error=self.webcam_error,
+        )
+
+        # 4. Encabezado y barra de controles inferior
+        total_w = PANEL_SIZE * 3
+        canvas = np.full((HEADER_H + PANEL_SIZE + FOOTER_H, total_w, 3), 18, dtype=np.uint8)
+        cv2.putText(
+            canvas,
+            "Handwritten Font cGAN (Pix2Pix + ResNet-18 ONNX) — Tiempo Real",
+            (16, 29),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.70,
+            (245, 245, 245),
+            2,
+            cv2.LINE_AA,
+        )
+
+        canvas[HEADER_H : HEADER_H + PANEL_SIZE, 0:PANEL_SIZE] = panel_left
+        canvas[HEADER_H : HEADER_H + PANEL_SIZE, PANEL_SIZE : PANEL_SIZE * 2] = panel_mid
+        canvas[HEADER_H : HEADER_H + PANEL_SIZE, PANEL_SIZE * 2 : total_w] = panel_right
+
+        # Separadores verticales
+        cv2.line(canvas, (PANEL_SIZE, HEADER_H), (PANEL_SIZE, HEADER_H + PANEL_SIZE), (75, 75, 80), 2)
+        cv2.line(
+            canvas,
+            (PANEL_SIZE * 2, HEADER_H),
+            (PANEL_SIZE * 2, HEADER_H + PANEL_SIZE),
+            (75, 75, 80),
+            2,
+        )
+
+        footer_y = HEADER_H + PANEL_SIZE + 22
+        cv2.putText(
+            canvas,
+            "[Teclas] Escribe cualquier letra/digito | Mouse: dibuja | Tab: Canvas/Webcam | +/-: Umbral | Space: Siguiente | Backspace: Borrar | ESC: Salir",
+            (14, footer_y),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.41,
+            (200, 200, 210),
+            1,
+            cv2.LINE_AA,
+        )
+        cv2.putText(
+            canvas,
+            "Tip: En modo WEBCAM puedes presionar 'M' o 'Tab' para alternar. Presiona Ctrl+S o F2 para guardar captura en results/demo_capture.png",
+            (14, footer_y + 22),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.40,
+            (150, 155, 165),
+            1,
+            cv2.LINE_AA,
+        )
+        return canvas, self.ema_ms, fps
+
+    def run(self) -> None:
+        cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_AUTOSIZE)
+        cv2.setMouseCallback(WINDOW_NAME, self.on_mouse)
+
+        try:
+            while True:
+                frame, _, _ = self.step_frame()
+                cv2.imshow(WINDOW_NAME, frame)
+
+                key = cv2.waitKey(1) & 0xFF
+                if key == 255:
+                    if cv2.getWindowProperty(WINDOW_NAME, cv2.WND_PROP_VISIBLE) < 1:
+                        break
+                    continue
+
+                if key == 27:  # ESC
+                    break
+                if key == 9:  # Tab -> alternar modo siempre
+                    self.toggle_mode()
+                elif key == 8:  # Backspace -> limpiar canvas
+                    self.clear_canvas()
+                elif key == 32:  # Space -> siguiente carácter del charset
+                    self.char_idx = (self.char_idx + 1) % len(CHARSET)
+                    self.set_char(CHARSET[self.char_idx])
+                elif key in (ord("+"), ord("=")):
+                    self.adjust_threshold(+0.05)
+                elif key in (ord("-"), ord("_")):
+                    self.adjust_threshold(-0.05)
+                elif self.mode == "WEBCAM" and key in (ord("m"), ord("M")):
+                    self.toggle_mode()
+                elif key == 19:  # Ctrl+S -> guardar captura
+                    out_p = ROOT_DIR / "results" / "demo_capture.png"
+                    out_p.parent.mkdir(parents=True, exist_ok=True)
+                    ok_enc, buf = cv2.imencode(".png", frame)
+                    if ok_enc:
+                        buf.tofile(str(out_p))
+                        print(f"[OK] Captura guardada en: {out_p}")
+                elif 32 < key < 127:
+                    ch = chr(key)
+                    if ch in ("M",) and self.freehand_active:
+                        self.toggle_mode()
+                    else:
+                        self.set_char(ch)
+        finally:
+            if self.cap is not None and self.cap.isOpened():
+                self.cap.release()
+            cv2.destroyAllWindows()
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Demo OpenCV en tiempo real (ONNX).")
+    parser.add_argument(
+        "--generator-onnx",
+        type=Path,
+        default=ROOT_DIR / "checkpoints" / "generator.onnx",
+    )
+    parser.add_argument(
+        "--judge-onnx",
+        type=Path,
+        default=ROOT_DIR / "checkpoints" / "judge_resnet18.onnx",
+    )
+    parser.add_argument("--threshold", type=float, default=0.70)
+    parser.add_argument("--camera", type=int, default=0)
+    parser.add_argument(
+        "--headless-test",
+        action="store_true",
+        help="Ejecuta 25 cuadros sin abrir ventana, guarda captura de prueba y verifica >=10 FPS.",
+    )
+    return parser.parse_args()
+
+
+def main() -> None:
+    args = parse_args()
+    demo = RealtimeDemo(
+        generator_onnx=args.generator_onnx,
+        judge_onnx=args.judge_onnx,
+        threshold=args.threshold,
+        camera_index=args.camera,
+    )
+
+    if args.headless_test:
+        test_chars = ["A", "B", "k", "4", "?", "G"]
+        last_frame = None
+        last_ms = 0.0
+        last_fps = 0.0
+        for i in range(25):
+            demo.set_char(test_chars[i % len(test_chars)])
+            last_frame, last_ms, last_fps = demo.step_frame()
+        # Probar también entrada vacía (OOD) y ajuste de umbral
+        demo.clear_canvas()
+        demo.adjust_threshold(+0.05)
+        ood_frame, _, _ = demo.step_frame()
+
+        out_dir = ROOT_DIR / "results"
+        out_dir.mkdir(parents=True, exist_ok=True)
+        assert last_frame is not None
+        cv2.imencode(".png", last_frame)[1].tofile(str(out_dir / "demo_headless_ok.png"))
+        cv2.imencode(".png", ood_frame)[1].tofile(str(out_dir / "demo_headless_ood.png"))
+        print(
+            f"[OK] Headless test (25 cuadros) | Latencia EMA: {last_ms:.2f} ms | "
+            f"FPS: {last_fps:.2f} | Target >=10 FPS: {'CUMPLE' if last_fps >= 10.0 else 'NO CUMPLE'}"
+        )
+        return
+
+    demo.run()
+
+
+if __name__ == "__main__":
+    main()
