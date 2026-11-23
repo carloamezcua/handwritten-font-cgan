@@ -62,25 +62,134 @@ def _create_ort_session(onnx_path: Path) -> ort.InferenceSession:
 
 
 def _preprocess_webcam_roi(roi_bgr: np.ndarray) -> tuple[np.ndarray, bool]:
-    """Convierte un ROI BGR de webcam a glifo 128x128 (fondo 255, trazo 0) y detecta entrada válida."""
+    """Limpia un ROI BGR de webcam, recorta por bounding box y centra el glifo en 128x128.
+
+    Pasos:
+    1. Detecta cámara tapada o escena plana sin contraste (`is_valid = False`).
+    2. Combina umbral adaptativo + contraste mínimo respecto al papel (`p85`) para ignorar sombras.
+    3. Elimina ruido y manchas pegadas al borde mediante componentes conexos, preservando
+       glifos multiparte (`i`, `j`, `?`, `!`, `=`, `:`, `;`, `ñ`).
+    4. Recorta el bounding box del carácter, escala conservando relación de aspecto (~64 % de 128 px)
+       y centra sobre fondo blanco puro `255`.
+    """
+    blank = np.full((IMG_SIZE, IMG_SIZE), 255, dtype=np.uint8)
+    if roi_bgr is None or roi_bgr.size == 0:
+        return blank, False
+
     gray = cv2.cvtColor(roi_bgr, cv2.COLOR_BGR2GRAY)
-    # Detectar cámara tapada o escena sin contraste
-    if float(gray.std()) < 8.0 or float(gray.mean()) < 20.0:
-        return np.full((IMG_SIZE, IMG_SIZE), 255, dtype=np.uint8), False
+    # 1. Detectar cámara tapada o escena sin contraste
+    if float(gray.std()) < 10.0 or float(gray.mean()) < 25.0:
+        return blank, False
 
     blur = cv2.GaussianBlur(gray, (5, 5), 0)
-    binary = cv2.adaptiveThreshold(
+    bg_level = float(np.percentile(blur, 85))
+    if bg_level < 45.0:
+        return blank, False
+
+    # 2. Máscara de tinta (255 = trazo, 0 = fondo) robusta a sombras suaves
+    h, w = blur.shape
+    block_size = max(15, (min(h, w) // 6) | 1)
+    ink_adapt = cv2.adaptiveThreshold(
         blur,
         255,
         cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-        cv2.THRESH_BINARY,
-        31,
-        12,
+        cv2.THRESH_BINARY_INV,
+        block_size,
+        14,
     )
-    resized = cv2.resize(binary, (IMG_SIZE, IMG_SIZE), interpolation=cv2.INTER_AREA)
-    ink_ratio = float(np.mean(resized < 128))
-    is_valid = 0.005 <= ink_ratio <= 0.70
-    return resized, is_valid
+    ink_contrast = (blur < (bg_level - 26.0)).astype(np.uint8) * 255
+    ink = cv2.bitwise_and(ink_adapt, ink_contrast)
+
+    # Limpiar un margen exterior del 5 % para evitar bordes de hoja/dedos
+    margin = max(2, int(min(h, w) * 0.05))
+    ink[:margin, :] = 0
+    ink[-margin:, :] = 0
+    ink[:, :margin] = 0
+    ink[:, -margin:] = 0
+
+    # Cerrar pequeños huecos en el trazo
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+    ink = cv2.morphologyEx(ink, cv2.MORPH_CLOSE, kernel, iterations=1)
+
+    total_area = float(h * w)
+    if float(np.count_nonzero(ink)) / total_area > 0.60:
+        return blank, False
+
+    # 3. Filtrado de componentes conexos (descarta motas minúsculas y bloques pegados al borde)
+    num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(ink, connectivity=8)
+    min_area = max(14, int(total_area * 0.0005))
+    max_area = int(total_area * 0.45)
+
+    valid_ids: list[int] = []
+    for idx in range(1, num_labels):
+        cx0, cy0, cw, ch, area = stats[idx]
+        if area < min_area or area > max_area:
+            continue
+        touches_border = (
+            cx0 <= margin
+            or cy0 <= margin
+            or (cx0 + cw) >= (w - margin)
+            or (cy0 + ch) >= (h - margin)
+        )
+        if touches_border and area > total_area * 0.15:
+            continue
+        valid_ids.append(idx)
+
+    if not valid_ids:
+        return blank, False
+
+    # Tomar el componente principal (más cercano al centro ponderado por área) y conservar sus vecinos
+    img_cx, img_cy = w / 2.0, h / 2.0
+
+    def _score_comp(cid: int) -> float:
+        area = float(stats[cid, cv2.CC_STAT_AREA])
+        dist = float(np.hypot(centroids[cid][0] - img_cx, centroids[cid][1] - img_cy))
+        return area / (1.0 + dist / max(min(h, w) * 0.35, 1.0))
+
+    main_id = max(valid_ids, key=_score_comp)
+    main_cx, main_cy = centroids[main_id]
+    keep_radius = max(h, w) * 0.48
+
+    clean_mask = np.zeros_like(ink)
+    for cid in valid_ids:
+        dist_main = float(np.hypot(centroids[cid][0] - main_cx, centroids[cid][1] - main_cy))
+        if dist_main <= keep_radius:
+            clean_mask[labels == cid] = 255
+
+    ys, xs = np.where(clean_mask > 0)
+    if len(xs) < min_area:
+        return blank, False
+
+    x0, x1 = int(xs.min()), int(xs.max()) + 1
+    y0, y1 = int(ys.min()), int(ys.max()) + 1
+    bw, bh = x1 - x0, y1 - y0
+    if bw < 6 and bh < 6:
+        return blank, False
+
+    # 4. Recorte, escalado proporcional (~54 % = ~69 px, igual a Lato) y alineación a línea base 0.72
+    crop_ink = clean_mask[y0:y1, x0:x1]
+    crop_glyph = 255 - crop_ink  # trazo negro (0), fondo blanco (255)
+
+    target_box = int(round(IMG_SIZE * 0.54))
+    scale = target_box / float(max(bw, bh))
+    new_w = max(1, int(round(bw * scale)))
+    new_h = max(1, int(round(bh * scale)))
+
+    interp = cv2.INTER_AREA if scale < 1.0 else cv2.INTER_LINEAR
+    resized = cv2.resize(crop_glyph, (new_w, new_h), interpolation=interp)
+
+    # Re-binarizar suavemente para entregar trazos nítidos al generador
+    resized = np.where(resized < 170, 0, 255).astype(np.uint8)
+
+    canvas = np.full((IMG_SIZE, IMG_SIZE), 255, dtype=np.uint8)
+    offset_x = (IMG_SIZE - new_w) // 2
+    offset_y = int(round(IMG_SIZE * 0.72) - new_h)
+    offset_y = int(np.clip(offset_y, 8, IMG_SIZE - new_h - 8))
+    canvas[offset_y : offset_y + new_h, offset_x : offset_x + new_w] = resized
+
+    ink_ratio = float(np.mean(canvas < 128))
+    is_valid = 0.005 <= ink_ratio <= 0.65
+    return canvas, is_valid
 
 
 def _draw_panel_header(panel: np.ndarray, text: str) -> None:
@@ -242,6 +351,7 @@ class RealtimeDemo:
         self.canvas_u8 = render_glyph(self.current_char, self.base_font, img_size=IMG_SIZE)
         self.cap: cv2.VideoCapture | None = None
         self.webcam_error: str | None = None
+        self.flip_webcam: bool = False
         self.ema_ms: float | None = None
 
     def set_char(self, ch: str) -> None:
@@ -312,6 +422,8 @@ class RealtimeDemo:
                 ok, frame = False, None
 
             if ok and frame is not None:
+                if self.flip_webcam:
+                    frame = cv2.flip(frame, 1)
                 h, w = frame.shape[:2]
                 side = min(h, w) // 2
                 cx, cy = w // 2, h // 2
@@ -321,17 +433,19 @@ class RealtimeDemo:
                 x_u8, is_valid = _preprocess_webcam_roi(roi)
 
                 vis = frame.copy()
-                cv2.rectangle(vis, (x1, y1), (x2, y2), (0, 220, 90), 2)
+                roi_color = (0, 220, 90) if is_valid else (55, 65, 235)
+                cv2.rectangle(vis, (x1, y1), (x2, y2), roi_color, 2)
                 left_body = cv2.resize(vis, (PANEL_SIZE, PANEL_SIZE - 32))
-                # Miniatura del ROI binarizado en esquina inferior derecha
-                thumb = cv2.cvtColor(cv2.resize(x_u8, (84, 84)), cv2.COLOR_GRAY2BGR)
-                left_body[-88:-4, -88:-4] = thumb
+                # Miniatura del glifo recortado y centrado (lo que realmente entra a Pix2Pix)
+                thumb_sz = 96
+                thumb = cv2.cvtColor(cv2.resize(x_u8, (thumb_sz, thumb_sz)), cv2.COLOR_GRAY2BGR)
+                left_body[-thumb_sz - 4 : -4, -thumb_sz - 4 : -4] = thumb
                 cv2.rectangle(
                     left_body,
-                    (PANEL_SIZE - 88, PANEL_SIZE - 32 - 88),
+                    (PANEL_SIZE - thumb_sz - 4, PANEL_SIZE - 32 - thumb_sz - 4),
                     (PANEL_SIZE - 4, PANEL_SIZE - 32 - 4),
-                    (0, 220, 90),
-                    1,
+                    roi_color,
+                    2,
                 )
             else:
                 self.webcam_error = "Webcam no disponible (pulsa Tab/M)"
@@ -448,7 +562,7 @@ class RealtimeDemo:
         )
         cv2.putText(
             canvas,
-            "Tip: En modo WEBCAM puedes presionar 'M' o 'Tab' para alternar. Presiona Ctrl+S o F2 para guardar captura en results/demo_capture.png",
+            "Tip WEBCAM: 'M'/'Tab' alterna modo | 'F' voltea espejo | Centra 1 letra grande en el cuadro | Ctrl+S guarda captura en results/",
             (14, footer_y + 22),
             cv2.FONT_HERSHEY_SIMPLEX,
             0.40,
@@ -488,6 +602,8 @@ class RealtimeDemo:
                     self.adjust_threshold(-0.05)
                 elif self.mode == "WEBCAM" and key in (ord("m"), ord("M")):
                     self.toggle_mode()
+                elif self.mode == "WEBCAM" and key in (ord("f"), ord("F")):
+                    self.flip_webcam = not self.flip_webcam
                 elif key == 19:  # Ctrl+S -> guardar captura
                     out_p = ROOT_DIR / "results" / "demo_capture.png"
                     out_p.parent.mkdir(parents=True, exist_ok=True)
