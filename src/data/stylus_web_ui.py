@@ -1,11 +1,11 @@
-"""Interfaz web local de captura fluida con tableta Wacom (estilo OneNote).
+"""Interfaz web local de captura fluida con stylus / lápiz digital (estilo OneNote).
 
 Usa Pointer Events nativos del navegador (`getCoalescedEvents`, presión del lápiz,
 `desynchronized: true` e interpolación cuadrática Bézier + estabilizador) para
 obtener trazos suaves de baja latencia sin dependencias externas adicionales.
 
 Guarda exactamente el mismo formato que el modo OpenCV:
-- Celdas individuales: `data/raw_scans/_wacom_cells/cell_XXXX.png` (228x228)
+- Celdas individuales: `data/raw_scans/_stylus_cells/cell_XXXX.png` (228x228)
 - Hojas compuestas: `data/raw_scans/hoja_01.png` … `hoja_07.png`
 """
 
@@ -33,7 +33,7 @@ HTML_PAGE = r"""<!DOCTYPE html>
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Captura Wacom Fluida — 300 Glifos</title>
+<title>Captura Stylus Fluida — 300 Glifos</title>
 <style>
   :root {
     --bg: #15171e;
@@ -394,7 +394,7 @@ HTML_PAGE = r"""<!DOCTYPE html>
 <div class="app">
   <div class="header">
     <div class="header-info">
-      <strong style="font-size:14.5px;">Captura Wacom Fluida</strong>
+      <strong style="font-size:14.5px;">Captura Stylus Fluida</strong>
       <span class="pill" id="hdrGlyph">Glifo 1 / 300</span>
       <span class="pill" id="hdrPage">Hoja 1 / 7 · Rep 1 / 4</span>
       <span class="pill pill-ok" id="hdrDone">Completados: 0 / 300</span>
@@ -456,7 +456,7 @@ HTML_PAGE = r"""<!DOCTYPE html>
         </div>
 
         <label class="toggle-row">
-          <span>Presión del lápiz (Wacom)</span>
+          <span>Presión del stylus</span>
           <input type="checkbox" id="pressureToggle" checked />
         </label>
 
@@ -523,7 +523,7 @@ HTML_PAGE = r"""<!DOCTYPE html>
   };
 
   // Config persistente en localStorage
-  const LS_KEY = "wacom_smooth_capture_prefs_v1";
+  const LS_KEY = "stylus_smooth_capture_prefs_v1";
   let prefs = {
     brushTplPx: 6.5,
     canvasCssPx: 320,
@@ -870,13 +870,13 @@ HTML_PAGE = r"""<!DOCTYPE html>
     return off.toDataURL("image/png");
   }
 
-  // ---- Eventos Pointer (Wacom / Windows Ink / Mouse) ----
+  // ---- Eventos Pointer (Stylus / Windows Ink / Mouse) ----
   inkCanvas.addEventListener("contextmenu", (e) => e.preventDefault());
 
   inkCanvas.addEventListener("pointerdown", (e) => {
     e.preventDefault();
 
-    // Borrador del lápiz Wacom (button 5) o clic derecho (button 2) -> Deshacer
+    // Borrador del stylus (button 5) o clic derecho (button 2) -> Deshacer
     if (e.button === 5 || e.button === 2 || (e.buttons & 32)) {
       actionUndo();
       return;
@@ -889,7 +889,7 @@ HTML_PAGE = r"""<!DOCTYPE html>
 
     const pt = eventToCanvasPoint(e);
     if (pt.isPen) {
-      penIndicator.textContent = "Lápiz Wacom detectado (Windows Ink activo)";
+      penIndicator.textContent = "Stylus detectado (Windows Ink activo)";
     }
 
     currentStroke = {
@@ -1291,7 +1291,7 @@ def run_web_capture(
     port: int = 0,
     open_browser: bool = True,
 ) -> tuple[int, int]:
-    """Lanza un servidor HTTP local en localhost para captura fluida con Wacom."""
+    """Lanza un servidor HTTP local en localhost para captura fluida con stylus."""
     cells_dir.mkdir(parents=True, exist_ok=True)
     base_font = get_default_base_font_path()
     box_size = int(layout["geometry"]["box_size"])
@@ -1497,8 +1497,8 @@ def run_web_capture(
     actual_port = server.server_address[1]
     url = f"http://127.0.0.1:{actual_port}/"
 
-    print(f"\n[Captura Wacom Fluida] Servidor activo en: {url}")
-    print("  - Usa tu lápiz Wacom directo en el navegador (Windows Ink + suavizado tipo OneNote).")
+    print(f"\n[Captura Stylus Fluida] Servidor activo en: {url}")
+    print("  - Usa tu stylus directo en el navegador (Windows Ink + suavizado tipo OneNote).")
     print("  - Ajusta 'Grosor de pluma' y 'Tamaño del recuadro' en vivo desde el panel izquierdo.")
     print("  - Pulsa el botón [Terminar] en la página (o Ctrl+C aquí) para guardar y exportar las 7 hojas.\n")
 

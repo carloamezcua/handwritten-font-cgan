@@ -1,4 +1,4 @@
-"""Captura guiada de glifos manuscritos con tableta Wacom (o mouse).
+"""Captura guiada de glifos manuscritos con stylus / tableta digitalizadora (o mouse).
 
 Por defecto abre una interfaz local fluida en el navegador (Windows Ink +
 `getCoalescedEvents` + presión del lápiz + suavizado Bézier estilo OneNote, con
@@ -7,7 +7,7 @@ modo clásico de respaldo.
 
 Muestra carácter por carácter según `data/templates/template_layout.json` (300 muestras:
 75 símbolos × 4 repeticiones), guarda el progreso automáticamente en
-`data/raw_scans/_wacom_cells/` y compone cada glifo dentro de las 7 plantillas originales
+`data/raw_scans/_stylus_cells/` y compone cada glifo dentro de las 7 plantillas originales
 (`data/templates/plantilla_hoja_01.png` … `07.png`) para guardarlas en
 `data/raw_scans/hoja_01.png` … `hoja_07.png`.
 
@@ -15,9 +15,9 @@ Así el pipeline completo de extracción OpenCV (`src.data.02_extraer_recortes`)
 exactamente igual que con hojas impresas y escaneadas.
 
 Controles:
-    - Lápiz Wacom / clic izquierdo: dibujar en el lienzo.
+    - Stylus / clic izquierdo: dibujar en el lienzo.
     - Espacio / Enter / botón [Guardar y Sig.]: guarda el trazo y avanza al siguiente.
-    - Z / borrador del lápiz / clic derecho / botón [Deshacer]: deshace el último trazo.
+    - Z / borrador del stylus / clic derecho / botón [Deshacer]: deshace el último trazo.
     - R / C / botón [Limpiar]: borra el lienzo actual.
     - Flecha Izq / Backspace / botón [Anterior]: regresa al glifo anterior.
     - Flecha Der / botón [Saltar]: avanza sin modificar (útil al revisar glifos).
@@ -26,10 +26,10 @@ Controles:
     - E: exporta en ese momento las 7 hojas rellenas a `data/raw_scans/`.
 
 Uso:
-    python -m src.data.captura_wacom
-    python -m src.data.captura_wacom --brush 6.5 --canvas-size 320
-    python -m src.data.captura_wacom --opencv
-    python -m src.data.captura_wacom --export-only
+    python -m src.data.captura_stylus
+    python -m src.data.captura_stylus --brush 6.5 --canvas-size 320
+    python -m src.data.captura_stylus --opencv
+    python -m src.data.captura_stylus --export-only
 """
 
 from __future__ import annotations
@@ -49,9 +49,9 @@ import cv2
 import numpy as np
 
 from src.data.glyph_render import get_default_base_font_path, render_glyph
-from src.data.wacom_web_ui import run_web_capture
+from src.data.stylus_web_ui import run_web_capture
 
-WINDOW_NAME = "Captura Wacom — Plantillas Manuscritas (300 glifos)"
+WINDOW_NAME = "Captura Stylus — Plantillas Manuscritas (300 glifos)"
 
 # Geometría de la interfaz (canvas 2x respecto a box_size=228 -> 456x456 px)
 CANVAS_SCALE = 2
@@ -197,8 +197,8 @@ def export_filled_templates(
     return pages_written, total_placed
 
 
-class WacomCaptureApp:
-    """Aplicación interactiva OpenCV para capturar los 300 glifos con Wacom."""
+class StylusCaptureApp:
+    """Aplicación interactiva OpenCV para capturar los 300 glifos con stylus."""
 
     def __init__(
         self,
@@ -246,7 +246,7 @@ class WacomCaptureApp:
         self.prev_pt: tuple[int, int] | None = None
 
         # Mensaje transitorio de estado
-        self.status_msg = "Dibuja el caracter con la Wacom y pulsa ESPACIO o [Guardar y Sig.]"
+        self.status_msg = "Dibuja el caracter con el stylus y pulsa ESPACIO o [Guardar y Sig.]"
         self.status_color = (180, 210, 230)
         self.status_until = 0.0
 
@@ -773,7 +773,7 @@ class WacomCaptureApp:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Captura guiada de los 300 glifos con Wacom e integración en plantillas."
+        description="Captura guiada de los 300 glifos con stylus e integración en plantillas."
     )
     parser.add_argument("--templates-dir", type=Path, default=Path("data/templates"))
     parser.add_argument("--scans-dir", type=Path, default=Path("data/raw_scans"))
@@ -828,7 +828,7 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     layout_path = args.templates_dir / "template_layout.json"
-    cells_dir = args.scans_dir / "_wacom_cells"
+    cells_dir = args.scans_dir / "_stylus_cells"
     layout, flat_cells = load_layout(layout_path)
 
     if args.export_only:
@@ -837,7 +837,7 @@ def main() -> None:
         return
 
     if args.opencv:
-        app = WacomCaptureApp(
+        app = StylusCaptureApp(
             layout=layout,
             flat_cells=flat_cells,
             templates_dir=args.templates_dir,
@@ -886,7 +886,7 @@ def main() -> None:
     else:
         print(
             f"Quedan {len(flat_cells) - placed} glifos pendientes. "
-            "Vuelve a ejecutar `python -m src.data.captura_wacom` para reanudar justo donde te quedaste."
+            "Vuelve a ejecutar `python -m src.data.captura_stylus` para reanudar justo donde te quedaste."
         )
 
 
