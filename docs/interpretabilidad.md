@@ -2,7 +2,7 @@
 
 Este documento presenta la evidencia de interpretabilidad visual y cuantitativa del sistema **Generación de Tipografía Manuscrita con Pix2Pix cGAN**, evaluando mediante **Grad-CAM** qué trazos y regiones espaciales determinan la legibilidad de los glifos generados (`ŷ = G(x)`) frente a los glifos manuscritos de referencia (`y`).
 
-> **Estado actual (Avance A — Fase 6 previa a captura real):** El análisis corresponde al generador preentrenado sobre fuentes sintéticas (`checkpoints/pix2pix_pretrained.pth`) evaluado con los dos clasificadores jueces congelados (`ResNet-18` y `EfficientNet-B0`) sobre `data/synthetic_pairs/{val, test_unseen}`. El script [`eval/gradcam_analysis.py`](../eval/gradcam_analysis.py) está parametrizado para re-ejecutarse de forma idéntica sobre `data/real_pairs/` y comparar **Experimento A (From Scratch)** vs. **Experimento B (Fine-Tuning)** en cuanto se complete la captura Wacom.
+> **Estado actual (Avance A — Fase 6 previa a captura real):** El análisis corresponde al generador preentrenado sobre fuentes sintéticas (`checkpoints/pix2pix_pretrained.pth`) evaluado con los dos clasificadores jueces congelados (`ResNet-18` y `EfficientNet-B0`) sobre `data/synthetic_pairs/{val, test_unseen}`. El script [`eval/gradcam_analysis.py`](../eval/gradcam_analysis.py) está parametrizado para re-ejecutarse de forma idéntica sobre `data/real_pairs/` y comparar **Experimento A (From Scratch)** vs. **Experimento B (Fine-Tuning)** en cuanto se complete la captura con stylus.
 
 ---
 
@@ -62,7 +62,7 @@ Combinando el mapa Grad-CAM con la galería de errores de [`eval/evaluate_models
 
 | Caso (`Real → Pred`) | Conf. `ŷ` | Diagnóstico visual mediante `x \| ŷ \| y` y Grad-CAM | Hipótesis de causa y mitigación en Fase 5 |
 | :--- | :---: | :--- | :--- |
-| **`6 → C`** (`val`) | 0.92 | El generador **omitió el bucle inferior cerrado** del `6`, dibujando literalmente una `C` abierta; Grad-CAM enfoca la apertura lateral derecha. | Conflicto entre 17 estilos sintéticos con cierres del `6` en alturas distintas (ambigüedad uno-a-muchos bajo pérdida L1). Al hacer *fine-tuning* sobre un solo autor (Wacom), el cierre del bucle es consistente. |
+| **`6 → C`** (`val`) | 0.92 | El generador **omitió el bucle inferior cerrado** del `6`, dibujando literalmente una `C` abierta; Grad-CAM enfoca la apertura lateral derecha. | Conflicto entre 17 estilos sintéticos con cierres del `6` en alturas distintas (ambigüedad uno-a-muchos bajo pérdida L1). Al hacer *fine-tuning* sobre un solo autor (captura con stylus), el cierre del bucle es consistente. |
 | **`S → C`** (`val`) | 0.57 | Pérdida parcial de la curva inferior derecha de la `S`, dejando una silueta abierta similar a `C`. | Misma causa de promediado L1 multi-fuente en trazos con doble curvatura. |
 | **`! → l` y `i → l`** (`val`) | 0.70 / 0.62 | El generador **borró el punto aislado** (inferior en `!`, superior en `i`), dejando únicamente el asta vertical. Grad-CAM de `y` muestra activación fuerte sobre el punto, ausente en `ŷ`. | Los componentes desconectados pequeños (puntos) aportan pocos píxeles a la pérdida L1 global. En el *fine-tuning* sobre estilo único y con mayor énfasis en trazos finos (y verificación en auditoría por subgrupos), los puntos se vuelven estables. |
 | **`: → ;`** (`val`) | 0.76 | El punto inferior de `:` se alargó con una cola descendente similar a coma, activando la clase `;`. | Superposición de estadísticas locales entre `:` y `;` en fuentes manuscritas inclinadas. |

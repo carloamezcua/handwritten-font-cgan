@@ -7,7 +7,7 @@ y el proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 ## [Unreleased]
 
 ### Pendiente para `v1.0-final`
-- Fine-tuning de Pix2Pix y jueces con capturas reales de tableta Wacom (Fase 5).
+- Fine-tuning de Pix2Pix y jueces con capturas reales con stylus (Fase 5).
 - Re-evaluación cuantitativa final, Grad-CAM y auditoría sobre modelos fine-tuned.
 - Congelamiento de versiones exactas en `requirements.txt` (Rúbrica A5).
 
@@ -15,7 +15,7 @@ y el proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 
 ### Added
 - Demo en tiempo real con OpenCV (`Canvas` / `Webcam ROI`), centrado automático por bounding box, espejo (`F`) y alerta OOD.
-- Captura guiada de glifos manuscritos con tableta Wacom e interfaz web fluida con soporte Unicode (`A–Z`, `a–z`, `0–9`, acentos, `ñ`, puntuación).
+- Captura guiada de glifos manuscritos con stylus e interfaz web fluida con soporte Unicode (`A–Z`, `a–z`, `0–9`, acentos, `ñ`, puntuación).
 - Evaluación cuantitativa (SSIM, L1, MSE, LPIPS, fidelidad tipográfica con jueces), mapas Grad-CAM, evaluación de robustez OOD y auditoría por subgrupos.
 - Documentación completa: `MODEL_CARD.md`, datasheet en `data/README.md`, reporte de costos y `README.md`.
 - Archivo `VERSION`, `src.__version__` y `CHANGELOG.md`.

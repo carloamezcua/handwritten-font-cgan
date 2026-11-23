@@ -11,7 +11,7 @@ Documento basado en el marco *Datasheets for Datasets* (Gebru et al., 2021) para
 - **Usuario real:** Estudiantes, diseñadores, ilustradores, docentes y creadores de contenido que desean digitalizar su propia letra manuscrita a partir de una captura rápida (~300 muestras) y generar tanto el alfabeto completo como símbolos no escritos (*Zero-Shot*).
 - **Por qué el conjunto representa al problema y usuario real:** El sistema combina dos conjuntos de datos con contrato de imagen idéntico (`1×128×128`, escala de grises, fondo blanco `255` y trazo negro `0`):
   1. **Dataset sintético de preentrenamiento (`data/synthetic_pairs/`):** 3,825 pares `(x, y)` derivados de 17 fuentes manuscritas abiertas de Google Fonts emparejadas con una fuente base sans-serif (`Lato-Regular`). Permite que la red aprenda la correspondencia topológica entre glifos impresos y escritura humana antes de ver muestras del usuario.
-  2. **Dataset propio del autor (`data/real_pairs/`):** 300 trazos manuscritos reales (75 símbolos × 4 repeticiones) capturados por el autor mediante tableta digitalizadora Wacom / plantilla impresa y normalizados automáticamente con OpenCV.
+  2. **Dataset propio del autor (`data/real_pairs/`):** 300 trazos manuscritos reales (75 símbolos × 4 repeticiones) capturados por el autor mediante stylus / tableta digitalizadora o plantilla impresa y normalizados automáticamente con OpenCV.
   3. **Dataset Fuera de Distribución (`data/ood/`):** 72 imágenes adversarias/degradadas en 6 categorías (ruido, garabatos, símbolos inéditos, rotación extrema, desenfoque/corte y sombra/bajo contraste) que reflejan las fallas reales de captura en cámara web y trazo libre (Rúbrica B6).
 
 ---
@@ -23,7 +23,7 @@ Documento basado en el marco *Datasheets for Datasets* (Gebru et al., 2021) para
 | Conjunto | Origen | Licencia | Resolución y formato | Clases (`CHARSET`) | Total imágenes/pares | Splits |
 | :--- | :--- | :--- | :--- | :---: | :---: | :--- |
 | **Sintético (`synthetic_pairs`)** | Google Fonts (1 fuente base + 17 manuscritas) | SIL Open Font License 1.1 (OFL) | `1×128×128` PNG (8-bit gris) | 75 | **3,825 pares** | `train`: 2,688 / `val`: 576 / `test_unseen`: 561 |
-| **Propio (`real_pairs`)** | Captura manuscrita propia del autor (Wacom / plantilla) | Uso académico / CC0 (consentimiento explícito del autor) | `1×128×128` PNG (8-bit gris) | 75 | **300 pares** *(75 × 4 rep.)* | `train`: 192 / `val`: 64 / `test_unseen`: 44 |
+| **Propio (`real_pairs`)** | Captura manuscrita propia del autor (stylus / plantilla) | Uso académico / CC0 (consentimiento explícito del autor) | `1×128×128` PNG (8-bit gris) | 75 | **300 pares** *(75 × 4 rep.)* | `train`: 192 / `val`: 64 / `test_unseen`: 44 |
 | **Fuera de Distribución (`ood`)** | Generación programática (`04_generar_ood.py`) | MIT (repositorio propio) | `1×128×128` PNG (8-bit gris) | 6 categorías OOD | **72 imágenes** | Evaluación OOD (12 por categoría) |
 
 ### 2.2 Catálogo de fuentes tipográficas abiertas y licencias (`data/fonts/licenses.csv`)
@@ -79,9 +79,9 @@ Ver análisis gráfico completo en [`notebooks/01_eda_datos.ipynb`](../notebooks
 
 ### 4.1 Proceso de generación y etiquetado
 - **Sintético (`src/data/03_generar_sinteticos.py`):** Cada carácter del `CHARSET` se renderiza con `Lato-Regular` (`x`) y con cada una de las 17 fuentes manuscritas (`y`) aplicando 3 variaciones controladas de escala (±5 %) y traslación (±3 px), centrado por *bounding box* sobre lienzo `128×128`. Las etiquetas (`char`, `char_code`, `class_id`, `font_name`, `split`, `judge_split`) se registran automáticamente en `metadata.csv`.
-- **Propio (`src/data/01_generar_plantilla.py`, `src/data/captura_wacom.py`, `src/data/02_extraer_recortes.py`):**
+- **Propio (`src/data/01_generar_plantilla.py`, `src/data/captura_stylus.py`, `src/data/02_extraer_recortes.py`):**
   - El archivo `data/templates/template_layout.json` fija las coordenadas exactas de las 300 celdas (7 hojas) y su etiqueta de carácter.
-  - La captura puede realizarse con **tableta Wacom** (`python -m src.data.captura_wacom`, que guía símbolo por símbolo y compone `data/raw_scans/hoja_01..07.png`) o mediante **hojas impresas** llenadas a mano y escaneadas.
+  - La captura puede realizarse con **stylus / tableta digitalizadora** (`python -m src.data.captura_stylus`, que guía símbolo por símbolo y compone `data/raw_scans/hoja_01..07.png`) o mediante **hojas impresas** llenadas a mano y escaneadas.
   - El extractor OpenCV detecta los 4 marcadores fiduciales negros de esquina, corrige la perspectiva por homografía a `2550×3300`, recorta cada celda descartando márgenes (`inner_margin = 14 px`), binariza con umbral adaptativo, centra el glifo por *bounding box* conservando relación de aspecto y lo empareja con su entrada base `x` de `Lato-Regular`.
 
 ### 4.2 Particiones sin fuga de información (Rúbrica B3)
@@ -97,8 +97,8 @@ Se aplican **dos niveles de aislamiento verificados por prueba automática** (`C
 - **Muestras inspeccionadas manualmente:** 32 pares sintéticos (`16` de `train` en `figuras/checkpoint1_sinteticos.png` + `16` de `val`/`test_unseen`), 18 imágenes OOD (`figuras/checkpoint1_ood.png`) y 6 recortes del extractor OpenCV sobre plantilla rotada 5° con perspectiva simulada (`figuras/checkpoint1_opencv_simulado.png`).
 - **Hallazgos y tasa de error:** **0 / 32 errores (0.0 %)** de etiqueta, inversión de color o recorte truncado tras corregir el margen interno de recorte (`inner_margin = 14 px`) y verificar soporte completo de los 75 símbolos en las 17 fuentes (3 fuentes candidatas con HTTP 404 —`ComingSoon`, `JustAnotherHand`, `Schoolbell`— fueron descartadas limpiamente durante la descarga).
 
-### 5.2 Auditoría manual obligatoria sobre muestras reales del autor (pendiente de captura Wacom — Fase 5)
-> **[PENDIENTE FASE 5]** Una vez capturadas las 300 muestras reales con `src/data/captura_wacom.py` y extraídas con `src/data/02_extraer_recortes.py`, inspeccionar al menos **30 muestras reales aleatorias** (≥20 exigidas por B5) y llenar la tabla siguiente antes del tag `v1.0-final`:
+### 5.2 Auditoría manual obligatoria sobre muestras reales del autor (pendiente de captura con stylus — Fase 5)
+> **[PENDIENTE FASE 5]** Una vez capturadas las 300 muestras reales con `src/data/captura_stylus.py` y extraídas con `src/data/02_extraer_recortes.py`, inspeccionar al menos **30 muestras reales aleatorias** (≥20 exigidas por B5) y llenar la tabla siguiente antes del tag `v1.0-final`:
 
 | Indicador de revisión manual (`data/real_pairs/`) | Valor registrado |
 | :--- | :--- |
@@ -106,7 +106,7 @@ Se aplican **dos niveles de aislamiento verificados por prueba automática** (`C
 | Muestras con error de etiqueta o confusión visual | *Pendiente* |
 | Muestras con error de recorte / ruido residual / trazo cortado | *Pendiente* |
 | **Porcentaje total de errores detectados (%)** | *Pendiente* |
-| **Acciones de corrección aplicadas** | *Re-trazar celdas defectuosas en `captura_wacom.py` y re-ejecutar `02_extraer_recortes.py`* |
+| **Acciones de corrección aplicadas** | *Re-trazar celdas defectuosas en `captura_stylus.py` y re-ejecutar `02_extraer_recortes.py`* |
 
 ---
 

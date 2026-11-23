@@ -16,7 +16,7 @@ Proyecto final de **Deep Learning para Visión de Computadoras (2026B — Licenc
 
 | Nombre completo | Código de estudiante | Rol principal |
 | :--- | :---: | :--- |
-| **Carlo A. Amezcua L.** | `[COMPLETAR CÓDIGO]` | Arquitectura Pix2Pix/Jueces, pipeline OpenCV/Wacom, despliegue ONNX, demo tiempo real y evaluación |
+| **Carlo A. Amezcua L.** | `[COMPLETAR CÓDIGO]` | Arquitectura Pix2Pix/Jueces, pipeline OpenCV/Stylus, despliegue ONNX, demo tiempo real y evaluación |
 
 > *(Si el proyecto es en equipo, agrega aquí el nombre completo y código de cada integrante y verifica que todos tengan commits técnicos propios en GitHub — Rúbrica A3).*
 
@@ -28,7 +28,7 @@ Resumen del diseño de datos (ver documentación completa, licencias y revisión
 
 - **Vocabulario único (`src/config.py`):** **75 símbolos** divididos en 4 subgrupos — Mayúsculas (`A–Z`, 26), Minúsculas (`a–z`, 26), Dígitos (`0–9`, 10) y Signos básicos (`.,!?()+-=/:;&`, 13) — todos con resolución uniforme `1×128×128` (escala de grises, fondo blanco `255`, trazo negro `0`, normalizados a `[-1, 1]`).
 - **Dataset sintético de preentrenamiento (`data/synthetic_pairs/`):** **3,825 pares `(x, y)`** generados a partir de **17 Google Fonts manuscritas** con licencia **SIL Open Font License 1.1 (OFL)** emparejadas con la fuente base `Lato-Regular` (reproducible en local con `SEED = 42`).
-- **Dataset propio del autor (`data/real_pairs/`):** **300 muestras reales** (75 símbolos × 4 repeticiones) capturadas mediante tableta Wacom (`src/data/captura_wacom.py`) o plantilla impresa y normalizadas automáticamente por homografía y *bounding box* con OpenCV (`src/data/02_extraer_recortes.py`).
+- **Dataset propio del autor (`data/real_pairs/`):** **300 muestras reales** (75 símbolos × 4 repeticiones) capturadas mediante stylus / tableta digitalizadora (`src/data/captura_stylus.py`) o plantilla impresa y normalizadas automáticamente por homografía y *bounding box* con OpenCV (`src/data/02_extraer_recortes.py`).
 - **Dataset Fuera de Distribución (`data/ood/`):** **72 imágenes** en 6 categorías (ruido puro, garabatos, símbolos inéditos `@ # $ % ñ Ñ ¿ ¡ *`, rotación extrema ±45°, desenfoque/corte y sombra/bajo contraste) para evaluar robustez y calibración de confianza (Rúbrica B6).
 - **Particiones sin fuga de información (Rúbrica B3):**
   - **Aislamiento Zero-Shot:** 11 símbolos reservados (`G, Q, k, z, 4, 8, ?, &, +, ;, )`) viven exclusivamente en `test_unseen/` (`set(train) ∩ set(test_unseen) == ∅`). Nunca participan en entrenamiento, selección de hiperparámetros ni *early stopping*.
@@ -65,7 +65,7 @@ flowchart LR
 
 ### 5.1 Evaluación cuantitativa y legibilidad (`eval/evaluate_models.py`)
 
-> **Estado actual:** Métricas verificadas del modelo preentrenado sintético (`pix2pix_pretrained.pth`) y techo de referencia (`y`). Las filas de **Exp A (*From Scratch*)** y **Exp B (*Fine-Tuning*)** se completarán tras la captura real con Wacom (Fase 5).
+> **Estado actual:** Métricas verificadas del modelo preentrenado sintético (`pix2pix_pretrained.pth`) y techo de referencia (`y`). Las filas de **Exp A (*From Scratch*)** y **Exp B (*Fine-Tuning*)** se completarán tras la captura real con stylus (Fase 5).
 
 | Split | Modelo / Fuente | Accuracy (`ResNet-18` / `EffNet-B0`) | Macro-F1 (`ResNet-18` / `EffNet-B0`) | L1 media | FID dominio (`ResNet-18`) |
 | :--- | :--- | :---: | :---: | :---: | :---: |

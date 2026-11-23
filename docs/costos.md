@@ -8,7 +8,7 @@ Documento de análisis de costos técnicos y operativos del proyecto **Generaci�
 
 | Entorno | Hardware | Uso en el proyecto | Costo monetario real |
 | :--- | :--- | :--- | :---: |
-| **PC Local (Desarrollo e Inferencia)** | Windows 10, CPU Intel (12 núcleos lógicos), sin GPU dedicada | Generación de datasets, extractor OpenCV, captura Wacom, exportación ONNX, vectorización `.ttf`, evaluación/Grad-CAM y demo en tiempo real | \$0.00 (equipo personal) |
+| **PC Local (Desarrollo e Inferencia)** | Windows 10, CPU Intel (12 núcleos lógicos), sin GPU dedicada | Generación de datasets, extractor OpenCV, captura con stylus, exportación ONNX, vectorización `.ttf`, evaluación/Grad-CAM y demo en tiempo real | \$0.00 (equipo personal) |
 | **Google Colab (Nivel Gratuito)** | GPU **NVIDIA Tesla T4 (16 GB VRAM)**, Python 3.12, PyTorch CUDA | Entrenamiento de jueces (`ResNet-18`, `EfficientNet-B0`), preentrenamiento Pix2Pix y experimentos A/B de Fase 5 | \$0.00 (capa gratuita) |
 | **Google Drive / GitHub** | Almacenamiento en la nube | Persistencia de checkpoints `.pth`, respaldo de datasets y repositorio público | \$0.00 (cuota gratuita) |
 
