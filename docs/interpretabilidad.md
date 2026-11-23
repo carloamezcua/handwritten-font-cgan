@@ -1,8 +1,8 @@
-# Interpretabilidad y Análisis Visual — Grad-CAM sobre Jueces Congelados (Avance A)
+# Interpretabilidad y Análisis Visual — Grad-CAM sobre Evaluadores CNN
 
-Este documento presenta la evidencia de interpretabilidad visual y cuantitativa del sistema **Generación de Tipografía Manuscrita con Pix2Pix cGAN**, evaluando mediante **Grad-CAM** qué trazos y regiones espaciales determinan la legibilidad de los glifos generados (`ŷ = G(x)`) frente a los glifos manuscritos de referencia (`y`).
+Análisis de interpretabilidad visual y cuantitativa para **Handwritten Font cGAN**, evaluando mediante **Grad-CAM** qué trazos y regiones espaciales determinan la legibilidad de los glifos generados (`ŷ = G(x)`) frente a los glifos manuscritos de referencia (`y`).
 
-> **Estado actual (Avance A — Fase 6 previa a captura real):** El análisis corresponde al generador preentrenado sobre fuentes sintéticas (`checkpoints/pix2pix_pretrained.pth`) evaluado con los dos clasificadores jueces congelados (`ResNet-18` y `EfficientNet-B0`) sobre `data/synthetic_pairs/{val, test_unseen}`. El script [`eval/gradcam_analysis.py`](../eval/gradcam_analysis.py) está parametrizado para re-ejecutarse de forma idéntica sobre `data/real_pairs/` y comparar **Experimento A (From Scratch)** vs. **Experimento B (Fine-Tuning)** en cuanto se complete la captura con stylus.
+> **Alcance:** Evaluación del generador preentrenado sobre fuentes sintéticas (`checkpoints/pix2pix_pretrained.pth`) con los dos clasificadores congelados (`ResNet-18` y `EfficientNet-B0`) sobre `data/synthetic_pairs/{val, test_unseen}`. El script [`eval/gradcam_analysis.py`](../eval/gradcam_analysis.py) está parametrizado para ejecutarse de forma idéntica sobre capturas reales (`--data-dir data/real_pairs`).
 
 ---
 
@@ -54,19 +54,19 @@ Sobre los caracteres reservados exclusivamente para evaluación Zero-Shot (`k`, 
 
 ---
 
-## 4. Diagnóstico Causal de Errores (Rúbrica D3)
+## 4. Diagnóstico Causal de Errores
 
 ![Grad-CAM Diagnóstico de Errores](figuras/gradcam_pretrain_errores.png)
 
-Combinando el mapa Grad-CAM con la galería de errores de [`eval/evaluate_models.py`](../eval/evaluate_models.py) (`eval_errores_pretrain_pretrained.png`), los fallos del modelo preentrenado se agrupan en **4 causas físicas concretas** (no son errores arbitrarios del clasificador):
+Combinando el mapa Grad-CAM con la galería de errores de [`eval/evaluate_models.py`](../eval/evaluate_models.py) (`eval_errores_pretrain_pretrained.png`), los fallos del modelo preentrenado se agrupan en **4 causas físicas concretas**:
 
-| Caso (`Real → Pred`) | Conf. `ŷ` | Diagnóstico visual mediante `x \| ŷ \| y` y Grad-CAM | Hipótesis de causa y mitigación en Fase 5 |
+| Caso (`Real → Pred`) | Conf. `ŷ` | Diagnóstico visual mediante `x \| ŷ \| y` y Grad-CAM | Hipótesis de causa y mitigación con *fine-tuning* |
 | :--- | :---: | :--- | :--- |
-| **`6 → C`** (`val`) | 0.92 | El generador **omitió el bucle inferior cerrado** del `6`, dibujando literalmente una `C` abierta; Grad-CAM enfoca la apertura lateral derecha. | Conflicto entre 17 estilos sintéticos con cierres del `6` en alturas distintas (ambigüedad uno-a-muchos bajo pérdida L1). Al hacer *fine-tuning* sobre un solo autor (captura con stylus), el cierre del bucle es consistente. |
+| **`6 → C`** (`val`) | 0.92 | El generador **omitió el bucle inferior cerrado** del `6`, dibujando literalmente una `C` abierta; Grad-CAM enfoca la apertura lateral derecha. | Conflicto entre 17 estilos sintéticos con cierres del `6` en alturas distintas (ambigüedad uno-a-muchos bajo pérdida L1). Al hacer *fine-tuning* sobre un solo autor, el cierre del bucle es consistente. |
 | **`S → C`** (`val`) | 0.57 | Pérdida parcial de la curva inferior derecha de la `S`, dejando una silueta abierta similar a `C`. | Misma causa de promediado L1 multi-fuente en trazos con doble curvatura. |
-| **`! → l` y `i → l`** (`val`) | 0.70 / 0.62 | El generador **borró el punto aislado** (inferior en `!`, superior en `i`), dejando únicamente el asta vertical. Grad-CAM de `y` muestra activación fuerte sobre el punto, ausente en `ŷ`. | Los componentes desconectados pequeños (puntos) aportan pocos píxeles a la pérdida L1 global. En el *fine-tuning* sobre estilo único y con mayor énfasis en trazos finos (y verificación en auditoría por subgrupos), los puntos se vuelven estables. |
+| **`! → l` y `i → l`** (`val`) | 0.70 / 0.62 | El generador **borró el punto aislado** (inferior en `!`, superior en `i`), dejando únicamente el asta vertical. Grad-CAM de `y` muestra activación fuerte sobre el punto, ausente en `ŷ`. | Los componentes desconectados pequeños (puntos) aportan pocos píxeles a la pérdida L1 global. En el *fine-tuning* sobre estilo único y con verificación por subgrupos, los puntos se vuelven estables. |
 | **`: → ;`** (`val`) | 0.76 | El punto inferior de `:` se alargó con una cola descendente similar a coma, activando la clase `;`. | Superposición de estadísticas locales entre `:` y `;` en fuentes manuscritas inclinadas. |
-| **`l → I`** (`val`) | 0.57 | Ambigüedad intrínseca de fuentes *sans-serif* (incluso la referencia `y` solo obtuvo `0.56`). | Limitación inherente del alfabeto sin serifas; en la captura real el autor puede marcar serifas sutiles en `I` para desambiguar. |
+| **`l → I`** (`val`) | 0.57 | Ambigüedad intrínseca de fuentes *sans-serif* (incluso la referencia `y` solo obtuvo `0.56`). | Limitación inherente del alfabeto sin serifas; en captura personal se pueden marcar serifas sutiles en `I` para desambiguar. |
 | **`4 → &`, `Q → U`, `G → O`** (`test_unseen`) | 0.29–0.32 | En Zero-Shot, los símbolos con trazos cruzados o colas diagonales nunca vistas (`4`, `Q`, `G`) pierden su barra o cola distintiva, disparando confianza muy baja (`< 0.35`). | **Confirmación de seguridad:** todos estos fallos Zero-Shot caen muy por debajo del umbral `0.70` y son interceptados por la alerta `BAJA CONFIANZA (OOD)` en la demo. |
 
 ---
@@ -89,14 +89,14 @@ Al comparar los mapas de activación de dos familias arquitectónicas distintas 
 
 ---
 
-## 6. Reproducibilidad y Actualización Tras Captura Real (Fase 5)
+## 6. Reproducibilidad
 
 Para regenerar todas las figuras y métricas de este informe:
 
 ```powershell
-# Evaluación actual (modelo preentrenado sintético)
+# Evaluación sobre el modelo preentrenado sintético
 python -m eval.gradcam_analysis
 
-# Evaluación final (tras entrenar Experimento B sobre data/real_pairs)
+# Evaluación tras fine-tuning sobre capturas personales (data/real_pairs)
 python -m eval.gradcam_analysis --data-dir data/real_pairs --generator-ckpt checkpoints/pix2pix_finetuned.pth --tag final
 ```

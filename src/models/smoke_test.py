@@ -1,4 +1,4 @@
-"""Checkpoint 2 — Smoke test en CPU para Pix2Pix y clasificadores jueces.
+"""Smoke test en CPU para Pix2Pix y clasificadores jueces.
 
 Valida:
 1. Shapes exactos y `forward + backward` sin NaNs para:
@@ -215,7 +215,7 @@ def run_mini_train_smoke_test(
     ax.plot(ep_range, history["g_l1"], marker="o", label="G L1")
     ax.set_xlabel("Época")
     ax.set_ylabel("Pérdida")
-    ax.set_title("Checkpoint 2 — Smoke Test Pix2Pix (CPU)")
+    ax.set_title("Smoke Test Pix2Pix (CPU)")
     ax.legend()
     ax.grid(True, alpha=0.3)
     fig.tight_layout()
@@ -232,7 +232,7 @@ def run_mini_train_smoke_test(
         grid_path,
         chars=chars_b,
         max_samples=4,
-        title="Checkpoint 2 — Smoke Test (2 épocas CPU)",
+        title="Smoke Test Pix2Pix (2 épocas CPU)",
     )
 
     print(f"  [OK] Checkpoint guardado: {checkpoint_path}")
@@ -241,7 +241,7 @@ def run_mini_train_smoke_test(
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Checkpoint 2: Smoke test en CPU.")
+    parser = argparse.ArgumentParser(description="Smoke test en CPU para modelos y entrenamiento.")
     parser.add_argument(
         "--data-dir",
         type=Path,
@@ -276,7 +276,7 @@ def main() -> None:
         num_samples=args.samples,
         epochs=args.epochs,
     )
-    print("\nCHECKPOINT 2 COMPLETADO SIN ERRORES.")
+    print("\nSMOKE TEST COMPLETADO SIN ERRORES.")
 
 
 if __name__ == "__main__":

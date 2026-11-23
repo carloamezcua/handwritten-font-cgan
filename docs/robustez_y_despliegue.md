@@ -1,6 +1,6 @@
-# Robustez y Despliegue (ONNX, Latencia y Hardware)
+# Robustez y Despliegue (ONNX Runtime, Latencia y OOD)
 
-Documento de evidencia para los indicadores **C1–C5** de la rúbrica.
+Benchmarks de exportación a ONNX, latencia en CPU y evaluación de robustez ante entradas Fuera de Distribución (OOD).
 
 ## 1. Entorno de Hardware y Software (Benchmark CPU)
 - **Sistema Operativo:** Windows 10
@@ -15,21 +15,21 @@ Documento de evidencia para los indicadores **C1–C5** de la rúbrica.
 | Generador `G` (`UNetGenerator`) | `pix2pix_pretrained.pth` | `generator.onnx` | 159.56 | `8.97e-06` |
 | Juez (`resnet18`) | `judge_resnet18.pth` | `judge_resnet18.onnx` | 42.75 | `1.91e-06` |
 
-## 3. Comparativa de Latencia y FPS: Antes (PyTorch) vs. Después (ONNX Runtime)
+## 3. Comparativa de Latencia y FPS: PyTorch vs. ONNX Runtime
 | Etapa | PyTorch CPU (ms) | PyTorch FPS | ONNX Runtime CPU (ms) | ONNX p95 (ms) | ONNX FPS | Speedup |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | Generador `G` (`UNetGenerator`) | 27.34 ± 5.73 | 36.58 | 11.45 ± 0.71 | 12.81 | 87.32 | 2.39× |
 | Juez (`resnet18`) | 7.30 ± 0.74 | 137.05 | 6.82 ± 8.04 | 24.95 | 146.59 | 1.07× |
 | **Pipeline completo (`G + Juez`)** | **34.56 ± 2.78** | **28.94** | **50.50 ± 25.68** | **102.25** | **19.80** | **0.68×** |
 
-> **Veredicto de tiempo real (Rúbrica C2 / C5):** **CUMPLE (>= 10 FPS / <= 100 ms)** (`50.50 ms` promedio / `19.80 FPS` en CPU).
+> **Rendimiento en tiempo real:** **19.80 FPS (`50.50 ms` promedio en CPU)**, cumpliendo el objetivo de operación fluida `>= 10 FPS / <= 100 ms`.
 
 ## 4. Demo en Tiempo Real y Calibración OOD
-- **Arranque en 1 comando:** `python app/demo_realtime.py`
-- **Modos (`M`):** Canvas interactivo (teclado / lista de caracteres) y Webcam ROI (flujo continuo cuadro por cuadro).
+- **Arranque:** `python app/demo_realtime.py`
+- **Modos (`M` / `Tab`):** Canvas interactivo (teclado / trazo libre con mouse) y Webcam ROI (flujo continuo cuadro por cuadro).
 - **Umbral de confianza (`+` / `-`, default `0.70`):** si la probabilidad máxima del juez sobre el glifo generado cae por debajo del umbral (o si la entrada está vacía / con ruido extremo), se muestra la alerta visual `BAJA CONFIANZA (OOD)`.
 
-### 4.1 Resumen de Evaluación OOD (72 imágenes — [`eval/robustez.ipynb`](../eval/robustez.ipynb), Rúbrica B6)
+### 4.1 Resumen de Evaluación OOD (72 imágenes — [`eval/robustez.ipynb`](../eval/robustez.ipynb))
 
 | Escenario | AUROC (OOD vs. ID) | Rechazo OOD @ `τ=0.70` | Falso rechazo ID @ `τ=0.70` | Óptimo Youden (`τ`) | Rechazo OOD óptimo |
 | :--- | :---: | :---: | :---: | :---: | :---: |
@@ -49,4 +49,4 @@ Documento de evidencia para los indicadores **C1–C5** de la rúbrica.
 | `sombra_bajo_contraste` | **100.0 %** | 58.3 % | 75.0 % |
 | `desenfoque_corte` | **83.3 %** | 50.0 % | 33.3 % *(U-Net restaura trazos borrosos)* |
 
-> Evidencia visual completa en [`figuras/robustez_ood_distribucion.png`](figuras/robustez_ood_distribucion.png), [`figuras/robustez_ood_roc_umbral.png`](figuras/robustez_ood_roc_umbral.png), [`figuras/robustez_ood_categorias.png`](figuras/robustez_ood_categorias.png) y [`figuras/robustez_ood_ejemplos.png`](figuras/robustez_ood_ejemplos.png). *(Se re-ejecutará tras el fine-tuning real de Fase 5 para actualizar la columna del pipeline).*
+> Evidencia visual completa en [`figuras/robustez_ood_distribucion.png`](figuras/robustez_ood_distribucion.png), [`figuras/robustez_ood_roc_umbral.png`](figuras/robustez_ood_roc_umbral.png), [`figuras/robustez_ood_categorias.png`](figuras/robustez_ood_categorias.png) y [`figuras/robustez_ood_ejemplos.png`](figuras/robustez_ood_ejemplos.png).

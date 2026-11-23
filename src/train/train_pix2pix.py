@@ -1,17 +1,17 @@
 """Entrenamiento de Pix2Pix (U-Net + PatchGAN) para pretrain sintético, scratch y fine-tuning.
 
 Modos soportados (`--mode`):
-- `pretrain`: Preentrenamiento sobre `data/synthetic_pairs/` (Fase 3).
-- `scratch`:  Experimento A desde pesos aleatorios sobre `data/real_pairs/` (Fase 5).
-- `finetune`: Experimento B cargando `--pretrained-ckpt` sobre `data/real_pairs/` (Fase 5).
+- `pretrain`: Preentrenamiento sobre `data/synthetic_pairs/`.
+- `scratch`:  Entrenamiento desde pesos aleatorios sobre `data/real_pairs/`.
+- `finetune`: Fine-tuning cargando `--pretrained-ckpt` sobre `data/real_pairs/`.
 
-Regla anti-fuga (Rúbrica B3):
+Regla anti-fuga de datos:
 - `test_unseen/` nunca se usa para entrenar ni para elegir el mejor checkpoint.
 - El mejor modelo se selecciona exclusivamente con `val_l1` sobre `val/`.
 - Al finalizar el entrenamiento, se genera una cuadrícula visual `x | ŷ | y` sobre
   `val` y `test_unseen` usando el mejor checkpoint.
 
-Uso en Colab GPU (Fase 3):
+Uso en GPU (Colab / CUDA):
     python -m src.train.train_pix2pix --mode pretrain --epochs 60 --batch-size 32
 
 Prueba rápida en CPU local:

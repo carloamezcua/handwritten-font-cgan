@@ -326,7 +326,7 @@ def extract_from_scans(
 def run_simulated_test(
     layout_path: Path = Path("data/templates/template_layout.json"),
     template_png: Path = Path("data/templates/plantilla_hoja_01.png"),
-    out_preview: Path = Path("docs/figuras/checkpoint1_opencv_simulado.png"),
+    out_preview: Path = Path("docs/figuras/opencv_extractor_simulado.png"),
     num_cells: int = 6,
 ) -> bool:
     """Prueba de humo del extractor OpenCV sobre una hoja simulada con perspectiva."""

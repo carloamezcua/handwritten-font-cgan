@@ -1,4 +1,4 @@
-"""Evaluación cuantitativa de modelos Pix2Pix con jueces congelados (Rúbrica D1 y D3).
+"""Evaluación cuantitativa de modelos Pix2Pix con jueces congelados.
 
 Evalúa uno o más checkpoints de `UNetGenerator` (más la referencia objetivo `y` como
 techo de legibilidad) sobre los splits `val` y `test_unseen` usando los dos jueces
@@ -15,7 +15,7 @@ Artefactos generados:
 - `results/eval/predictions_<tag>.csv`: predicciones por muestra (usado por auditoría).
 - `results/eval/summary_<tag>.md`: tabla Markdown lista para el README/informe.
 - `docs/figuras/eval_cm_<tag>_<model>_<split>.png`: matrices de confusión.
-- `docs/figuras/eval_errores_<tag>_<model>.png`: galería de errores representativos (D3).
+- `docs/figuras/eval_errores_<tag>_<model>.png`: galería de errores representativos.
 - `docs/figuras/eval_comparativa_<tag>_<split>.png`: cuadrícula comparativa `x | ŷ | y`.
 
 Uso (preentrenado actual):
@@ -835,7 +835,7 @@ def main() -> None:
 
         report["splits"][split_name] = split_report
 
-    # Galerías de errores representativos (Rúbrica D3)
+    # Galerías de errores representativos
     for m_name, err_list in errors_by_model.items():
         cat_counts: dict[str, int] = defaultdict(int)
         for rec in err_list:

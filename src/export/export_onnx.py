@@ -6,7 +6,7 @@ Exporta:
 
 Mide latencia promedio (ms), percentil 95 (ms) y FPS sobre 100 inferencias en CPU
 antes (PyTorch) vs. después (ONNX Runtime), verifica equivalencia numérica y
-genera la tabla comparativa en `docs/robustez_y_despliegue.md` (Rúbrica C5).
+genera la tabla comparativa en `docs/robustez_y_despliegue.md`.
 
 Uso:
     python -m src.export.export_onnx
@@ -106,9 +106,9 @@ def write_deployment_doc(
     meets_target = ort_res["pipeline"]["fps"] >= 10.0
     status_str = "CUMPLE (>= 10 FPS / <= 100 ms)" if meets_target else "POR DEBAJO DE 10 FPS"
 
-    content = f"""# Robustez y Despliegue (ONNX, Latencia y Hardware)
+    content = f"""# Robustez y Despliegue (ONNX Runtime, Latencia y OOD)
 
-Documento de evidencia para los indicadores **C1–C5** de la rúbrica.
+Benchmarks de exportación a ONNX, latencia en CPU y verificación numérica.
 
 ## 1. Entorno de Hardware y Software (Benchmark CPU)
 - **Sistema Operativo:** {hw["os"]}
@@ -130,13 +130,13 @@ Documento de evidencia para los indicadores **C1–C5** de la rúbrica.
 | Juez (`{results["judge_model"]}`) | {pt["judge"]["mean_ms"]:.2f} ± {pt["judge"]["std_ms"]:.2f} | {pt["judge"]["fps"]:.2f} | {ort_res["judge"]["mean_ms"]:.2f} ± {ort_res["judge"]["std_ms"]:.2f} | {ort_res["judge"]["p95_ms"]:.2f} | {ort_res["judge"]["fps"]:.2f} | {sp["judge"]:.2f}× |
 | **Pipeline completo (`G + Juez`)** | **{pt["pipeline"]["mean_ms"]:.2f} ± {pt["pipeline"]["std_ms"]:.2f}** | **{pt["pipeline"]["fps"]:.2f}** | **{ort_res["pipeline"]["mean_ms"]:.2f} ± {ort_res["pipeline"]["std_ms"]:.2f}** | **{ort_res["pipeline"]["p95_ms"]:.2f}** | **{ort_res["pipeline"]["fps"]:.2f}** | **{sp["pipeline"]:.2f}×** |
 
-> **Veredicto de tiempo real (Rúbrica C2 / C5):** **{status_str}** (`{ort_res["pipeline"]["mean_ms"]:.2f} ms` promedio / `{ort_res["pipeline"]["fps"]:.2f} FPS` en CPU).
+> **Rendimiento en tiempo real:** **{status_str}** (`{ort_res["pipeline"]["mean_ms"]:.2f} ms` promedio / `{ort_res["pipeline"]["fps"]:.2f} FPS` en CPU).
 
 ## 4. Demo en Tiempo Real y Calibración OOD
-- **Arranque en 1 comando:** `python app/demo_realtime.py`
-- **Modos (`M`):** Canvas interactivo (teclado / lista de caracteres) y Webcam ROI (flujo continuo cuadro por cuadro).
+- **Arranque:** `python app/demo_realtime.py`
+- **Modos (`M` / `Tab`):** Canvas interactivo (teclado / trazo libre con mouse) y Webcam ROI (flujo continuo cuadro por cuadro).
 - **Umbral de confianza (`+` / `-`, default `0.70`):** si la probabilidad máxima del juez sobre el glifo generado cae por debajo del umbral (o si la entrada está vacía / con ruido extremo), se muestra la alerta visual `BAJA CONFIANZA (OOD)`.
-- *(En la Fase 6 se añadirá aquí el resumen de tasas de rechazo OOD obtenido desde `eval/robustez.ipynb`.)*
+- Consulta [`eval/robustez.ipynb`](../eval/robustez.ipynb) para el desglose completo de rechazo OOD.
 """
     doc_path.write_text(content, encoding="utf-8")
 

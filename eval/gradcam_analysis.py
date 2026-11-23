@@ -1,4 +1,4 @@
-"""Análisis de interpretabilidad con Grad-CAM sobre los jueces congelados (Avance A).
+"""Análisis de interpretabilidad con Grad-CAM sobre los jueces congelados.
 
 Calcula mapas de activación Grad-CAM sobre `ResNet-18` (`backbone.layer4[-1]`) y
 `EfficientNet-B0` (`backbone.features[-1]`) evaluando tanto glifos de referencia `y`

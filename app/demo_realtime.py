@@ -1,4 +1,4 @@
-"""Demo interactiva en tiempo real (OpenCV + ONNX Runtime) — Rúbrica C1–C4.
+"""Demo interactiva en tiempo real (OpenCV + ONNX Runtime).
 
 Ventana triple:
     [ Entrada x (Canvas / Webcam ROI) | Glifo generado ŷ | Predicción + Confianza + FPS ]
