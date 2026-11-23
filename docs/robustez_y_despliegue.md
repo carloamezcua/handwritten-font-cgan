@@ -28,4 +28,25 @@ Documento de evidencia para los indicadores **C1–C5** de la rúbrica.
 - **Arranque en 1 comando:** `python app/demo_realtime.py`
 - **Modos (`M`):** Canvas interactivo (teclado / lista de caracteres) y Webcam ROI (flujo continuo cuadro por cuadro).
 - **Umbral de confianza (`+` / `-`, default `0.70`):** si la probabilidad máxima del juez sobre el glifo generado cae por debajo del umbral (o si la entrada está vacía / con ruido extremo), se muestra la alerta visual `BAJA CONFIANZA (OOD)`.
-- *(En la Fase 6 se añadirá aquí el resumen de tasas de rechazo OOD obtenido desde `eval/robustez.ipynb`.)*
+
+### 4.1 Resumen de Evaluación OOD (72 imágenes — [`eval/robustez.ipynb`](../eval/robustez.ipynb), Rúbrica B6)
+
+| Escenario | AUROC (OOD vs. ID) | Rechazo OOD @ `τ=0.70` | Falso rechazo ID @ `τ=0.70` | Óptimo Youden (`τ`) | Rechazo OOD óptimo |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **ResNet-18 directo** (`y` vs. OOD) | **0.9435** | 77.8 % | **10.8 %** | 0.85 | **94.4 %** |
+| **EfficientNet-B0 directo** (`y` vs. OOD) | **0.8856** | 70.8 % | **9.6 %** | 0.80 | 77.8 % |
+| **Pipeline Demo (`G + ResNet-18`)** | 0.7574 | **81.9 %** | 39.1 % | 0.75 | **90.3 %** |
+| **Pipeline Demo (`G + EfficientNet-B0`)** | 0.8162 | **81.9 %** | 39.1 % | 0.55 | 76.4 % |
+
+**Tasa de rechazo por categoría OOD a `τ = 0.70` (12 imágenes por categoría):**
+
+| Categoría OOD | ResNet-18 directo | EfficientNet-B0 directo | Pipeline Demo (`G + ResNet-18`) |
+| :--- | :---: | :---: | :---: |
+| `garabatos` | 83.3 % | 100.0 % | **100.0 %** |
+| `simbolos_ineditos` (`@ # $ % ñ ¿ ¡ *`) | 75.0 % | 66.7 % | **100.0 %** |
+| `ruido_puro` | 58.3 % | 66.7 % | **91.7 %** |
+| `rotacion_extrema` (±45°) | 66.7 % | 83.3 % | **91.7 %** |
+| `sombra_bajo_contraste` | **100.0 %** | 58.3 % | 75.0 % |
+| `desenfoque_corte` | **83.3 %** | 50.0 % | 33.3 % *(U-Net restaura trazos borrosos)* |
+
+> Evidencia visual completa en [`figuras/robustez_ood_distribucion.png`](figuras/robustez_ood_distribucion.png), [`figuras/robustez_ood_roc_umbral.png`](figuras/robustez_ood_roc_umbral.png), [`figuras/robustez_ood_categorias.png`](figuras/robustez_ood_categorias.png) y [`figuras/robustez_ood_ejemplos.png`](figuras/robustez_ood_ejemplos.png). *(Se re-ejecutará tras el fine-tuning real de Fase 5 para actualizar la columna del pipeline).*
