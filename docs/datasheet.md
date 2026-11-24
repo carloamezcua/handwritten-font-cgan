@@ -23,7 +23,7 @@ Documentación de origen, composición, licencias y protocolos de partición sig
 | Conjunto | Origen | Licencia | Resolución y formato | Clases (`CHARSET`) | Total imágenes/pares | Splits |
 | :--- | :--- | :--- | :--- | :---: | :---: | :--- |
 | **Sintético (`synthetic_pairs`)** | Google Fonts (1 fuente base + 17 manuscritas) | SIL Open Font License 1.1 (OFL) | `1×128×128` PNG (8-bit gris) | 75 | **3,825 pares** | `train`: 2,688 / `val`: 576 / `test_unseen`: 561 |
-| **Propio (`real_pairs`)** | Captura manuscrita propia del usuario (stylus / plantilla) | CC0 / Uso autorizado por el autor | `1×128×128` PNG (8-bit gris) | 75 | **300 pares** *(75 × 4 rep.)* | `train`: 192 / `val`: 64 / `test_unseen`: 44 |
+| **Propio (`real_pairs`)** | Captura manuscrita propia del autor (stylus / plantilla) | Uso académico y personal autorizado por el autor (todos los derechos reservados; no redistribuir sin permiso) | `1×128×128` PNG (8-bit gris) | 75 | **300 pares** *(75 × 4 rep.)* | `train`: 192 / `val`: 64 / `test_unseen`: 44 |
 | **Fuera de Distribución (`ood`)** | Generación programática (`04_generar_ood.py`) | MIT (repositorio propio) | `1×128×128` PNG (8-bit gris) | 6 categorías OOD | **72 imágenes** | Evaluación OOD (12 por categoría) |
 
 ### 2.2 Catálogo de fuentes tipográficas abiertas y licencias (`data/fonts/licenses.csv`)
@@ -88,23 +88,30 @@ Ver análisis gráfico completo en [`notebooks/01_eda_datos.ipynb`](../notebooks
 Se aplican **dos niveles de aislamiento verificados mediante assertions automáticas en `notebooks/01_eda_datos.ipynb`**:
 1. **Aislamiento de caracteres Zero-Shot (Pix2Pix):** Los 11 símbolos de `TEST_UNSEEN_CHARS = {'G','Q','k','z','4','8','?','&','+',';',')'}` viven **exclusivamente en `test_unseen/`**. La intersección de caracteres `set(train) ∩ set(test_unseen) == ∅`. Nunca se usan para entrenar el generador, ajustar hiperparámetros ni *early stopping*.
 2. **Aislamiento por fuente tipográfica (`train` vs. `val`):** En `data/synthetic_pairs/`, la partición entre `train` y `val` se realiza **por fuente completa** (`14 fuentes` exclusivas para `train` y `3 fuentes` nunca vistas para `val`, columna `split` y `judge_split`), evitando que la misma tipografía aparezca en entrenamiento y validación. En `data/real_pairs/`, las 4 repeticiones de cada símbolo visto se dividen en 3 para `train` y 1 para `val` (sin mezclar trazos repetidos).
+3. **Nota de transparencia sobre `judge_split` en `test_unseen` sintético:** Los clasificadores jueces (`ResNet-18` y `EfficientNet-B0`) necesitan conocer las 75 clases para poder evaluar los 11 símbolos Zero-Shot generados por Pix2Pix; por ello se entrenaron usando `judge_split` (14 fuentes en `train`, 3 en `val` sobre las 75 clases). En consecuencia, 462 de las 561 referencias `y` de `synthetic_pairs/test_unseen` pertenecen a `judge_split=train` (`100.00 %` Acc en `ResNet-18`), mientras que las 99 muestras de fuentes nunca vistas por el juez (`judge_split=val`) alcanzan **89.90 % Acc**. En `data/real_pairs/`, el traslape con el entrenamiento de los jueces es **0 %** (`86.36 %` Acc en `test_unseen` real).
 
 ---
 
 ## 5. Revisión de Calidad de Datos
 
-### 5.1 Auditoría sobre el dataset sintético y extractor OpenCV
+### 5.1 Auditoría manual sobre el dataset sintético y extractor OpenCV
 - **Muestras inspeccionadas:** 32 pares sintéticos (`16` de `train` en `figuras/eda_sinteticos.png` + `16` de `val`/`test_unseen`), 18 imágenes OOD (`figuras/eda_ood.png`) y 6 recortes del extractor OpenCV sobre plantilla rotada 5° con perspectiva simulada (`figuras/opencv_extractor_simulado.png`).
 - **Hallazgos y tasa de error:** **0 / 32 errores (0.0 %)** de etiqueta, inversión de color o recorte truncado tras ajustar el margen interno de recorte (`inner_margin = 14 px`) y verificar soporte completo de los 75 símbolos en las 17 fuentes (3 fuentes candidatas con descarga fallida —`ComingSoon`, `JustAnotherHand`, `Schoolbell`— fueron excluidas automáticamente).
 
-### 5.2 Protocolo de revisión para capturas reales (`data/real_pairs/`)
-Al capturar un conjunto personal de 300 trazos con `src/data/captura_stylus.py` y extraerlos con `src/data/02_extraer_recortes.py`, se recomienda inspeccionar aleatoriamente al menos 20–30 pares `(x | y)` para validar que no haya:
-- Confusión visual en caracteres ambiguos (`I / l / 1`, `O / 0 / o`).
-- Recortes truncados, ruido residual en bordes o inversión de fondo/trazo.
-- Cualquier celda defectuosa puede re-trazarse directamente en `captura_stylus.py` antes de ejecutar `--mode finetune`.
+### 5.2 Auditoría manual sobre la captura real completada (`data/real_pairs/`)
+Se completó la captura personal de **300 trazos manuscritos con stylus** mediante la interfaz web guiada (`src/data/captura_stylus.py` + `src/data/stylus_web_ui.py`) y su extracción con `src/data/02_extraer_recortes.py` (**300 / 300 pares válidos**, `0` celdas vacías; `train`: 192, `val`: 64, `test_unseen`: 44).
+
+![Auditoría manual de 30 muestras reales](figuras/auditoria_calidad_real_30.png)
+
+- **Muestra auditada manualmente:** **30 muestras aleatorias (`SEED = 42`)** cubriendo `train`, `val` y `test_unseen` (cuadrícula completa en `figuras/auditoria_calidad_real_30.png`).
+- **Tasa de error de etiquetado:** **0 / 30 (0.0 %)** — los 30 glifos corresponden exactamente a su etiqueta registrada.
+- **Hallazgos geométricos y estilísticos:**
+  - **Contacto leve con borde superior:** **1 / 30 (3.3 %)** — el trazo del paréntesis `'('` toca el borde superior `y = 0` sin perder continuidad del trazo (se conserva el margen `inner_margin = 14 px` para evitar cortar ascendentes).
+  - **Densidad de tinta real vs. sintética:** media de **`2.57 %`** de píxeles activos (`min = 0.07 %` en `'.'`, `max = 6.15 %`), sensiblemente más fina que las 17 fuentes sintéticas, lo que explica el choque de dominio observado durante `--mode finetune`.
+  - **Revisión de desacuerdos del juez (`26 / 300 = 8.7 %` en `ResNet-18`):** al inspeccionar los 26 casos donde el juez congelado difirió de la etiqueta real, se verificó que **no son errores de etiquetado**, sino convenciones estilísticas personales ausentes en Google Fonts — notablemente el cero trazado con barra diagonal (`0 → Ø`, 4/4 fallos del juez), `&` cursivo similar a `8` (4/4), `1` con base horizontal (`1 → L/I`) y pares sin diferencia de tamaño relativo (`x/X`, `c/C`, `5/S`).
 
 ---
 
 ## 6. Privacidad, Consentimiento y Almacenamiento
-- **Datos personales:** Los trazos manuscritos individuales no contienen nombres, firmas legales ni rostros; aun así, la escritura manuscrita constituye un rasgo estilístico personal, por lo que las muestras de *fine-tuning* deben provenir únicamente del autor o de colaboradores con consentimiento explícito.
-- **Almacenamiento y reproducibilidad:** Los archivos pesados (`data/synthetic_pairs/`, `data/real_pairs/`, `data/raw_scans/`, `checkpoints/`) están excluidos del historial de Git en `.gitignore`. El dataset sintético y el set OOD se regeneran de forma 100 % determinista (`SEED = 42`) ejecutando `src/data/03_generar_sinteticos.py` y `src/data/04_generar_ood.py`.
+- **Datos personales:** Los trazos manuscritos individuales pertenecen exclusivamente al autor del proyecto (sin rostros, nombres ni firmas legales). Cualquier uso de muestras de terceros requiere consentimiento informado documentado.
+- **Almacenamiento y reproducibilidad:** Los archivos pesados (`data/synthetic_pairs/`, `data/real_pairs/`, `data/raw_scans/`, `checkpoints/`) están excluidos del historial de Git en `.gitignore`. El dataset sintético y el set OOD se regeneran de forma 100 % determinista (`SEED = 42`) ejecutando `src/data/03_generar_sinteticos.py` y `src/data/04_generar_ood.py`, y las capturas reales + checkpoints entrenados se distribuyen vía GitHub Releases mediante [`src/data/download_artifacts.py`](../src/data/download_artifacts.py).
