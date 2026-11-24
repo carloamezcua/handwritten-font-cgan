@@ -58,9 +58,12 @@ def _export_to_onnx(
     onnx.checker.check_model(onnx_model)
 
 
-def _create_ort_session(onnx_path: Path) -> ort.InferenceSession:
+def _create_ort_session(onnx_path: Path, intra_threads: int = 4) -> ort.InferenceSession:
     opts = ort.SessionOptions()
     opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
+    opts.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
+    opts.intra_op_num_threads = min(intra_threads, os.cpu_count() or intra_threads)
+    opts.inter_op_num_threads = 1
     return ort.InferenceSession(
         str(onnx_path),
         sess_options=opts,
@@ -106,14 +109,22 @@ def write_deployment_doc(
     meets_target = ort_res["pipeline"]["fps"] >= 10.0
     status_str = "CUMPLE (>= 10 FPS / <= 100 ms)" if meets_target else "POR DEBAJO DE 10 FPS"
 
+    preserved_ood = ""
+    if doc_path.exists():
+        existing = doc_path.read_text(encoding="utf-8")
+        marker = "### 4.1"
+        idx = existing.find(marker)
+        if idx != -1:
+            preserved_ood = "\n" + existing[idx:].lstrip("\n")
+
     content = f"""# Robustez y Despliegue (ONNX Runtime, Latencia y OOD)
 
-Benchmarks de exportación a ONNX, latencia en CPU y verificación numérica.
+Benchmarks de exportación a ONNX, latencia en CPU y evaluación de robustez ante entradas Fuera de Distribución (OOD).
 
 ## 1. Entorno de Hardware y Software (Benchmark CPU)
 - **Sistema Operativo:** {hw["os"]}
 - **Procesador:** {hw["processor"]}
-- **Núcleos lógicos CPU:** {hw["cpu_count"]}
+- **Núcleos lógicos CPU:** {hw["cpu_count"]} *(ONNX Runtime configurado con `intra_op_num_threads=4`, `inter_op_num_threads=1` para evitar contención entre sesiones consecutivas)*
 - **Python / PyTorch / ONNX Runtime:** `{hw["python"]}` / `{hw["torch"]}` / `{hw["onnxruntime"]}`
 - **Protocolo de medición:** `{results["runs"]}` inferencias consecutivas en CPU (`batch_size = 1`, entrada `1×128×128`), tras `{results["warmup"]}` ejecuciones de calentamiento.
 
@@ -134,11 +145,11 @@ Benchmarks de exportación a ONNX, latencia en CPU y verificación numérica.
 
 ## 4. Demo en Tiempo Real y Calibración OOD
 - **Arranque:** `python app/demo_realtime.py`
-- **Modos (`M` / `Tab`):** Canvas interactivo (teclado / trazo libre con mouse) y Webcam ROI (flujo continuo cuadro por cuadro).
+- **Modos (`Tab` / `M` en Webcam):** Canvas interactivo (teclado / trazo libre con mouse) y Webcam ROI (flujo continuo cuadro por cuadro).
 - **Umbral de confianza (`+` / `-`, default `0.70`):** si la probabilidad máxima del juez sobre el glifo generado cae por debajo del umbral (o si la entrada está vacía / con ruido extremo), se muestra la alerta visual `BAJA CONFIANZA (OOD)`.
-- Consulta [`eval/robustez.ipynb`](../eval/robustez.ipynb) para el desglose completo de rechazo OOD.
+{preserved_ood if preserved_ood else "- Consulta [`eval/robustez.ipynb`](../eval/robustez.ipynb) para el desglose completo de rechazo OOD."}
 """
-    doc_path.write_text(content, encoding="utf-8")
+    doc_path.write_text(content.rstrip() + "\n", encoding="utf-8")
 
 
 def parse_args() -> argparse.Namespace:

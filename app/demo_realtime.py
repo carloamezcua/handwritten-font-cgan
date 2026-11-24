@@ -19,6 +19,7 @@ Arranque en 1 solo comando:
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 import time
 from pathlib import Path
@@ -47,13 +48,17 @@ def _softmax(logits: np.ndarray) -> np.ndarray:
     return exp / np.sum(exp)
 
 
-def _create_ort_session(onnx_path: Path) -> ort.InferenceSession:
+def _create_ort_session(onnx_path: Path, intra_threads: int = 4) -> ort.InferenceSession:
     if not onnx_path.exists():
         raise FileNotFoundError(
-            f"No se encontró '{onnx_path}'. Ejecuta primero `python -m src.export.export_onnx`."
+            f"No se encontró '{onnx_path}'. Descarga los pesos con "
+            "`python -m src.data.download_artifacts` o expórtalos con `python -m src.export.export_onnx`."
         )
     opts = ort.SessionOptions()
     opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
+    opts.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
+    opts.intra_op_num_threads = min(intra_threads, os.cpu_count() or intra_threads)
+    opts.inter_op_num_threads = 1
     return ort.InferenceSession(
         str(onnx_path),
         sess_options=opts,
