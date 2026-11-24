@@ -16,9 +16,11 @@ Uso:
 from __future__ import annotations
 
 import argparse
+import csv
 import io
 import re
 import xml.etree.ElementTree as ET
+from collections import defaultdict
 from pathlib import Path
 
 import cv2
@@ -230,12 +232,20 @@ def build_ttf_from_onnx(
     fb.setupHorizontalHeader(ascent=ASCENT, descent=DESCENT)
     fb.setupNameTable(
         {
+            "copyright": "Synthetic AI-generated font (Handwritten Font cGAN / Pix2Pix). Not for identity impersonation or forgery.",
             "familyName": font_name,
             "styleName": "Regular",
-            "uniqueFontIdentifier": f"{font_name}-Regular",
+            "uniqueFontIdentifier": f"{font_name}-Regular-AI-Generated",
             "fullName": f"{font_name} Regular",
             "version": "Version 1.000",
             "psName": f"{font_name}-Regular",
+            "manufacturer": "Handwritten Font cGAN Pipeline (Pix2Pix + vtracer + fontTools)",
+            "designer": "Synthetic AI Output (HandwrittenFont-Pix2Pix-cGAN)",
+            "description": (
+                "AI-generated synthetic handwriting font produced glyph-by-glyph with Pix2Pix cGAN "
+                "(1x128x128) and vectorized via vtracer/fontTools. Provenance marker: AI-SYNTHETIC."
+            ),
+            "licenseDescription": "MIT (code) / SIL OFL 1.1 (synthetic pretraining fonts). Consent required for personal style transfer.",
         }
     )
     fb.setupOS2(
@@ -258,9 +268,114 @@ def build_ttf_from_onnx(
     return output_ttf
 
 
+def _select_medoid_glyph(images: list[np.ndarray]) -> np.ndarray:
+    """Selecciona la repetición más consistente (medoide por distancia L1 entre trazos propios)."""
+    if len(images) == 1:
+        return images[0]
+    arr = np.stack([im.astype(np.float32) / 255.0 for im in images], axis=0)
+    dists = np.abs(arr[:, None, :, :] - arr[None, :, :, :]).mean(axis=(2, 3))
+    best_idx = int(np.argmin(dists.sum(axis=1)))
+    return images[best_idx]
+
+
+def build_ttf_from_real_pairs(
+    real_dir: Path,
+    output_ttf: Path,
+    font_name: str = "MiLetraStylus",
+    threshold: int = 175,
+    preview_out: Path | None = None,
+) -> Path:
+    """Construye un `.ttf` seleccionando el medoide (trazo más consistente) de tus muestras reales."""
+    meta_path = real_dir / "metadata.csv"
+    if not meta_path.exists():
+        raise FileNotFoundError(f"No se encontró '{meta_path}'.")
+
+    by_char: dict[str, list[Path]] = defaultdict(list)
+    with meta_path.open("r", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            by_char[row["char"]].append(real_dir / row["y_path"])
+
+    glyph_order = [".notdef", "space"]
+    cmap: dict[int, str] = {ord(" "): "space"}
+    glyf_table: dict[str, object] = {
+        ".notdef": _make_notdef_glyph(),
+        "space": TTGlyphPen(None).glyph(),
+    }
+    hmtx_table: dict[str, tuple[int, int]] = {
+        ".notdef": (500, 50),
+        "space": (320, 0),
+    }
+
+    built = 0
+    for char in CHARSET:
+        paths = by_char.get(char, [])
+        if not paths:
+            continue
+        imgs = [np.array(Image.open(p).convert("L"), dtype=np.uint8) for p in paths if p.exists()]
+        if not imgs:
+            continue
+        best_u8 = _select_medoid_glyph(imgs)
+        gname = f"uni{ord(char):04X}"
+        ttglyph, advance, lsb = _glyph_image_to_ttglyph(best_u8, threshold=threshold)
+        glyph_order.append(gname)
+        cmap[ord(char)] = gname
+        glyf_table[gname] = ttglyph
+        hmtx_table[gname] = (advance, lsb)
+        built += 1
+
+    fb = FontBuilder(UNITS_PER_EM, isTTF=True)
+    fb.setupGlyphOrder(glyph_order)
+    fb.setupCharacterMap(cmap)
+    fb.setupGlyf(glyf_table)
+    fb.setupHorizontalMetrics(hmtx_table)
+    fb.setupHorizontalHeader(ascent=ASCENT, descent=DESCENT)
+    fb.setupNameTable(
+        {
+            "copyright": "Digitized personal handwriting (Handwritten Font cGAN pipeline). Authorized personal use only.",
+            "familyName": font_name,
+            "styleName": "Regular",
+            "uniqueFontIdentifier": f"{font_name}-Regular-Stylus-Medoid",
+            "fullName": f"{font_name} Regular",
+            "version": "Version 1.000",
+            "psName": f"{font_name}-Regular",
+            "manufacturer": "Handwritten Font cGAN Pipeline (L1-Medoid + vtracer + fontTools)",
+            "designer": "Author Personal Handwriting (Captured via Stylus)",
+            "description": (
+                "Personal handwriting font compiled via L1-medoid selection over authorized stylus "
+                "glyph captures (1x128x128) and vectorized via vtracer/fontTools. Provenance marker: PERSONAL-STYLUS."
+            ),
+            "licenseDescription": "Authorized personal handwriting capture; not for third-party impersonation.",
+        }
+    )
+    fb.setupOS2(
+        sTypoAscender=ASCENT,
+        sTypoDescender=DESCENT,
+        sTypoLineGap=100,
+        usWinAscent=ASCENT + 50,
+        usWinDescent=abs(DESCENT) + 50,
+    )
+    fb.setupPost()
+
+    output_ttf.parent.mkdir(parents=True, exist_ok=True)
+    fb.save(str(output_ttf))
+    print(f"[OK] Fuente .ttf personal (medoide real) generada ({built} glifos): {output_ttf}")
+
+    if preview_out is not None:
+        render_font_preview(output_ttf, preview_out)
+        print(f"[OK] Vista previa guardada en: {preview_out}")
+
+    return output_ttf
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Vectoriza los glifos de generator.onnx y construye una fuente .ttf."
+        description="Vectoriza glifos desde generator.onnx o desde data/real_pairs y construye un .ttf."
+    )
+    parser.add_argument(
+        "--from-real-dir",
+        type=Path,
+        default=None,
+        help="Si se indica (ej. data/real_pairs), compila el .ttf con el medoide de tus trazos reales.",
     )
     parser.add_argument(
         "--onnx-model",
@@ -284,13 +399,22 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    build_ttf_from_onnx(
-        onnx_model=args.onnx_model,
-        output_ttf=args.output,
-        font_name=args.font_name,
-        threshold=args.threshold,
-        preview_out=args.preview_out,
-    )
+    if args.from_real_dir is not None:
+        build_ttf_from_real_pairs(
+            real_dir=args.from_real_dir,
+            output_ttf=args.output,
+            font_name=args.font_name,
+            threshold=args.threshold,
+            preview_out=args.preview_out,
+        )
+    else:
+        build_ttf_from_onnx(
+            onnx_model=args.onnx_model,
+            output_ttf=args.output,
+            font_name=args.font_name,
+            threshold=args.threshold,
+            preview_out=args.preview_out,
+        )
 
 
 if __name__ == "__main__":
