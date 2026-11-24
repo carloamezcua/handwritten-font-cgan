@@ -21,6 +21,7 @@ data/raw_scans/
 data/real_pairs/
 data/synthetic_pairs/
 data/ood/
+data/*.zip
 data/templates/*.pdf
 data/templates/*.png
 data/fonts/*.ttf
@@ -36,9 +37,9 @@ checkpoints/
 *.ts
 *.torchscript
 
-# Salidas pesadas, documentos exportados y fuentes compiladas
+# Salidas pesadas, documentos de rúbrica y fuentes compiladas
 results/
-docs/*.pdf
+docs/proyecto_CV.pdf
 *.ttf
 *.otf
 

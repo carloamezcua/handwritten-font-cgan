@@ -1,26 +1,30 @@
+# Versiones fijadas para reproducibilidad (entorno probado: Python 3.11.18)
+# Nota: para instalación solo CPU de PyTorch usar:
+#   pip install --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.txt
+
 # Core Deep Learning
-torch>=2.2.0
-torchvision>=0.17.0
+torch==2.15.0
+torchvision==0.29.2
 
 # Visión por computadora y gráficos
-opencv-python>=4.9.0
-pillow>=10.2.0
-matplotlib>=3.8.0
-seaborn>=0.13.0
+opencv-python==5.1.0.95
+pillow==13.0.0
+matplotlib==3.11.2
+seaborn==0.13.2
 
 # Ciencia de datos y métricas
-numpy>=1.26.0
-pandas>=2.2.0
-scikit-learn>=1.4.0
-scipy>=1.12.0
+numpy==2.4.6
+pandas==3.1.1
+scikit-learn==1.9.1
+scipy==1.17.1
 
 # Optimización e inferencia en tiempo real
-onnx>=1.15.0
-onnxruntime>=1.17.0
+onnx==1.23.2
+onnxruntime==1.32.0
 
 # Exportación de tipografía (.ttf)
-fonttools>=4.49.0
-vtracer>=0.6.11
+fonttools==4.68.0
+vtracer==0.6.15
 
 # Notebooks
-ipykernel>=6.29.0
+ipykernel==7.4.0

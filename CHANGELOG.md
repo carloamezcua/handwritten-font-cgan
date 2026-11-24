@@ -4,12 +4,23 @@ Todos los cambios notables de este proyecto se documentan en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 
-## [Unreleased]
+## [1.0.0] - 2026-11-23
 
-### Roadmap para `v1.0.0`
-- Fine-tuning de Pix2Pix (`--mode finetune`) vs. entrenamiento desde cero (`--mode scratch`) sobre capturas manuscritas reales con stylus.
-- Re-evaluación cuantitativa final, mapas Grad-CAM y auditoría de subgrupos sobre modelos personalizados.
-- Fijación exacta de dependencias en `requirements.txt`.
+### Added
+- Captura completa de **300 trazos manuscritos reales** con stylus (`data/raw_scans/hoja_01..07.png` → `data/real_pairs/`, 300/300 celdas extraídas sin celdas vacías) y auditoría manual visual de 30 muestras reales (`docs/figuras/auditoria_calidad_real_30.png`, 0/30 errores de etiqueta).
+- Notebook dedicado de personalización en Google Colab GPU ([`notebooks/03_colab_finetuning.ipynb`](notebooks/03_colab_finetuning.ipynb)) comparando `pretrained` vs. `scratch` vs. `finetune` sobre `data/real_pairs/`, con figuras extraídas a `docs/figuras/`.
+- Modo `--from-real-dir` y metadatos reales de trazabilidad OpenType (`AI-SYNTHETIC` / `PERSONAL-STYLUS` en tabla `name`) en `src/export/build_ttf.py`.
+- Scripts de reproducibilidad y validación real: `src/data/download_artifacts.py` (descarga desde GitHub Releases) y `src/data/capturar_ood_real.py` (captura rápida de ≥50 muestras OOD reales con cámara web).
+- `.gitignore` actualizado para permitir el versionado de los entregables `docs/caso_sector.pdf`, `docs/informe_etico.pdf` y `docs/defensa.pdf` (manteniendo ignorado `docs/proyecto_CV.pdf`).
+
+### Changed
+- **Optimización ONNX Runtime CPU (`export_onnx.py` y `app/demo_realtime.py`):** fijación de `intra_op_num_threads=4` e `inter_op_num_threads=1`, reduciendo la latencia del pipeline completo (`G + ResNet-18`) de `50.50 ms (19.80 FPS)` a **`21.07 ms (47.45 FPS, 1.69× speedup vs. PyTorch)`**.
+- `requirements.txt` fijado con versiones exactas (`==`) del entorno probado (Python 3.11.18).
+- `README.md`, `MODEL_CARD.md`, `docs/datasheet.md` y `docs/costos.md` alineados al orden exacto de la rúbrica, corrigiendo controles de la demo, tiempos reales de GPU T4 y transparencia sobre `judge_split` en `test_unseen` sintético.
+
+### Findings
+- En `data/real_pairs` (`val`), **`scratch`** (entrenado solo con trazos reales) superó a `pretrained` y `finetune` (**75.00 %** Acc y **FID 94.87** vs. `71.88 %` / `145.25` de `pretrained` y `62.50 %` / `121.14` de `finetune`) debido al choque de dominio entre el grosor sintético y el trazo fino con stylus (`2.57 %` tinta media).
+- En pruebas de ablación de `finetune` con `--reset-discriminator` y `--lambda-l1 150`, seleccionar el checkpoint únicamente por `val_l1` mínimo provocó colapso a salidas casi en blanco en épocas tempranas (`val_l1 = 0.0455`), confirmando la importancia de mantener el discriminador sincronizado o seleccionar por métricas de legibilidad.
 
 ## [0.9.0-pretrain] - 2026-11-23
 
