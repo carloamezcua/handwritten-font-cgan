@@ -376,16 +376,25 @@ def _build_info_panel(
 
 
 class RealtimeDemo:
-    """Controlador de la demo triple en tiempo real con Canvas y Webcam ROI."""
+    """Controlador de la demo triple en tiempo real con Canvas, Webcam ROI y selector Pix2Pix/StyleUNet."""
 
     def __init__(
         self,
         generator_onnx: Path,
         judge_onnx: Path,
+        style_onnx: Path | None = None,
         threshold: float = 0.70,
         camera_index: int = 0,
     ) -> None:
-        self.gen_sess = _create_ort_session(generator_onnx)
+        self.gen_sessions: dict[str, ort.InferenceSession] = {
+            "Pix2Pix": _create_ort_session(generator_onnx)
+        }
+        if style_onnx is not None and style_onnx.exists():
+            self.gen_sessions["StyleUNet"] = _create_ort_session(style_onnx)
+        self.gen_names = list(self.gen_sessions.keys())
+        # Si StyleUNet está disponible, arranca en StyleUNet (y permite comparar vs. Pix2Pix con 1 clic)
+        self.active_gen: str = "StyleUNet" if "StyleUNet" in self.gen_sessions else "Pix2Pix"
+        self.gen_btn_rects: dict[str, tuple[int, int, int, int]] = {}
         self.judge_sess = _create_ort_session(judge_onnx)
         self.base_font = get_default_base_font_path()
 
@@ -435,8 +444,18 @@ class RealtimeDemo:
     def adjust_threshold(self, delta: float) -> None:
         self.threshold = round(float(np.clip(self.threshold + delta, 0.10, 0.95)), 2)
 
+    def toggle_generator(self) -> None:
+        if len(self.gen_names) > 1:
+            idx = (self.gen_names.index(self.active_gen) + 1) % len(self.gen_names)
+            self.active_gen = self.gen_names[idx]
+
     def on_mouse(self, event: int, x: int, y: int, flags: int, param: object) -> None:
-        """Permite dibujar a mano alzada en el panel 1 cuando está en modo CANVAS."""
+        """Maneja botones de selector de generador en el encabezado y dibujo libre en panel 1."""
+        if event == cv2.EVENT_LBUTTONDOWN and y < HEADER_H:
+            for name, (bx1, by1, bx2, by2) in self.gen_btn_rects.items():
+                if bx1 <= x <= bx2 and by1 <= y <= by2:
+                    self.active_gen = name
+                    return
         if self.mode != "CANVAS":
             return
         local_y = y - HEADER_H
@@ -549,16 +568,16 @@ class RealtimeDemo:
                 )
                 left_title = f"1. Entrada x (Canvas: '{self.current_char}')"
 
-        # 2. Inferencia ONNX (Generador + Juez)
+        # 2. Inferencia ONNX (Generador activo + Juez)
         x_norm = (x_u8.astype(np.float32) / 127.5) - 1.0
         x_in = x_norm[None, None, :, :]
 
-        y_hat = self.gen_sess.run(["y_hat"], {"x": x_in})[0]
+        y_hat = self.gen_sessions[self.active_gen].run(["y_hat"], {"x": x_in})[0]
         eval_direct = (self.judge_mode == "AUTO") and (
             self.mode == "WEBCAM" or self.freehand_active
         )
         judge_input = x_in if eval_direct else y_hat
-        judge_source_label = "x directo" if eval_direct else "y_hat"
+        judge_source_label = "x directo" if eval_direct else self.active_gen
         logits = self.judge_sess.run(["logits"], {"glyph": judge_input})[0][0]
         probs = _softmax(logits)
 
@@ -579,7 +598,7 @@ class RealtimeDemo:
 
         y_u8 = np.clip((y_hat[0, 0] + 1.0) * 127.5, 0.0, 255.0).astype(np.uint8)
         panel_mid = np.zeros((PANEL_SIZE, PANEL_SIZE, 3), dtype=np.uint8)
-        _draw_panel_header(panel_mid, "2. Glifo generado y_hat (Pix2Pix)")
+        _draw_panel_header(panel_mid, f"2. Glifo generado ({self.active_gen})")
         panel_mid[32:, :] = cv2.cvtColor(
             cv2.resize(y_u8, (PANEL_SIZE, PANEL_SIZE - 32), interpolation=cv2.INTER_LINEAR),
             cv2.COLOR_GRAY2BGR,
@@ -599,19 +618,44 @@ class RealtimeDemo:
             webcam_error=self.webcam_error,
         )
 
-        # 4. Encabezado y barra de controles inferior
+        # 4. Encabezado con selector interactivo de modelo y barra de controles inferior
         total_w = PANEL_SIZE * 3
         canvas = np.full((HEADER_H + PANEL_SIZE + FOOTER_H, total_w, 3), 18, dtype=np.uint8)
         cv2.putText(
             canvas,
-            "Handwritten Font cGAN (Pix2Pix + ResNet-18 ONNX) — Tiempo Real",
+            f"Handwritten Font cGAN ({self.active_gen} + ResNet-18 ONNX)",
             (16, 29),
             cv2.FONT_HERSHEY_SIMPLEX,
-            0.70,
+            0.66,
             (245, 245, 245),
             2,
             cv2.LINE_AA,
         )
+        # Botones clicables en el encabezado para alternar Pix2Pix <-> StyleUNet en vivo
+        self.gen_btn_rects.clear()
+        btn_w, btn_h, gap = 114, 28, 10
+        start_x = total_w - 16 - len(self.gen_names) * btn_w - max(0, len(self.gen_names) - 1) * gap
+        for idx, name in enumerate(self.gen_names):
+            bx1 = start_x + idx * (btn_w + gap)
+            by1 = (HEADER_H - btn_h) // 2
+            bx2, by2 = bx1 + btn_w, by1 + btn_h
+            self.gen_btn_rects[name] = (bx1, by1, bx2, by2)
+            is_active = name == self.active_gen
+            fill = (45, 165, 90) if is_active else (55, 58, 66)
+            border = (110, 240, 150) if is_active else (95, 98, 108)
+            cv2.rectangle(canvas, (bx1, by1), (bx2, by2), fill, -1)
+            cv2.rectangle(canvas, (bx1, by1), (bx2, by2), border, 1)
+            txt_x = bx1 + (18 if name == "Pix2Pix" else 12)
+            cv2.putText(
+                canvas,
+                name,
+                (txt_x, by1 + 19),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.52,
+                (255, 255, 255) if is_active else (200, 200, 208),
+                2 if is_active else 1,
+                cv2.LINE_AA,
+            )
 
         canvas[HEADER_H : HEADER_H + PANEL_SIZE, 0:PANEL_SIZE] = panel_left
         canvas[HEADER_H : HEADER_H + PANEL_SIZE, PANEL_SIZE : PANEL_SIZE * 2] = panel_mid
@@ -630,10 +674,10 @@ class RealtimeDemo:
         footer_y = HEADER_H + PANEL_SIZE + 22
         cv2.putText(
             canvas,
-            "[Teclas] Letra/digito | Mouse: dibuja | Tab: Canvas/Webcam | Enter: Juez x/y_hat | +/-: Umbral | Backspace: Borrar | ESC: Salir",
+            "[Teclas] Letra/digito | Clic arriba o Ctrl+G: Pix2Pix/StyleUNet | Tab: Canvas/Webcam | Enter: Juez x/gen | +/-: Umbral | ESC: Salir",
             (14, footer_y),
             cv2.FONT_HERSHEY_SIMPLEX,
-            0.40,
+            0.39,
             (200, 200, 210),
             1,
             cv2.LINE_AA,
@@ -669,6 +713,8 @@ class RealtimeDemo:
                     break
                 if key == 9:  # Tab -> alternar modo siempre
                     self.toggle_mode()
+                elif key == 7:  # Ctrl+G -> alternar generador (Pix2Pix <-> StyleUNet)
+                    self.toggle_generator()
                 elif key == 13:  # Enter -> alternar fuente del Juez (AUTO vs siempre y_hat)
                     self.judge_mode = "Y_HAT" if self.judge_mode == "AUTO" else "AUTO"
                 elif key == 8:  # Backspace -> limpiar canvas
@@ -711,6 +757,11 @@ def parse_args() -> argparse.Namespace:
         default=ROOT_DIR / "checkpoints" / "generator.onnx",
     )
     parser.add_argument(
+        "--style-onnx",
+        type=Path,
+        default=ROOT_DIR / "checkpoints" / "style_unet.onnx",
+    )
+    parser.add_argument(
         "--judge-onnx",
         type=Path,
         default=ROOT_DIR / "checkpoints" / "judge_resnet18.onnx",
@@ -730,6 +781,7 @@ def main() -> None:
     demo = RealtimeDemo(
         generator_onnx=args.generator_onnx,
         judge_onnx=args.judge_onnx,
+        style_onnx=args.style_onnx,
         threshold=args.threshold,
         camera_index=args.camera,
     )
