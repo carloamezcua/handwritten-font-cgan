@@ -59,23 +59,26 @@ Ver documentación completa en [`docs/datasheet.md`](docs/datasheet.md):
 
 ### 4.2 Comparativa sobre capturas reales con stylus (`data/real_pairs/`, 300 muestras)
 
-Evaluación sobre las muestras personales reales (`val`: 64 clases vistas; `test_unseen`: 11 clases Zero-Shot, `n=44`) usando los dos jueces congelados (`notebooks/03_colab_finetuning.ipynb`, `--tag final`):
+Evaluación sobre las muestras personales reales (`val`: 64 clases vistas; `test_unseen`: 11 clases Zero-Shot, `n=44`) usando los dos jueces congelados (`notebooks/03_colab_finetuning.ipynb` y `notebooks/04_colab_style_encoder.ipynb`):
 
 | Split | Modelo / Fuente | Accuracy (`ResNet-18` / `EffNet-B0`) | Macro-F1 (`ResNet-18` / `EffNet-B0`) | L1 media | FID dominio (`ResNet-18`) |
 | :--- | :--- | :---: | :---: | :---: | :---: |
 | **`val`** (64 vistas) | Referencia `y` (trazos reales) | 89.06 % / 84.38 % | 86.20 % / 81.25 % | — | 0.00 |
 | **`val`** (64 vistas) | `pix2pix_pretrained` | 71.88 % / 71.88 % | 67.45 % / 67.97 % | 0.0947 | 145.25 |
-| **`val`** (64 vistas) | **`pix2pix_scratch`** | **75.00 %** / 67.19 % | **69.27 %** / 59.64 % | 0.0570 | **94.87** |
+| **`val`** (64 vistas) | `pix2pix_scratch` | 75.00 % / 67.19 % | 69.27 % / 59.64 % | 0.0570 | **94.87** |
 | **`val`** (64 vistas) | `pix2pix_finetuned` (`100 ep, lr=1e-4`) | 62.50 % / 56.25 % | 56.38 % / 47.50 % | 0.0550 | 121.14 |
+| **`val`** (64 vistas) | `style_unet_fewshot` *(0 ep. FT, 4 refs)* | 84.38 % / 73.44 % | 80.99 % / 69.79 % | 0.0639 | 141.47 |
+| **`val`** (64 vistas) | **`style_unet_finetuned`** *(mejor ep. 4)* | **89.06 %** / **79.69 %** | **85.94 %** / **74.95 %** | 0.0646 | 126.18 |
 | **`test_unseen`** (11 Zero-Shot) | Referencia `y` (trazos reales) | 86.36 % / 81.82 % | 85.28 % / 78.79 % | — | 0.00 |
-| **`test_unseen`** (11 Zero-Shot) | **`pix2pix_pretrained`** | 27.27 % / **45.45 %** | 27.27 % / **42.42 %** | 0.0981 | **407.37** |
+| **`test_unseen`** (11 Zero-Shot) | `pix2pix_pretrained` | 27.27 % / 45.45 % | 27.27 % / 42.42 % | 0.0981 | 407.37 |
 | **`test_unseen`** (11 Zero-Shot) | `pix2pix_scratch` | 27.27 % / 9.09 % | 27.27 % / 3.03 % | 0.0691 | 469.96 |
 | **`test_unseen`** (11 Zero-Shot) | `pix2pix_finetuned` (`100 ep, lr=1e-4`) | 9.09 % / 27.27 % | 9.09 % / 21.82 % | 0.0667 | 499.83 |
+| **`test_unseen`** (11 Zero-Shot) | `style_unet_fewshot` *(0 ep. FT, 4 refs)* | 54.55 % / **45.45 %** | 54.55 % / **42.42 %** | 0.0676 | 307.42 |
+| **`test_unseen`** (11 Zero-Shot) | **`style_unet_finetuned`** *(mejor ep. 4)* | **72.73 %** / **45.45 %** | **72.73 %** / **42.42 %** | 0.0728 | **302.42** |
 
 **Hallazgos experimentales clave:**
-- **Choque de dominio en *fine-tuning*:** `scratch` superó a `finetune` y `pretrained` en dominio propio (`val`: **75.00 %** Acc, **FID 94.87**). Las 17 fuentes sintéticas tienen trazos más gruesos que la captura fina con stylus (densidad media de tinta `2.57 %`), provocando degradación al adaptar el modelo preentrenado sobre 192 muestras.
-- **Riesgo de selección por `val_l1` con trazos finos:** Al probar `finetune` reiniciando el discriminador (`--reset-discriminator`, `--lambda-l1 150`), el generador minimizó `L1` generando lienzos casi en blanco en la época 5 (`val_l1 = 0.0455`, ya que ~97 % de los píxeles son fondo blanco).
-- **Límite arquitectónico Zero-Shot y varianza muestral:** Con solo 11 clases en `test_unseen` (~9.09 pp por clase), adaptarse a un único estilo sin *encoder* de estilo explícito hace que Pix2Pix proyecte caracteres inéditos hacia letras vistas cercanas (`G, Q → O`). Por ello la demo en tiempo real usa `pix2pix_pretrained` como modelo por defecto.
+- **Resolución del choque de dominio mediante `StyleUNet` (`Style Encoder + AdaIN`):** Al desacoplar estilo y contenido usando un `StyleEncoder` sin `InstanceNorm` + aumento morfológico emparejado de grosor en `pretrain` + pérdida `InkDiff`, el modelo transfirió el trazo fino del stylus desde 4 referencias reales **sin *fine-tuning*** (`84.38 %` Acc en `val`, `54.55 %` en Zero-Shot), y con solo 4 épocas efectivas de *fine-tuning* ligero igualó el techo humano en `val` (**89.06 % Acc / 85.94 % Macro-F1**) y elevó Zero-Shot a **72.73 %** (**+63.64 pp** sobre `pix2pix_finetuned`, FID `499.83 → 302.42`).
+- **Diagnóstico en Pix2Pix base:** Sin *Style Encoder*, `scratch` superó a `finetune` en dominio propio (`val`: 75.00 % Acc, FID 94.87) debido al grosor sintético vs. stylus (`2.57 %` tinta media), pero ambos perdieron capacidad Zero-Shot. Además, reiniciar el discriminador y seleccionar solo por `val_l1` colapsó a salidas en blanco (`val_l1 = 0.0455`), lo que motivó incluir `InkDiff` en el criterio de selección de `StyleUNet`.
 - **Compilación `.ttf` personal fiel:** Para obtener una fuente instalable fiel a partir de capturas reales completas (75 símbolos × 4 repeticiones), `src/export/build_ttf.py --from-real-dir data/real_pairs` selecciona automáticamente el **medoide L1** entre las 4 repeticiones propias de cada carácter.
 
 ### 4.3 Robustez ante entradas Fuera de Distribución (OOD — 72 imágenes)

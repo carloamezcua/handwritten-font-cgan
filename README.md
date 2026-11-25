@@ -61,7 +61,8 @@ flowchart LR
 
 | Comparativa / Alternativa | Tipo de evidencia | Hallazgo y decisión adoptada |
 | :--- | :---: | :--- |
-| **`Pix2Pix Pretrain` vs. `Scratch` vs. `Fine-Tune` sobre `real_pairs`** | **Experimento propio** (`03_colab_finetuning.ipynb`) | En dominio propio (`val`, 64 clases), `scratch` alcanzó **75.00 % Acc / FID 94.87** superando a `pretrained` (71.88 % / 145.25) y `finetune` (62.50 % / 121.14) por choque de grosor de trazo. Sin embargo, en **`test_unseen` (Zero-Shot)** `pretrained` retiene mejor generalización (**45.45 %** EffNet-B0 vs. `9.09–27.27 %`), razón por la cual la demo interactiva usa `pix2pix_pretrained` y `build_ttf.py` ofrece además `--from-real-dir` (medoide L1) para compilar fuentes fieles con trazos propios. |
+| **`Pix2Pix` vs. `StyleUNet` (Style Encoder + AdaIN)** | **Experimento propio** (`03_colab_finetuning.ipynb` vs. `04_colab_style_encoder.ipynb`) | Al desacoplar contenido (`x`) y estilo (`4` glifos de referencia en `StyleEncoder` sin `InstanceNorm` + `AdaIN` + aumento morfológico de grosor), `StyleUNet` superó a todas las variantes de Pix2Pix sobre `real_pairs`: igualó el techo humano en `val` (**89.06 % Acc / 85.94 % Macro-F1**) y disparó Zero-Shot (`test_unseen`) de `9.09–27.27 %` a **72.73 %** (+45.5 pp sobre `pretrained`, FID `499.83 → 302.42`). |
+| **`Pix2Pix Pretrain` vs. `Scratch` vs. `Fine-Tune` sobre `real_pairs`** | **Experimento propio** (`03_colab_finetuning.ipynb`) | Sin *Style Encoder*, en dominio propio (`val`, 64 clases) `scratch` alcanzó **75.00 % Acc / FID 94.87** superando a `pretrained` (71.88 %) y `finetune` (62.50 %) por choque de grosor de trazo, pero ambos degradaron en `test_unseen` (Zero-Shot), lo que motivó directamente el diseño aditivo de `StyleUNet`. |
 | **Juez `ResNet-18` vs. `EfficientNet-B0`** | **Experimento propio** (`02_colab_training.ipynb`, `robustez.ipynb`) | `ResNet-18` superó a `EfficientNet-B0` tanto en validación sintética (`87.67 %` vs. `85.07 %` Acc) como en separación OOD (**AUROC 0.9435** vs. `0.8856`) y latencia CPU (**4.69 ms** en ONNX). Se eligió `ResNet-18` para la demo en tiempo real y `EfficientNet-B0` como segundo juez independiente de validación cruzada. |
 | **PyTorch CPU vs. ONNX Runtime CPU** | **Experimento propio** (`export_onnx.py`) | Exportar `G + ResNet-18` a ONNX con `intra_op_num_threads=4` redujo la latencia del pipeline de **35.61 ms (28.08 FPS)** a **21.07 ms (47.45 FPS)** (**1.69× speedup**, error máx. `< 1e-5`). |
 | **Descarte de Diffusion / ControlNet y CycleGAN** | Análisis de costo y restricciones | Los modelos de difusión exigen GPU dedicada (>6 GB VRAM) y segundos por glifo (`<1 FPS` en CPU), rompiendo el requisito de tiempo real (`≥10 FPS`). CycleGAN opera sin pares alineados ni pérdida `L1`, deformando topologías de caracteres inéditos; al disponer de pares exactos `(Lato, manuscrito)`, las *skip connections* + `L1 (λ=100)` preservan la estructura base. |
@@ -83,20 +84,24 @@ flowchart LR
 
 > \* **Nota de transparencia metodológica sobre el techo `reference_y` en `test_unseen` sintético:** para poder clasificar símbolos Zero-Shot, los jueces CNN se entrenaron sobre las 75 clases divididas por fuente (`judge_split`: 14 fuentes en `train`, 3 en `val`). Por ello, 462 de los 561 pares de `synthetic_pairs/test_unseen` pertenecen a `judge_split=train` (100.00 % Acc del juez), mientras que el subconjunto sin traslape de fuente (`judge_split=val`, `n=99`) obtiene **89.90 % Acc** — consistente con `val` (87.67 %) y con `real_pairs/test_unseen` (86.36 %, 0 % de traslape con el entrenamiento de los jueces). El generador Pix2Pix **nunca** vio ninguno de los 11 caracteres de `test_unseen`.
 
-#### B) Dominio personal real con stylus (`data/real_pairs/`, 300 muestras — `notebooks/03_colab_finetuning.ipynb`)
+#### B) Dominio personal real con stylus (`data/real_pairs/`, 300 muestras — `03_colab_finetuning.ipynb` y `04_colab_style_encoder.ipynb`)
 
 | Split | Modelo / Fuente | Accuracy (`ResNet-18` / `EffNet-B0`) | Macro-F1 (`ResNet-18` / `EffNet-B0`) | L1 media | FID dominio (`ResNet-18`) |
 | :--- | :--- | :---: | :---: | :---: | :---: |
-| `val` (64 vistas) | Referencia `y` (stylus real) | 89.06 % / 84.38 % | 86.20 % / 81.25 % | — | 0.00 |
+| `val` (64 vistas) | Referencia `y` (techo stylus real) | 89.06 % / 84.38 % | 86.20 % / 81.25 % | — | 0.00 |
 | `val` (64 vistas) | `pix2pix_pretrained` | 71.88 % / 71.88 % | 67.45 % / 67.97 % | 0.0947 | 145.25 |
-| `val` (64 vistas) | **`pix2pix_scratch`** | **75.00 %** / 67.19 % | **69.27 %** / 59.64 % | 0.0570 | **94.87** |
+| `val` (64 vistas) | `pix2pix_scratch` | 75.00 % / 67.19 % | 69.27 % / 59.64 % | 0.0570 | **94.87** |
 | `val` (64 vistas) | `pix2pix_finetuned` (`100 ep, lr=1e-4`) | 62.50 % / 56.25 % | 56.38 % / 47.50 % | 0.0550 | 121.14 |
-| `test_unseen` (11 Zero-Shot, `n=44`) | Referencia `y` (stylus real) | 86.36 % / 81.82 % | 85.28 % / 78.79 % | — | 0.00 |
-| `test_unseen` (11 Zero-Shot) | **`pix2pix_pretrained`** | 27.27 % / **45.45 %** | 27.27 % / **42.42 %** | 0.0981 | **407.37** |
+| `val` (64 vistas) | `style_unet_fewshot` *(0 ep. fine-tuning, 4 refs)* | 84.38 % / 73.44 % | 80.99 % / 69.79 % | 0.0639 | 141.47 |
+| `val` (64 vistas) | **`style_unet_finetuned`** *(mejor ep. 4, StyleEnc congelado)* | **89.06 %** / **79.69 %** | **85.94 %** / **74.95 %** | 0.0646 | 126.18 |
+| `test_unseen` (11 Zero-Shot, `n=44`) | Referencia `y` (techo stylus real) | 86.36 % / 81.82 % | 85.28 % / 78.79 % | — | 0.00 |
+| `test_unseen` (11 Zero-Shot) | `pix2pix_pretrained` | 27.27 % / 45.45 % | 27.27 % / 42.42 % | 0.0981 | 407.37 |
 | `test_unseen` (11 Zero-Shot) | `pix2pix_scratch` | 27.27 % / 9.09 % | 27.27 % / 3.03 % | 0.0691 | 469.96 |
 | `test_unseen` (11 Zero-Shot) | `pix2pix_finetuned` (`100 ep, lr=1e-4`) | 9.09 % / 27.27 % | 9.09 % / 21.82 % | 0.0667 | 499.83 |
+| `test_unseen` (11 Zero-Shot) | `style_unet_fewshot` *(0 ep. fine-tuning, 4 refs)* | 54.55 % / **45.45 %** | 54.55 % / **42.42 %** | 0.0676 | 307.42 |
+| `test_unseen` (11 Zero-Shot) | **`style_unet_finetuned`** *(mejor ep. 4, StyleEnc congelado)* | **72.73 %** / **45.45 %** | **72.73 %** / **42.42 %** | 0.0728 | **302.42** |
 
-> **Nota estadística:** `test_unseen` contiene exactamente **11 clases** (cada clase acertada o fallada mueve ~9.09 pp). Las curvas de entrenamiento y control de sobreajuste se encuentran en [`docs/figuras/train_judge_resnet18.png`](docs/figuras/train_judge_resnet18.png), [`docs/figuras/train_judge_efficientnet_b0.png`](docs/figuras/train_judge_efficientnet_b0.png), [`docs/figuras/train_pix2pix_pretrain.png`](docs/figuras/train_pix2pix_pretrain.png), [`docs/figuras/train_pix2pix_scratch.png`](docs/figuras/train_pix2pix_scratch.png) y [`docs/figuras/train_pix2pix_finetune.png`](docs/figuras/train_pix2pix_finetune.png).
+> **Nota estadística y visual:** `test_unseen` contiene exactamente **11 clases** (~9.09 pp por clase). Incluso sin *fine-tuning*, `style_unet_fewshot` ya supera ampliamente a todas las variantes de Pix2Pix tanto en vistas (`84.38 %`) como en Zero-Shot (`54.55 %`), y `style_unet_finetuned` alcanza el techo humano en `val` (`89.06 %`) y **`72.73 %` en Zero-Shot** (ver [`style_eval_style_real_val.png`](docs/figuras/style_eval_style_real_val.png) y [`style_eval_style_real_test_unseen.png`](docs/figuras/style_eval_style_real_test_unseen.png)). Las curvas de entrenamiento y control de sobreajuste están en [`train_judge_resnet18.png`](docs/figuras/train_judge_resnet18.png), [`train_judge_efficientnet_b0.png`](docs/figuras/train_judge_efficientnet_b0.png), [`train_pix2pix_pretrain.png`](docs/figuras/train_pix2pix_pretrain.png), [`train_pix2pix_scratch.png`](docs/figuras/train_pix2pix_scratch.png), [`train_pix2pix_finetune.png`](docs/figuras/train_pix2pix_finetune.png), [`train_style_unet_pretrain.png`](docs/figuras/train_style_unet_pretrain.png) y [`train_style_unet_finetune.png`](docs/figuras/train_style_unet_finetune.png).
 
 ### 5.2 Rendimiento en tiempo real con ONNX Runtime (`docs/robustez_y_despliegue.md`)
 
@@ -206,7 +211,8 @@ El planteamiento del problema, la selección y validación de datasets, la captu
 | [`eval/auditoria_subgrupos.ipynb`](eval/auditoria_subgrupos.ipynb) | Desempeño desglosado por subgrupo tipográfico (`A–Z`, `a–z`, `0–9`, signos) |
 | [`notebooks/01_eda_datos.ipynb`](notebooks/01_eda_datos.ipynb) | Análisis exploratorio de datos, balance de clases e inspección visual |
 | [`notebooks/02_colab_training.ipynb`](notebooks/02_colab_training.ipynb) | Entrenamiento reproducible de jueces y Pix2Pix pretrain en Colab T4 |
-| [`notebooks/03_colab_finetuning.ipynb`](notebooks/03_colab_finetuning.ipynb) | Experimentos de personalización (`pretrained` vs. `scratch` vs. `finetune`) |
+| [`notebooks/03_colab_finetuning.ipynb`](notebooks/03_colab_finetuning.ipynb) | Experimentos de personalización Pix2Pix (`pretrained` vs. `scratch` vs. `finetune`) |
+| [`notebooks/04_colab_style_encoder.ipynb`](notebooks/04_colab_style_encoder.ipynb) | Experimento aditivo `StyleUNet` (Style Encoder + AdaIN) Few-Shot y Fine-Tune |
 
 ### Referencias y créditos
 - **Autor:** Carlo A. Amezcua L.

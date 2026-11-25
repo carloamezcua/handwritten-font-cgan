@@ -7,6 +7,7 @@ y el proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 ## [1.0.0] - 2026-11-23
 
 ### Added
+- Experimento aditivo **Style-Conditioned U-Net (`Style Encoder + AdaIN`)** (`src/models/style_unet.py`, `src/data/style_dataset.py`, `src/train/train_style_unet.py`, `eval/evaluate_style_unet.py`, `notebooks/04_colab_style_encoder.ipynb`) con figuras de curvas y evaluación en `docs/figuras/`.
 - Captura completa de **300 trazos manuscritos reales** con stylus (`data/raw_scans/hoja_01..07.png` → `data/real_pairs/`, 300/300 celdas extraídas sin celdas vacías) y auditoría manual visual de 30 muestras reales (`docs/figuras/auditoria_calidad_real_30.png`, 0/30 errores de etiqueta).
 - Notebook dedicado de personalización en Google Colab GPU ([`notebooks/03_colab_finetuning.ipynb`](notebooks/03_colab_finetuning.ipynb)) comparando `pretrained` vs. `scratch` vs. `finetune` sobre `data/real_pairs/`, con figuras extraídas a `docs/figuras/`.
 - Modo `--from-real-dir` y metadatos reales de trazabilidad OpenType (`AI-SYNTHETIC` / `PERSONAL-STYLUS` en tabla `name`) en `src/export/build_ttf.py`.

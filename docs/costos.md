@@ -25,7 +25,9 @@ Tiempos reales medidos en **NVIDIA Tesla T4** (Google Colab) y su equivalente co
 | **Pix2Pix `Pretrain`** | Sintético (2,688 train) | 60 *(mejor: ep. 11)* | 832.6 s (13.88 min) | 13.88 s/época | 170.16 MB | \$0.00 | \$0.081 USD |
 | **Pix2Pix `Fine-Tune`** | Real stylus (192 train) | 100 *(mejor: ep. 51)* | 235.0 s (3.92 min) | 2.35 s/época | 170.16 MB | \$0.00 | \$0.023 USD |
 | **Pix2Pix `Scratch`** | Real stylus (192 train) | 150 *(mejor: ep. 120)* | 309.1 s (5.15 min) | 2.06 s/época | 170.16 MB | \$0.00 | \$0.030 USD |
-| **Total ciclo completo GPU (medido)** | — | **362 épocas** | **1,593.9 s (26.57 min)** | — | **569.27 MB** | **\$0.00** | **\$0.155 USD** |
+| **StyleUNet `Pretrain`** *(aditivo)* | Sintético (2,688 train) | 60 *(mejor: ep. 59)* | 2,782.9 s (46.38 min) | 46.38 s/época | ~180 MB | \$0.00 | \$0.271 USD |
+| **StyleUNet `Fine-Tune`** *(aditivo)* | Real stylus (192 train) | 40 *(mejor: ep. 4)* | 157.0 s (2.62 min) | 3.93 s/época | ~180 MB | \$0.00 | \$0.015 USD |
+| **Total ciclo completo GPU (medido)** | — | **462 épocas** | **4,533.8 s (75.56 min)** | — | **~929 MB** | **\$0.00** | **\$0.441 USD** |
 
 ---
 
@@ -57,5 +59,5 @@ A diferencia de modelos de difusión (*Stable Diffusion* / *ControlNet*) que exi
 ---
 
 ## 5. Conclusión Económica y Escalabilidad
-- **Viabilidad de bajo costo:** Todo el ciclo de vida ejecutado (preentrenamiento, adaptación `scratch`/`finetune`, evaluación, exportación ONNX y generación `.ttf`) costó **\$0.00 USD** usando Google Colab gratuito y equipo local (**\$0.155 USD** en cómputo comercial *on-demand*).
-- **Escenario de producción (1,000 usuarios/mes):** Un servicio en la nube que entrenara una fuente personalizada en GPU T4 (~4–5 min/usuario) tendría un costo marginal de cómputo de **~\$0.025–\$0.030 USD por fuente personalizada** (~25–30 USD/mes para 1,000 fuentes), mientras que la inferencia interactiva corre en el cliente (CPU / ONNX Runtime a 47 FPS) sin costo de servidor GPU.
+- **Viabilidad de bajo costo:** Todo el ciclo de vida ejecutado (jueces, Pix2Pix `pretrain`/`scratch`/`finetune`, experimento aditivo `StyleUNet` `pretrain`/`finetune`, evaluación, exportación ONNX y generación `.ttf`) costó **\$0.00 USD** usando Google Colab gratuito y equipo local (**\$0.441 USD** en cómputo comercial *on-demand*).
+- **Escenario de producción (1,000 usuarios/mes):** Con `StyleUNet`, la inferencia *Few-Shot* a partir de 4 glifos de referencia cuesta **\$0.00 de GPU** por usuario, y un *fine-tuning* ligero de ~2.6 min en GPU T4 tiene un costo marginal de **~\$0.015 USD por fuente personalizada** (~15 USD/mes para 1,000 fuentes), mientras la inferencia interactiva corre en el cliente (CPU / ONNX Runtime a 47 FPS).
