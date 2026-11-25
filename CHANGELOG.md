@@ -4,6 +4,17 @@ Todos los cambios notables de este proyecto se documentan en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 
+## [Unreleased]
+
+### Added
+- Bitácora técnica de iteraciones, fallos y decisiones de arquitectura en [`docs/bitacora_iteraciones.md`](docs/bitacora_iteraciones.md).
+- Normalización automática por *bounding box* y línea base (`0.72`) para dibujo libre con mouse (`_normalize_freehand_canvas`) y tecla `Enter` en `app/demo_realtime.py` para alternar evaluación del juez (`AUTO`: `x` directo en mouse/webcam y `y_hat` en teclado vs. siempre `y_hat`).
+
+### Changed
+- Hiperparámetros de entrenamiento centralizados en `src/config.py` (`JUDGES_CONFIG`, `PIX2PIX_CONFIG`, `STYLE_UNET_CONFIG`) manteniendo sobreescritura por CLI/Colab.
+- `src/data/glyph_render.py` ahora prioriza `data/fonts/base/Lato-Regular.ttf` (fuente exacta de entrenamiento) antes del fallback a fuentes del sistema.
+- Contraste suave con antialiasing y protección de trazos finos en `_preprocess_webcam_roi()` de `app/demo_realtime.py`.
+
 ## [1.0.0] - 2026-11-23
 
 ### Added

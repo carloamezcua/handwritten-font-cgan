@@ -205,6 +205,7 @@ El planteamiento del problema, la selección y validación de datasets, la captu
 | [`docs/informe_etico.pdf`](docs/informe_etico.pdf) | Análisis de riesgos éticos, sesgos, privacidad y salvaguardas |
 | [`docs/interpretabilidad.md`](docs/interpretabilidad.md) | Análisis espacial con Grad-CAM y diagnóstico causal de errores |
 | [`docs/robustez_y_despliegue.md`](docs/robustez_y_despliegue.md) | Benchmarks PyTorch vs. ONNX Runtime y evaluación de rechazo OOD |
+| [`docs/bitacora_iteraciones.md`](docs/bitacora_iteraciones.md) | Bitácora de iteraciones, fallos detectados, cambio a `StyleUNet` y correcciones |
 | [`docs/costos.md`](docs/costos.md) | Costos medidos de entrenamiento GPU, inferencia CPU y almacenamiento |
 | [`docs/defensa.pdf`](docs/defensa.pdf) | Presentación ejecutiva para la defensa técnica (12 min) |
 | [`eval/robustez.ipynb`](eval/robustez.ipynb) | Evaluación cuantitativa y visual de 72 imágenes OOD |
