@@ -30,7 +30,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, Subset
 
-from src.config import IMG_SIZE, SEED
+from src.config import IMG_SIZE, PIX2PIX_CONFIG, SEED
 from src.data.dataset import GlyphPairDataset
 from src.models.pix2pix import PatchGANDiscriminator, Pix2PixLoss, UNetGenerator
 from src.utils import save_triplet_grid, seed_everything
@@ -39,29 +39,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 
-MODE_DEFAULTS = {
-    "pretrain": {
-        "data_dir": Path("data/synthetic_pairs"),
-        "ckpt_name": "pix2pix_pretrained.pth",
-        "epochs": 60,
-        "batch_size": 32,
-        "lr": 2e-4,
-    },
-    "scratch": {
-        "data_dir": Path("data/real_pairs"),
-        "ckpt_name": "pix2pix_scratch.pth",
-        "epochs": 150,
-        "batch_size": 16,
-        "lr": 2e-4,
-    },
-    "finetune": {
-        "data_dir": Path("data/real_pairs"),
-        "ckpt_name": "pix2pix_finetuned.pth",
-        "epochs": 100,
-        "batch_size": 16,
-        "lr": 1e-4,
-    },
-}
+MODE_DEFAULTS = PIX2PIX_CONFIG["modes"]
 
 
 def evaluate_val_l1(
@@ -192,9 +170,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--epochs", type=int, default=None)
     parser.add_argument("--batch-size", type=int, default=None)
     parser.add_argument("--lr", type=float, default=None)
-    parser.add_argument("--lambda-l1", type=float, default=100.0)
-    parser.add_argument("--real-label", type=float, default=0.9)
-    parser.add_argument("--sample-every", type=int, default=10)
+    parser.add_argument("--lambda-l1", type=float, default=PIX2PIX_CONFIG["lambda_l1"])
+    parser.add_argument("--real-label", type=float, default=PIX2PIX_CONFIG["real_label"])
+    parser.add_argument("--sample-every", type=int, default=PIX2PIX_CONFIG["sample_every"])
     parser.add_argument("--num-workers", type=int, default=0)
     parser.add_argument("--seed", type=int, default=SEED)
     parser.add_argument(
@@ -280,8 +258,8 @@ def main() -> None:
         real_label=args.real_label,
         fake_label=0.0,
     )
-    opt_g = torch.optim.Adam(gen.parameters(), lr=lr, betas=(0.5, 0.999))
-    opt_d = torch.optim.Adam(disc.parameters(), lr=lr, betas=(0.5, 0.999))
+    opt_g = torch.optim.Adam(gen.parameters(), lr=lr, betas=PIX2PIX_CONFIG["betas"])
+    opt_d = torch.optim.Adam(disc.parameters(), lr=lr, betas=PIX2PIX_CONFIG["betas"])
 
     # Decaimiento lineal del learning rate en la segunda mitad del entrenamiento (estándar Pix2Pix)
     decay_start = max(epochs // 2, 1)

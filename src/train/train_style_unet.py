@@ -29,7 +29,7 @@ from torch.utils.data import DataLoader
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-from src.config import SEED
+from src.config import SEED, STYLE_UNET_CONFIG
 from src.data.style_dataset import StyleGlyphPairDataset
 from src.models.pix2pix import PatchGANDiscriminator
 from src.models.style_unet import StyleUNetGenerator, StyleUNetLoss
@@ -109,17 +109,17 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--figures-dir", type=Path, default=Path("docs/figuras"))
     parser.add_argument("--results-dir", type=Path, default=Path("results/style_unet"))
     parser.add_argument("--epochs", type=int, default=None)
-    parser.add_argument("--batch-size", type=int, default=16)
+    parser.add_argument("--batch-size", type=int, default=STYLE_UNET_CONFIG["batch_size"])
     parser.add_argument("--lr", type=float, default=None)
-    parser.add_argument("--style-dim", type=int, default=128)
-    parser.add_argument("--num-style-refs", type=int, default=4)
-    parser.add_argument("--lambda-l1", type=float, default=100.0)
-    parser.add_argument("--lambda-style", type=float, default=5.0)
-    parser.add_argument("--lambda-ink", type=float, default=15.0)
+    parser.add_argument("--style-dim", type=int, default=STYLE_UNET_CONFIG["style_dim"])
+    parser.add_argument("--num-style-refs", type=int, default=STYLE_UNET_CONFIG["num_style_refs"])
+    parser.add_argument("--lambda-l1", type=float, default=STYLE_UNET_CONFIG["lambda_l1"])
+    parser.add_argument("--lambda-style", type=float, default=STYLE_UNET_CONFIG["lambda_style"])
+    parser.add_argument("--lambda-ink", type=float, default=STYLE_UNET_CONFIG["lambda_ink"])
     parser.add_argument("--no-stroke-augment", action="store_true")
     parser.add_argument("--freeze-style-encoder", action="store_true")
     parser.add_argument("--num-workers", type=int, default=0)
-    parser.add_argument("--sample-every", type=int, default=10)
+    parser.add_argument("--sample-every", type=int, default=STYLE_UNET_CONFIG["sample_every"])
     parser.add_argument("--seed", type=int, default=SEED)
     return parser.parse_args()
 
@@ -128,11 +128,10 @@ def main() -> None:
     args = parse_args()
     seed_everything(args.seed)
 
-    data_dir = args.data_dir or (
-        Path("data/synthetic_pairs") if args.mode == "pretrain" else Path("data/real_pairs")
-    )
-    epochs = args.epochs if args.epochs is not None else (60 if args.mode == "pretrain" else 40)
-    lr = args.lr if args.lr is not None else (2e-4 if args.mode == "pretrain" else 5e-5)
+    mode_cfg = STYLE_UNET_CONFIG["modes"][args.mode]
+    data_dir = args.data_dir or mode_cfg["data_dir"]
+    epochs = args.epochs if args.epochs is not None else mode_cfg["epochs"]
+    lr = args.lr if args.lr is not None else mode_cfg["lr"]
     stroke_aug = (args.mode == "pretrain") and (not args.no_stroke_augment)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -212,17 +211,15 @@ def main() -> None:
             print("[INFO] StyleEncoder congelado durante fine-tuning.")
 
     opt_g = torch.optim.Adam(
-        [p for p in gen.parameters() if p.requires_grad], lr=lr, betas=(0.5, 0.999)
+        [p for p in gen.parameters() if p.requires_grad], lr=lr, betas=STYLE_UNET_CONFIG["betas"]
     )
-    opt_d = torch.optim.Adam(disc.parameters(), lr=lr, betas=(0.5, 0.999))
+    opt_d = torch.optim.Adam(disc.parameters(), lr=lr, betas=STYLE_UNET_CONFIG["betas"])
 
     # Muestras fijas para visualizar evolución
     val_x_fix, val_y_fix, val_refs_fix, _, val_chars_fix, _ = next(iter(val_loader))
     unseen_x_fix, unseen_y_fix, unseen_refs_fix, _, unseen_chars_fix, _ = next(iter(unseen_loader))
 
-    ckpt_name = (
-        "style_unet_pretrained.pth" if args.mode == "pretrain" else "style_unet_finetuned.pth"
-    )
+    ckpt_name = mode_cfg["ckpt_name"]
     best_ckpt_path = args.checkpoints_dir / ckpt_name
     last_ckpt_path = args.checkpoints_dir / ckpt_name.replace(".pth", "_last.pth")
     args.checkpoints_dir.mkdir(parents=True, exist_ok=True)

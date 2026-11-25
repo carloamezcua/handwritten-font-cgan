@@ -27,7 +27,7 @@ import torch.nn as nn
 from sklearn.metrics import accuracy_score, f1_score
 from torch.utils.data import DataLoader, Subset
 
-from src.config import CHARSET, IMG_SIZE, SEED
+from src.config import CHARSET, IMG_SIZE, JUDGES_CONFIG, SEED
 from src.data.dataset import GlyphJudgeDataset
 from src.models.judges import build_judge
 from src.utils import seed_everything
@@ -134,7 +134,7 @@ def train_single_judge(
     """Entrena un clasificador juez con early stopping sobre Macro-F1 de validación."""
     print(f"\n=== Entrenando juez: {model_name} (pretrained={pretrained}, device={device}) ===")
     model = build_judge(model_name, num_classes=len(CHARSET), pretrained=pretrained).to(device)
-    criterion = nn.CrossEntropyLoss(label_smoothing=0.05)
+    criterion = nn.CrossEntropyLoss(label_smoothing=JUDGES_CONFIG["label_smoothing"])
     optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=weight_decay)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max(epochs, 1))
 
@@ -290,11 +290,11 @@ def parse_args() -> argparse.Namespace:
         default=Path("results/judges"),
         help="Directorio para historiales JSON.",
     )
-    parser.add_argument("--epochs", type=int, default=30)
-    parser.add_argument("--batch-size", type=int, default=64)
-    parser.add_argument("--lr", type=float, default=1e-3)
-    parser.add_argument("--weight-decay", type=float, default=1e-4)
-    parser.add_argument("--patience", type=int, default=7)
+    parser.add_argument("--epochs", type=int, default=JUDGES_CONFIG["epochs"])
+    parser.add_argument("--batch-size", type=int, default=JUDGES_CONFIG["batch_size"])
+    parser.add_argument("--lr", type=float, default=JUDGES_CONFIG["lr"])
+    parser.add_argument("--weight-decay", type=float, default=JUDGES_CONFIG["weight_decay"])
+    parser.add_argument("--patience", type=int, default=JUDGES_CONFIG["patience"])
     parser.add_argument("--num-workers", type=int, default=0)
     parser.add_argument(
         "--pretrained",
