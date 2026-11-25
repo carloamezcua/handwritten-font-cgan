@@ -173,18 +173,23 @@ def _preprocess_webcam_roi(roi_bgr: np.ndarray) -> tuple[np.ndarray, bool]:
 
     # 4. Recorte, escalado proporcional (~54 % = ~69 px, igual a Lato) y alineación a línea base 0.72
     crop_ink = clean_mask[y0:y1, x0:x1]
-    crop_glyph = 255 - crop_ink  # trazo negro (0), fondo blanco (255)
-
     target_box = int(round(IMG_SIZE * 0.54))
     scale = target_box / float(max(bw, bh))
+    # Evitar que trazos finos desaparezcan al reducir fuertemente el ROI
+    if scale < 0.5:
+        crop_ink = cv2.dilate(crop_ink, kernel, iterations=1)
+    crop_glyph = 255 - crop_ink  # trazo negro (0), fondo blanco (255)
+
     new_w = max(1, int(round(bw * scale)))
     new_h = max(1, int(round(bh * scale)))
 
     interp = cv2.INTER_AREA if scale < 1.0 else cv2.INTER_LINEAR
     resized = cv2.resize(crop_glyph, (new_w, new_h), interpolation=interp)
 
-    # Re-binarizar suavemente para entregar trazos nítidos al generador
-    resized = np.where(resized < 170, 0, 255).astype(np.uint8)
+    # Contraste suave conservando antialiasing (evita romper trazos finos como un umbral duro)
+    resized = np.clip((resized.astype(np.float32) - 40.0) * (255.0 / 185.0), 0.0, 255.0).astype(
+        np.uint8
+    )
 
     canvas = np.full((IMG_SIZE, IMG_SIZE), 255, dtype=np.uint8)
     offset_x = (IMG_SIZE - new_w) // 2
@@ -194,6 +199,41 @@ def _preprocess_webcam_roi(roi_bgr: np.ndarray) -> tuple[np.ndarray, bool]:
 
     ink_ratio = float(np.mean(canvas < 128))
     is_valid = 0.005 <= ink_ratio <= 0.65
+    return canvas, is_valid
+
+
+def _normalize_freehand_canvas(raw_canvas: np.ndarray) -> tuple[np.ndarray, bool]:
+    """Recorta, escala (~56 %) y alinea a línea base 0.72 un dibujo libre hecho con mouse."""
+    blank = np.full((IMG_SIZE, IMG_SIZE), 255, dtype=np.uint8)
+    ys, xs = np.where(raw_canvas < 200)
+    if len(xs) < 12:
+        return blank, False
+
+    x0, x1 = int(xs.min()), int(xs.max()) + 1
+    y0, y1 = int(ys.min()), int(ys.max()) + 1
+    bw, bh = x1 - x0, y1 - y0
+    if bw < 4 and bh < 4:
+        return blank, False
+
+    crop = raw_canvas[y0:y1, x0:x1]
+    target_box = int(round(IMG_SIZE * 0.56))
+    scale = target_box / float(max(bw, bh))
+    new_w = max(1, int(round(bw * scale)))
+    new_h = max(1, int(round(bh * scale)))
+
+    interp = cv2.INTER_AREA if scale < 1.0 else cv2.INTER_LINEAR
+    resized = cv2.resize(crop, (new_w, new_h), interpolation=interp)
+    if scale > 1.3:
+        resized = cv2.GaussianBlur(resized, (3, 3), 0)
+
+    canvas = np.full((IMG_SIZE, IMG_SIZE), 255, dtype=np.uint8)
+    offset_x = (IMG_SIZE - new_w) // 2
+    offset_y = int(round(IMG_SIZE * 0.72) - new_h)
+    offset_y = int(np.clip(offset_y, 8, IMG_SIZE - new_h - 8))
+    canvas[offset_y : offset_y + new_h, offset_x : offset_x + new_w] = resized
+
+    ink_ratio = float(np.mean(canvas < 180))
+    is_valid = 0.003 <= ink_ratio <= 0.85
     return canvas, is_valid
 
 
@@ -221,6 +261,7 @@ def _build_info_panel(
     fps: float,
     mode: str,
     target_char: str,
+    judge_source_label: str = "y_hat",
     webcam_error: str | None = None,
 ) -> np.ndarray:
     """Construye el 3er panel: Predicción, Confianza, Alerta OOD y métricas de tiempo real."""
@@ -316,13 +357,17 @@ def _build_info_panel(
         1,
         cv2.LINE_AA,
     )
-    extra = webcam_error if webcam_error else f"Modo: {mode} | Char base: '{target_char}'"
+    extra = (
+        webcam_error
+        if webcam_error
+        else f"Modo: {mode} | Juez: {judge_source_label} | '{target_char}'"
+    )
     cv2.putText(
         panel,
-        extra[:38],
+        extra[:42],
         (16, 314),
         cv2.FONT_HERSHEY_SIMPLEX,
-        0.40,
+        0.39,
         (170, 170, 180),
         1,
         cv2.LINE_AA,
@@ -357,6 +402,8 @@ class RealtimeDemo:
         self.cap: cv2.VideoCapture | None = None
         self.webcam_error: str | None = None
         self.flip_webcam: bool = False
+        # AUTO: evalúa y_hat en teclado (Lato), y x normalizado directo en dibujo libre/webcam
+        self.judge_mode: str = "AUTO"  # "AUTO" | "Y_HAT"
         self.ema_ms: float | None = None
 
     def set_char(self, ch: str) -> None:
@@ -407,9 +454,9 @@ class RealtimeDemo:
                 self.clear_canvas()
             self.drawing = True
             self.last_pt = (gx, gy)
-            cv2.circle(self.canvas_u8, (gx, gy), 3, 0, -1)
+            cv2.circle(self.canvas_u8, (gx, gy), 3, 0, -1, lineType=cv2.LINE_AA)
         elif event == cv2.EVENT_MOUSEMOVE and self.drawing and self.last_pt is not None:
-            cv2.line(self.canvas_u8, self.last_pt, (gx, gy), 0, thickness=6)
+            cv2.line(self.canvas_u8, self.last_pt, (gx, gy), 0, thickness=5, lineType=cv2.LINE_AA)
             self.last_pt = (gx, gy)
         elif event == cv2.EVENT_LBUTTONUP:
             self.drawing = False
@@ -469,25 +516,50 @@ class RealtimeDemo:
                 )
             left_title = "1. Entrada x (Webcam ROI)"
         else:
-            x_u8 = self.canvas_u8
-            ink_ratio = float(np.mean(x_u8 < 180))
-            is_valid = 0.003 <= ink_ratio <= 0.85
-            left_body = cv2.cvtColor(
-                cv2.resize(x_u8, (PANEL_SIZE, PANEL_SIZE - 32), interpolation=cv2.INTER_NEAREST),
-                cv2.COLOR_GRAY2BGR,
-            )
-            left_title = (
-                "1. Entrada x (Dibujo libre)"
-                if self.freehand_active
-                else f"1. Entrada x (Canvas: '{self.current_char}')"
-            )
+            if self.freehand_active:
+                x_u8, is_valid = _normalize_freehand_canvas(self.canvas_u8)
+                left_body = cv2.cvtColor(
+                    cv2.resize(
+                        self.canvas_u8,
+                        (PANEL_SIZE, PANEL_SIZE - 32),
+                        interpolation=cv2.INTER_NEAREST,
+                    ),
+                    cv2.COLOR_GRAY2BGR,
+                )
+                # Miniatura del dibujo libre ya recortado y centrado en 128x128
+                thumb_sz = 84
+                thumb = cv2.cvtColor(cv2.resize(x_u8, (thumb_sz, thumb_sz)), cv2.COLOR_GRAY2BGR)
+                thumb_color = (0, 220, 90) if is_valid else (55, 65, 235)
+                left_body[-thumb_sz - 4 : -4, -thumb_sz - 4 : -4] = thumb
+                cv2.rectangle(
+                    left_body,
+                    (PANEL_SIZE - thumb_sz - 4, PANEL_SIZE - 32 - thumb_sz - 4),
+                    (PANEL_SIZE - 4, PANEL_SIZE - 32 - 4),
+                    thumb_color,
+                    2,
+                )
+                left_title = "1. Entrada x (Dibujo libre)"
+            else:
+                x_u8 = self.canvas_u8
+                ink_ratio = float(np.mean(x_u8 < 180))
+                is_valid = 0.003 <= ink_ratio <= 0.85
+                left_body = cv2.cvtColor(
+                    cv2.resize(x_u8, (PANEL_SIZE, PANEL_SIZE - 32), interpolation=cv2.INTER_NEAREST),
+                    cv2.COLOR_GRAY2BGR,
+                )
+                left_title = f"1. Entrada x (Canvas: '{self.current_char}')"
 
         # 2. Inferencia ONNX (Generador + Juez)
         x_norm = (x_u8.astype(np.float32) / 127.5) - 1.0
         x_in = x_norm[None, None, :, :]
 
         y_hat = self.gen_sess.run(["y_hat"], {"x": x_in})[0]
-        logits = self.judge_sess.run(["logits"], {"glyph": y_hat})[0][0]
+        eval_direct = (self.judge_mode == "AUTO") and (
+            self.mode == "WEBCAM" or self.freehand_active
+        )
+        judge_input = x_in if eval_direct else y_hat
+        judge_source_label = "x directo" if eval_direct else "y_hat"
+        logits = self.judge_sess.run(["logits"], {"glyph": judge_input})[0][0]
         probs = _softmax(logits)
 
         top_indices = np.argsort(probs)[::-1][:3]
@@ -523,6 +595,7 @@ class RealtimeDemo:
             fps=fps,
             mode=self.mode,
             target_char=self.current_char,
+            judge_source_label=judge_source_label,
             webcam_error=self.webcam_error,
         )
 
@@ -557,10 +630,10 @@ class RealtimeDemo:
         footer_y = HEADER_H + PANEL_SIZE + 22
         cv2.putText(
             canvas,
-            "[Teclas] Escribe cualquier letra/digito | Mouse: dibuja | Tab: Canvas/Webcam | +/-: Umbral | Space: Siguiente | Backspace: Borrar | ESC: Salir",
+            "[Teclas] Letra/digito | Mouse: dibuja | Tab: Canvas/Webcam | Enter: Juez x/y_hat | +/-: Umbral | Backspace: Borrar | ESC: Salir",
             (14, footer_y),
             cv2.FONT_HERSHEY_SIMPLEX,
-            0.41,
+            0.40,
             (200, 200, 210),
             1,
             cv2.LINE_AA,
@@ -596,6 +669,8 @@ class RealtimeDemo:
                     break
                 if key == 9:  # Tab -> alternar modo siempre
                     self.toggle_mode()
+                elif key == 13:  # Enter -> alternar fuente del Juez (AUTO vs siempre y_hat)
+                    self.judge_mode = "Y_HAT" if self.judge_mode == "AUTO" else "AUTO"
                 elif key == 8:  # Backspace -> limpiar canvas
                     self.clear_canvas()
                 elif key == 32:  # Space -> siguiente carácter del charset

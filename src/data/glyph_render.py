@@ -20,8 +20,10 @@ BASELINE_RATIO = 0.72
 
 
 def get_default_base_font_path(fonts_dir: Path = Path("data/fonts")) -> Path:
-    """Devuelve la ruta de la fuente base limpia (prefiere Roboto local)."""
+    """Devuelve la ruta de la fuente base limpia (prefiere Lato local usada en entrenamiento)."""
     candidates = [
+        fonts_dir / "base" / "Lato-Regular.ttf",
+        fonts_dir / "Lato-Regular.ttf",
         fonts_dir / "base" / "Roboto-Regular.ttf",
         fonts_dir / "Roboto-Regular.ttf",
         Path("C:/Windows/Fonts/arial.ttf"),
