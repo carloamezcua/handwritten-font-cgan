@@ -71,6 +71,10 @@ flowchart LR
 
 ## 5. Resultados Principales
 
+> **Recorrido maestro de resultados (punto de entrada único):**
+> - **Notebook maestro ejecutable:** [`notebooks/05_recorrido_completo_resultados.ipynb`](notebooks/05_recorrido_completo_resultados.ipynb) — recorrido *end-to-end* ejecutable en CPU (`<20 s`, cero entrenamiento) con arquitectura, tabla real de parámetros, evolución experimental (`Pix2Pix` vs. `StyleUNet`), auditoría por subgrupos, Grad-CAM, robustez OOD, inferencia ONNX en vivo, metadatos `.ttf` y costos.
+> - **Reporte web interactivo (100 % offline):** [`docs/reporte_completo.html`](docs/reporte_completo.html) — reporte en tema oscuro para presentación/defensa con gráficas SVG, selector interactivo de experimentos y galería con *lightbox*, regenerable con `python -m src.export.build_report`.
+
 ### 5.1 Evaluación cuantitativa (`eval/evaluate_models.py`)
 
 #### A) Dominio sintético multi-fuente (`data/synthetic_pairs/`, `pix2pix_pretrained.pth`)
@@ -208,12 +212,14 @@ El planteamiento del problema, la selección y validación de datasets, la captu
 | [`docs/bitacora_iteraciones.md`](docs/bitacora_iteraciones.md) | Bitácora de iteraciones, fallos detectados, cambio a `StyleUNet` y correcciones |
 | [`docs/costos.md`](docs/costos.md) | Costos medidos de entrenamiento GPU, inferencia CPU y almacenamiento |
 | [`docs/defensa.pdf`](docs/defensa.pdf) | Presentación ejecutiva para la defensa técnica (12 min) |
+| [`docs/reporte_completo.html`](docs/reporte_completo.html) | Reporte web interactivo 100 % offline en tema oscuro para presentación/defensa (`python -m src.export.build_report`) |
 | [`eval/robustez.ipynb`](eval/robustez.ipynb) | Evaluación cuantitativa y visual de 72 imágenes OOD |
 | [`eval/auditoria_subgrupos.ipynb`](eval/auditoria_subgrupos.ipynb) | Desempeño desglosado por subgrupo tipográfico (`A–Z`, `a–z`, `0–9`, signos) |
 | [`notebooks/01_eda_datos.ipynb`](notebooks/01_eda_datos.ipynb) | Análisis exploratorio de datos, balance de clases e inspección visual |
 | [`notebooks/02_colab_training.ipynb`](notebooks/02_colab_training.ipynb) | Entrenamiento reproducible de jueces y Pix2Pix pretrain en Colab T4 |
 | [`notebooks/03_colab_finetuning.ipynb`](notebooks/03_colab_finetuning.ipynb) | Experimentos de personalización Pix2Pix (`pretrained` vs. `scratch` vs. `finetune`) |
 | [`notebooks/04_colab_style_encoder.ipynb`](notebooks/04_colab_style_encoder.ipynb) | Experimento aditivo `StyleUNet` (Style Encoder + AdaIN) Few-Shot y Fine-Tune |
+| [`notebooks/05_recorrido_completo_resultados.ipynb`](notebooks/05_recorrido_completo_resultados.ipynb) | Notebook maestro *end-to-end* ejecutable en CPU (`<20 s`) con métricas, Grad-CAM, OOD, inferencia ONNX en vivo y trazabilidad `.ttf` |
 
 ### Referencias y créditos
 - **Autor:** Carlo A. Amezcua L.
