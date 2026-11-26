@@ -476,9 +476,9 @@ def _esc(text: Any) -> str:
 
 
 def _svg_architecture_diagram() -> str:
-    """Diagrama de arquitectura end-to-end completamente en SVG inline."""
+    """Diagrama de arquitectura end-to-end completamente en SVG inline (armonizado en modo oscuro)."""
     return """
-    <svg class="arch-svg" viewBox="0 0 1120 390" role="img" aria-label="Diagrama de arquitectura End-to-End de Handwritten Font cGAN" xmlns="http://www.w3.org/2000/svg">
+    <svg class="arch-svg" viewBox="0 0 1180 398" role="img" aria-label="Diagrama de arquitectura End-to-End de Handwritten Font cGAN" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
           <path d="M 0 1 L 10 5 L 0 9 z" fill="var(--svg-arrow)"/>
@@ -486,119 +486,125 @@ def _svg_architecture_diagram() -> str:
         <marker id="arrow-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
           <path d="M 0 1 L 10 5 L 0 9 z" fill="var(--accent)"/>
         </marker>
+        <marker id="arrow-teal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 10 5 L 0 9 z" fill="var(--accent-2)"/>
+        </marker>
         <marker id="arrow-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
           <path d="M 0 1 L 10 5 L 0 9 z" fill="var(--text-muted)"/>
         </marker>
       </defs>
 
-      <!-- Fondo de etapa entrenamiento vs inferencia -->
-      <rect x="215" y="16" width="335" height="236" rx="14" fill="var(--svg-zone)" stroke="var(--border)" stroke-dasharray="5 5"/>
-      <text x="230" y="36" font-size="11" font-weight="700" fill="var(--text-muted)" letter-spacing="0.06em">SÍNTESIS CONDICIONAL (G)</text>
+      <!-- Placa de fondo oscura unificada -->
+      <rect x="2" y="2" width="1176" height="394" rx="14" fill="var(--svg-zone)" stroke="var(--border)" stroke-width="1"/>
 
-      <rect x="695" y="16" width="408" height="358" rx="14" fill="var(--svg-zone)" stroke="var(--border)" stroke-dasharray="5 5"/>
-      <text x="710" y="36" font-size="11" font-weight="700" fill="var(--text-muted)" letter-spacing="0.06em">AUDITORÍA, EXPLICABILIDAD Y EXPORTACIÓN</text>
+      <!-- Zonas lógicas -->
+      <rect x="214" y="16" width="336" height="238" rx="14" fill="var(--surface)" stroke="var(--border-strong)" stroke-dasharray="5 5"/>
+      <text x="230" y="36" font-size="10.5" font-weight="700" fill="var(--text-muted)" letter-spacing="0.07em">SÍNTESIS CONDICIONAL (G)</text>
+
+      <rect x="694" y="16" width="470" height="364" rx="14" fill="var(--surface)" stroke="var(--border-strong)" stroke-dasharray="5 5"/>
+      <text x="710" y="36" font-size="10.5" font-weight="700" fill="var(--text-muted)" letter-spacing="0.07em">AUDITORÍA, EXPLICABILIDAD Y EXPORTACIÓN</text>
 
       <!-- Nodo 1: Entrada x -->
       <g transform="translate(18, 92)">
-        <rect width="166" height="96" rx="12" fill="var(--surface)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="83" y="26" text-anchor="middle" font-size="13" font-weight="700" fill="var(--text)">Entrada x</text>
-        <text x="83" y="45" text-anchor="middle" font-size="11.5" font-family="var(--font-mono)" fill="var(--accent)">1 × 128 × 128</text>
-        <text x="83" y="66" text-anchor="middle" font-size="11" fill="var(--text-muted)">Lato-Regular / Canvas</text>
-        <text x="83" y="82" text-anchor="middle" font-size="11" fill="var(--text-muted)">/ Webcam ROI [-1, 1]</text>
+        <rect width="166" height="98" rx="12" fill="var(--svg-card)" stroke="var(--accent)" stroke-width="1.8"/>
+        <text x="83" y="27" text-anchor="middle" font-size="13" font-weight="700" fill="var(--text)">Entrada x</text>
+        <text x="83" y="47" text-anchor="middle" font-size="11.5" font-family="var(--font-mono)" fill="var(--accent)">1 × 128 × 128</text>
+        <text x="83" y="68" text-anchor="middle" font-size="11" fill="var(--text-muted)">Lato-Regular / Canvas</text>
+        <text x="83" y="84" text-anchor="middle" font-size="11" fill="var(--text-muted)">/ Webcam ROI [-1, 1]</text>
       </g>
 
       <!-- Nodo 1b: Referencias estilo -->
-      <g transform="translate(18, 224)">
-        <rect width="166" height="72" rx="12" fill="var(--surface)" stroke="var(--accent-2)" stroke-width="1.6" stroke-dasharray="4 3"/>
+      <g transform="translate(18, 226)">
+        <rect width="166" height="74" rx="12" fill="var(--svg-card)" stroke="var(--accent-2)" stroke-width="1.6" stroke-dasharray="4 3"/>
         <text x="83" y="25" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">K=4 Refs de Estilo</text>
-        <text x="83" y="43" text-anchor="middle" font-size="11" font-family="var(--font-mono)" fill="var(--accent-2)">[4, 1, 128, 128]</text>
-        <text x="83" y="59" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">Solo StyleUNet + AdaIN</text>
+        <text x="83" y="44" text-anchor="middle" font-size="11" font-family="var(--font-mono)" fill="var(--accent-2)">[4, 1, 128, 128]</text>
+        <text x="83" y="61" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">Solo StyleUNet + AdaIN</text>
       </g>
 
       <!-- Nodo 2: Generador G -->
       <g transform="translate(232, 54)">
-        <rect width="300" height="178" rx="14" fill="var(--surface)" stroke="var(--accent)" stroke-width="2.2"/>
-        <rect x="0" y="0" width="300" height="32" rx="14" fill="var(--accent)"/>
-        <rect x="0" y="18" width="300" height="14" fill="var(--accent)"/>
+        <rect width="300" height="182" rx="14" fill="var(--svg-card)" stroke="var(--accent)" stroke-width="2"/>
+        <rect x="0" y="0" width="300" height="33" rx="14" fill="var(--accent-solid)"/>
+        <rect x="0" y="19" width="300" height="14" fill="var(--accent-solid)"/>
         <text x="150" y="21" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">Generador G (Pix2Pix / StyleUNet)</text>
-        <text x="150" y="56" text-anchor="middle" font-size="12" font-weight="600" fill="var(--text)">U-Net 7 Enc + 7 Dec + Skip Connections</text>
-        <text x="150" y="76" text-anchor="middle" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">Pix2Pix: 41.82M · StyleUNet: 44.18M</text>
-        <line x1="20" y1="90" x2="280" y2="90" stroke="var(--border)"/>
-        <text x="150" y="110" text-anchor="middle" font-size="11" fill="var(--text)">StyleEncoder (sin InstanceNorm) → z_style (128-d)</text>
-        <text x="150" y="128" text-anchor="middle" font-size="11" fill="var(--text)">6 bloques AdaIN2d + pérdida L1 + InkDiff</text>
-        <rect x="40" y="140" width="220" height="24" rx="6" fill="var(--accent-soft)"/>
-        <text x="150" y="156" text-anchor="middle" font-size="11" font-weight="700" fill="var(--accent)">ONNX CPU: 16.86 ms (59.30 FPS)</text>
+        <text x="150" y="57" text-anchor="middle" font-size="12" font-weight="600" fill="var(--text)">U-Net 7 Enc + 7 Dec + Skip Connections</text>
+        <text x="150" y="77" text-anchor="middle" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">Pix2Pix: 41.82M · StyleUNet: 44.18M</text>
+        <line x1="18" y1="91" x2="282" y2="91" stroke="var(--border-strong)"/>
+        <text x="150" y="111" text-anchor="middle" font-size="11" fill="var(--text)">StyleEncoder (sin InstanceNorm) → z_style (128-d)</text>
+        <text x="150" y="129" text-anchor="middle" font-size="11" fill="var(--text)">6 bloques AdaIN2d + pérdida L1 + InkDiff</text>
+        <rect x="34" y="143" width="232" height="25" rx="7" fill="var(--accent-soft)" stroke="rgba(96,165,250,0.28)"/>
+        <text x="150" y="159.5" text-anchor="middle" font-size="11" font-family="var(--font-mono)" font-weight="700" fill="var(--accent)">ONNX CPU: 16.86 ms (59.30 FPS)</text>
       </g>
 
       <!-- Nodo 3: Discriminador PatchGAN (solo train) -->
-      <g transform="translate(262, 286)">
-        <rect width="240" height="74" rx="12" fill="var(--surface)" stroke="var(--text-muted)" stroke-width="1.4" stroke-dasharray="5 4"/>
-        <text x="120" y="24" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">Discriminador PatchGAN 70×70</text>
-        <text x="120" y="42" text-anchor="middle" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">[x, y/ŷ] → logits 14×14 (2.76M)</text>
-        <text x="120" y="59" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">Solo entrenamiento · BCE (0.9) + λL1=100</text>
+      <g transform="translate(254, 288)">
+        <rect width="256" height="78" rx="12" fill="var(--svg-card)" stroke="var(--text-muted)" stroke-width="1.4" stroke-dasharray="5 4"/>
+        <text x="128" y="25" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">Discriminador PatchGAN 70×70</text>
+        <text x="128" y="44" text-anchor="middle" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">[x, y/ŷ] → logits 14×14 (2.76M)</text>
+        <text x="128" y="62" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">Solo entrenamiento · BCE (0.9) + λL1=100</text>
       </g>
 
       <!-- Nodo 4: Salida y_hat -->
       <g transform="translate(566, 98)">
-        <rect width="108" height="84" rx="12" fill="var(--surface)" stroke="var(--accent-2)" stroke-width="2"/>
-        <text x="54" y="28" text-anchor="middle" font-size="14" font-weight="800" fill="var(--text)">Glifo ŷ</text>
-        <text x="54" y="48" text-anchor="middle" font-size="11" font-family="var(--font-mono)" fill="var(--accent-2)">1×128×128</text>
-        <text x="54" y="66" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">Salida Tanh</text>
+        <rect width="108" height="86" rx="12" fill="var(--svg-card)" stroke="var(--accent-2)" stroke-width="2"/>
+        <text x="54" y="29" text-anchor="middle" font-size="14" font-weight="800" fill="var(--text)">Glifo ŷ</text>
+        <text x="54" y="50" text-anchor="middle" font-size="11" font-family="var(--font-mono)" fill="var(--accent-2)">1×128×128</text>
+        <text x="54" y="68" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">Salida Tanh</text>
       </g>
 
-      <!-- Nodo 5: Jueces CNN -->
-      <g transform="translate(712, 54)">
-        <rect width="194" height="118" rx="12" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.8"/>
-        <text x="97" y="24" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--text)">Jueces Congelados</text>
-        <text x="97" y="45" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--accent)">ResNet-18 (11.21M)</text>
-        <text x="97" y="61" text-anchor="middle" font-size="10.5" font-family="var(--font-mono)" fill="var(--text-muted)">75 clases · Emb 512-d · 4.69 ms</text>
-        <line x1="16" y1="71" x2="178" y2="71" stroke="var(--border)"/>
-        <text x="97" y="88" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--accent-2)">EfficientNet-B0 (4.10M)</text>
-        <text x="97" y="104" text-anchor="middle" font-size="10.5" font-family="var(--font-mono)" fill="var(--text-muted)">75 clases · Emb 1280-d (X-val)</text>
+      <!-- Nodo 5: Jueces CNN (ampliado para margen holgado) -->
+      <g transform="translate(710, 54)">
+        <rect width="234" height="122" rx="12" fill="var(--svg-card)" stroke="var(--accent)" stroke-width="1.8"/>
+        <text x="117" y="24" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--text)">Jueces Congelados</text>
+        <text x="117" y="46" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--accent)">ResNet-18 (11.21M)</text>
+        <text x="117" y="62" text-anchor="middle" font-size="10" font-family="var(--font-mono)" fill="var(--text-muted)">75 clases · Emb 512-d · 4.69 ms</text>
+        <line x1="18" y1="74" x2="216" y2="74" stroke="var(--border-strong)"/>
+        <text x="117" y="92" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--accent-2)">EfficientNet-B0 (4.10M)</text>
+        <text x="117" y="108" text-anchor="middle" font-size="10" font-family="var(--font-mono)" fill="var(--text-muted)">75 clases · Emb 1280-d (X-val)</text>
       </g>
 
       <!-- Nodo 6: Grad-CAM + OOD -->
-      <g transform="translate(926, 54)">
-        <rect width="162" height="118" rx="12" fill="var(--surface)" stroke="var(--accent-2)" stroke-width="1.6"/>
-        <text x="81" y="24" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">Explicabilidad &amp; OOD</text>
-        <text x="81" y="46" text-anchor="middle" font-size="11" fill="var(--text)">Grad-CAM Espacial</text>
-        <text x="81" y="62" text-anchor="middle" font-size="10.5" font-family="var(--font-mono)" fill="var(--accent-2)">cos = 0.9895 (ZS)</text>
-        <line x1="16" y1="72" x2="146" y2="72" stroke="var(--border)"/>
-        <text x="81" y="90" text-anchor="middle" font-size="11" fill="var(--text)">Filtro OOD (τ = 0.70)</text>
-        <text x="81" y="106" text-anchor="middle" font-size="10.5" font-family="var(--font-mono)" fill="var(--accent)">AUROC 0.9435 · 81.9%</text>
+      <g transform="translate(964, 54)">
+        <rect width="184" height="122" rx="12" fill="var(--svg-card)" stroke="var(--accent-2)" stroke-width="1.6"/>
+        <text x="92" y="24" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">Explicabilidad &amp; OOD</text>
+        <text x="92" y="46" text-anchor="middle" font-size="11" fill="var(--text)">Grad-CAM Espacial</text>
+        <text x="92" y="62" text-anchor="middle" font-size="10.2" font-family="var(--font-mono)" fill="var(--accent-2)">cos = 0.9895 (ZS)</text>
+        <line x1="16" y1="74" x2="168" y2="74" stroke="var(--border-strong)"/>
+        <text x="92" y="92" text-anchor="middle" font-size="11" fill="var(--text)">Filtro OOD (τ = 0.70)</text>
+        <text x="92" y="108" text-anchor="middle" font-size="10.2" font-family="var(--font-mono)" fill="var(--accent)">AUROC 0.9435 · 81.9%</text>
       </g>
 
       <!-- Nodo 7: Demo en vivo ONNX -->
-      <g transform="translate(712, 192)">
-        <rect width="376" height="72" rx="12" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.6"/>
-        <text x="188" y="24" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--text)">Demo OpenCV Tiempo Real (ONNX Runtime CPU)</text>
-        <text x="188" y="44" text-anchor="middle" font-size="11" font-family="var(--font-mono)" fill="var(--accent)">21.07 ms (p95: 24.00 ms) · 47.45 FPS · Speedup 1.69×</text>
-        <text x="188" y="60" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">Canvas teclado / Dibujo libre / Webcam ROI · Alerta OK / OOD</text>
+      <g transform="translate(710, 196)">
+        <rect width="438" height="74" rx="12" fill="var(--svg-card)" stroke="var(--accent)" stroke-width="1.6"/>
+        <text x="219" y="24" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--text)">Demo OpenCV Tiempo Real (ONNX Runtime CPU)</text>
+        <text x="219" y="44" text-anchor="middle" font-size="11" font-family="var(--font-mono)" fill="var(--accent)">21.07 ms (p95: 24.00 ms) · 47.45 FPS · Speedup 1.69×</text>
+        <text x="219" y="62" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">Canvas teclado / Dibujo libre / Webcam ROI · Alerta OK / OOD</text>
       </g>
 
       <!-- Nodo 8: Vectorización TTF -->
-      <g transform="translate(712, 282)">
-        <rect width="376" height="76" rx="12" fill="var(--surface)" stroke="var(--accent-3)" stroke-width="1.8"/>
-        <text x="188" y="24" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--text)">Exportación Tipografía Instalable (.ttf)</text>
-        <text x="188" y="44" text-anchor="middle" font-size="11" fill="var(--text)">vtracer (SVG) → Cu2QuPen → fontTools (75–84 glifos)</text>
-        <text x="188" y="61" text-anchor="middle" font-size="10.5" font-family="var(--font-mono)" fill="var(--accent-3)">Tabla OpenType name: AI-SYNTHETIC / PERSONAL-STYLUS</text>
+      <g transform="translate(710, 288)">
+        <rect width="438" height="78" rx="12" fill="var(--svg-card)" stroke="var(--accent-3)" stroke-width="1.8"/>
+        <text x="219" y="25" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--text)">Exportación Tipografía Instalable (.ttf)</text>
+        <text x="219" y="45" text-anchor="middle" font-size="11" fill="var(--text)">vtracer (SVG) → Cu2QuPen → fontTools (75–84 glifos)</text>
+        <text x="219" y="63" text-anchor="middle" font-size="10.5" font-family="var(--font-mono)" fill="var(--accent-3)">Tabla OpenType name: AI-SYNTHETIC / PERSONAL-STYLUS</text>
       </g>
 
       <!-- Flechas -->
-      <line x1="184" y1="140" x2="229" y2="140" stroke="var(--accent)" stroke-width="2.2" marker-end="url(#arrow-accent)"/>
-      <path d="M 184 260 L 208 260 L 208 190 L 229 190" fill="none" stroke="var(--accent-2)" stroke-width="1.8" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
-      <line x1="532" y1="140" x2="563" y2="140" stroke="var(--accent)" stroke-width="2.2" marker-end="url(#arrow-accent)"/>
+      <line x1="184" y1="141" x2="229" y2="141" stroke="var(--accent)" stroke-width="2.2" marker-end="url(#arrow-accent)"/>
+      <path d="M 184 263 L 208 263 L 208 192 L 229 192" fill="none" stroke="var(--accent-2)" stroke-width="1.8" stroke-dasharray="4 3" marker-end="url(#arrow-teal)"/>
+      <line x1="532" y1="141" x2="563" y2="141" stroke="var(--accent)" stroke-width="2.2" marker-end="url(#arrow-accent)"/>
       <!-- y_hat -> Jueces -->
-      <path d="M 674 126 L 693 126 L 693 112 L 709 112" fill="none" stroke="var(--svg-arrow)" stroke-width="2" marker-end="url(#arrow)"/>
+      <path d="M 674 126 L 692 126 L 692 115 L 707 115" fill="none" stroke="var(--svg-arrow)" stroke-width="2" marker-end="url(#arrow)"/>
       <!-- Jueces -> GradCAM/OOD -->
-      <line x1="906" y1="112" x2="923" y2="112" stroke="var(--svg-arrow)" stroke-width="1.8" marker-end="url(#arrow)"/>
+      <line x1="944" y1="115" x2="961" y2="115" stroke="var(--svg-arrow)" stroke-width="1.8" marker-end="url(#arrow)"/>
       <!-- y_hat -> Demo -->
-      <path d="M 674 150 L 693 150 L 693 228 L 709 228" fill="none" stroke="var(--svg-arrow)" stroke-width="1.8" marker-end="url(#arrow)"/>
+      <path d="M 674 150 L 692 150 L 692 233 L 707 233" fill="none" stroke="var(--svg-arrow)" stroke-width="1.8" marker-end="url(#arrow)"/>
       <!-- y_hat -> TTF -->
-      <path d="M 620 182 L 620 320 L 709 320" fill="none" stroke="var(--svg-arrow)" stroke-width="1.8" marker-end="url(#arrow)"/>
+      <path d="M 620 184 L 620 327 L 707 327" fill="none" stroke="var(--svg-arrow)" stroke-width="1.8" marker-end="url(#arrow)"/>
       <!-- x & y_hat -> PatchGAN (train only) -->
-      <path d="M 101 188 L 101 334 L 259 334" fill="none" stroke="var(--text-muted)" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#arrow-muted)"/>
-      <path d="M 594 182 L 594 312 L 505 312" fill="none" stroke="var(--text-muted)" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#arrow-muted)"/>
+      <path d="M 101 190 L 101 336 L 251 336" fill="none" stroke="var(--text-muted)" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#arrow-muted)"/>
+      <path d="M 594 184 L 594 316 L 513 316" fill="none" stroke="var(--text-muted)" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#arrow-muted)"/>
     </svg>
     """
 
@@ -607,23 +613,25 @@ def _svg_model_params_chart(model_rows: list[dict[str, Any]]) -> str:
     """Gráfica SVG inline de barras horizontales con conteos de parámetros reales."""
     max_val = max(r["millions"] for r in model_rows)
     row_h = 42
-    top_pad = 16
+    top_pad = 18
     height = top_pad + len(model_rows) * row_h + 18
-    bars_svg: list[str] = []
+    bars_svg: list[str] = [
+        f'<rect x="1" y="1" width="778" height="{height - 2}" rx="10" fill="var(--svg-zone)" stroke="var(--border)" stroke-width="1"/>'
+    ]
     for i, r in enumerate(model_rows):
         y = top_pad + i * row_h
-        w = max(8.0, (r["millions"] / max_val) * 360.0)
+        w = max(8.0, (r["millions"] / max_val) * 355.0)
         color = "var(--accent)" if r["highlight"] else ("var(--accent-2)" if "Judge" in r["name"] else "var(--bar-neutral)")
         bars_svg.append(
             f'<g transform="translate(0, {y})">'
-            f'<text x="210" y="18" text-anchor="end" font-size="12" font-weight="600" fill="var(--text)">{_esc(r["name"])}</text>'
-            f'<rect x="222" y="5" width="360" height="20" rx="5" fill="var(--bar-track)"/>'
-            f'<rect x="222" y="5" width="{w:.1f}" height="20" rx="5" fill="{color}"/>'
-            f'<text x="{222 + w + 8:.1f}" y="19" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--text)">{r["millions"]:.2f}M ({r["total"]:,})</text>'
+            f'<text x="218" y="18" text-anchor="end" font-size="12" font-weight="600" fill="var(--text)">{_esc(r["name"])}</text>'
+            f'<rect x="230" y="5" width="355" height="20" rx="5" fill="var(--bar-track)"/>'
+            f'<rect x="230" y="5" width="{w:.1f}" height="20" rx="5" fill="{color}"/>'
+            f'<text x="{230 + w + 10:.1f}" y="19" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--text)">{r["millions"]:.2f}M ({r["total"]:,})</text>'
             f"</g>"
         )
     return (
-        f'<svg class="chart-svg" viewBox="0 0 740 {height}" role="img" '
+        f'<svg class="chart-svg" viewBox="0 0 780 {height}" role="img" '
         f'aria-label="Parámetros por arquitectura en millones" xmlns="http://www.w3.org/2000/svg">'
         + "".join(bars_svg)
         + "</svg>"
@@ -638,19 +646,21 @@ def _svg_subgroups_chart(subgroups_data: dict[str, Any]) -> str:
         if row["split"] == "val" and row["judge"] == "resnet18":
             lookup[(row["source"], row["subgroup"])] = float(row["macro_f1"])
 
-    chart_w = 680
-    chart_h = 270
-    left = 54
-    bottom = 224
-    top = 28
+    chart_w = 700
+    chart_h = 282
+    left = 56
+    bottom = 232
+    top = 38
     usable_h = bottom - top
-    group_w = (chart_w - left - 24) / len(order)
+    group_w = (chart_w - left - 26) / len(order)
+
+    bg = f'<rect x="1" y="1" width="{chart_w - 2}" height="{chart_h - 2}" rx="10" fill="var(--svg-zone)" stroke="var(--border)" stroke-width="1"/>'
 
     grid_lines: list[str] = []
     for tick in (0, 25, 50, 75, 100):
         y = bottom - (tick / 100.0) * usable_h
         grid_lines.append(
-            f'<line x1="{left}" y1="{y:.1f}" x2="{chart_w - 18}" y2="{y:.1f}" stroke="var(--border)" stroke-dasharray="3 3"/>'
+            f'<line x1="{left}" y1="{y:.1f}" x2="{chart_w - 20}" y2="{y:.1f}" stroke="var(--svg-grid)" stroke-dasharray="3 3"/>'
             f'<text x="{left - 8}" y="{y + 4:.1f}" text-anchor="end" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">{tick}%</text>'
         )
 
@@ -672,23 +682,24 @@ def _svg_subgroups_chart(subgroups_data: dict[str, Any]) -> str:
             f'<text x="{gx + bar_w / 2:.1f}" y="{y_ref - 6:.1f}" text-anchor="middle" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">{ref_val:.1f}%</text>'
             f'<rect x="{gx + bar_w + 8:.1f}" y="{y_pre:.1f}" width="{bar_w:.1f}" height="{h_pre:.1f}" rx="5" fill="{pre_color}"/>'
             f'<text x="{gx + bar_w + 8 + bar_w / 2:.1f}" y="{y_pre - 6:.1f}" text-anchor="middle" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="{pre_color}">{pre_val:.1f}%</text>'
-            f'<text x="{gx + bar_w + 4:.1f}" y="{bottom + 20}" text-anchor="middle" font-size="12" font-weight="600" fill="var(--text)">{_esc(sg)}</text>'
+            f'<text x="{gx + bar_w + 4:.1f}" y="{bottom + 22}" text-anchor="middle" font-size="12" font-weight="600" fill="var(--text)">{_esc(sg)}</text>'
         )
 
     legend = (
-        f'<g transform="translate({left}, 8)">'
+        f'<g transform="translate({left}, 14)">'
         f'<rect x="0" y="0" width="12" height="12" rx="3" fill="var(--bar-track-strong)"/>'
         f'<text x="18" y="10" font-size="11.5" fill="var(--text-muted)">Referencia y (techo)</text>'
-        f'<rect x="175" y="0" width="12" height="12" rx="3" fill="var(--accent)"/>'
-        f'<text x="193" y="10" font-size="11.5" fill="var(--text-muted)">pix2pix_pretrained (ResNet-18 Macro-F1)</text>'
-        f'<rect x="465" y="0" width="12" height="12" rx="3" fill="var(--danger)"/>'
-        f'<text x="483" y="10" font-size="11.5" fill="var(--danger)">Brecha máx: {subgroups_data["val_gap_macro_f1_pp"]:.2f} pp</text>'
+        f'<rect x="172" y="0" width="12" height="12" rx="3" fill="var(--accent)"/>'
+        f'<text x="190" y="10" font-size="11.5" fill="var(--text-muted)">pix2pix_pretrained (Macro-F1)</text>'
+        f'<rect x="425" y="0" width="12" height="12" rx="3" fill="var(--danger)"/>'
+        f'<text x="443" y="10" font-size="11.5" font-weight="700" fill="var(--danger)">Brecha máx: {subgroups_data["val_gap_macro_f1_pp"]:.2f} pp</text>'
         f"</g>"
     )
 
     return (
         f'<svg class="chart-svg" viewBox="0 0 {chart_w} {chart_h}" role="img" '
         f'aria-label="Macro-F1 por subgrupo en validación" xmlns="http://www.w3.org/2000/svg">'
+        + bg
         + legend
         + "".join(grid_lines)
         + "".join(bars)
@@ -702,24 +713,26 @@ def _svg_error_taxonomy_chart(metrics_pretrain: dict[str, Any]) -> str:
     total = int(ea["total_errors"])
     counts = sorted(ea["counts_by_category"].items(), key=lambda kv: kv[1], reverse=True)
     max_c = max(v for _, v in counts)
-    row_h = 38
-    height = 20 + len(counts) * row_h + 10
-    rows_svg: list[str] = []
+    row_h = 39
+    height = 24 + len(counts) * row_h + 12
+    rows_svg: list[str] = [
+        f'<rect x="1" y="1" width="698" height="{height - 2}" rx="10" fill="var(--svg-zone)" stroke="var(--border)" stroke-width="1"/>'
+    ]
     for idx, (cat, count) in enumerate(counts):
-        y = 14 + idx * row_h
+        y = 18 + idx * row_h
         pct = (count / total) * 100.0
-        w = max(8.0, (count / max_c) * 300.0)
+        w = max(8.0, (count / max_c) * 295.0)
         color = "var(--danger)" if idx == 0 else ("var(--warning)" if idx <= 2 else "var(--accent)")
         rows_svg.append(
             f'<g transform="translate(0, {y})">'
-            f'<text x="242" y="17" text-anchor="end" font-size="11.5" font-weight="600" fill="var(--text)">{_esc(cat)}</text>'
-            f'<rect x="254" y="4" width="300" height="19" rx="5" fill="var(--bar-track)"/>'
-            f'<rect x="254" y="4" width="{w:.1f}" height="19" rx="5" fill="{color}"/>'
-            f'<text x="{254 + w + 8:.1f}" y="17.5" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--text)">{count} ({pct:.1f}%)</text>'
+            f'<text x="248" y="17" text-anchor="end" font-size="11.5" font-weight="600" fill="var(--text)">{_esc(cat)}</text>'
+            f'<rect x="260" y="4" width="295" height="19" rx="5" fill="var(--bar-track)"/>'
+            f'<rect x="260" y="4" width="{w:.1f}" height="19" rx="5" fill="{color}"/>'
+            f'<text x="{260 + w + 10:.1f}" y="17.5" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--text)">{count} ({pct:.1f}%)</text>'
             f"</g>"
         )
     return (
-        f'<svg class="chart-svg" viewBox="0 0 680 {height}" role="img" '
+        f'<svg class="chart-svg" viewBox="0 0 700 {height}" role="img" '
         f'aria-label="Taxonomía de {total} errores en evaluación pretrain" xmlns="http://www.w3.org/2000/svg">'
         + "".join(rows_svg)
         + "</svg>"
@@ -738,27 +751,33 @@ def _svg_gradcam_alignment_chart(gradcam_data: dict[str, Any]) -> str:
     ]
     # Escala zoom 0.85 -> 1.00 para resaltar diferencias con eje etiquetado honestamente
     min_x, max_x = 0.85, 1.00
-    rows_svg: list[str] = []
+    rows_svg: list[str] = [
+        '<rect x="1" y="1" width="698" height="224" rx="10" fill="var(--svg-zone)" stroke="var(--border)" stroke-width="1"/>'
+    ]
+    for tick_x in (254, 367, 481, 594):
+        rows_svg.append(
+            f'<line x1="{tick_x}" y1="18" x2="{tick_x}" y2="194" stroke="var(--svg-grid)" stroke-dasharray="3 3"/>'
+        )
     for i, (label, val, color) in enumerate(items):
-        y = 22 + i * 42
+        y = 24 + i * 42
         frac = max(0.0, min(1.0, (val - min_x) / (max_x - min_x)))
         w = frac * 340.0
         rows_svg.append(
             f'<g transform="translate(0, {y})">'
-            f'<text x="235" y="18" text-anchor="end" font-size="12" font-weight="600" fill="var(--text)">{_esc(label)}</text>'
-            f'<rect x="248" y="5" width="340" height="20" rx="5" fill="var(--bar-track)"/>'
-            f'<rect x="248" y="5" width="{w:.1f}" height="20" rx="5" fill="{color}"/>'
-            f'<text x="{248 + w + 8:.1f}" y="19" font-size="12" font-family="var(--font-mono)" font-weight="700" fill="{color}">{val:.4f}</text>'
+            f'<text x="242" y="18" text-anchor="end" font-size="12" font-weight="600" fill="var(--text)">{_esc(label)}</text>'
+            f'<rect x="254" y="5" width="340" height="20" rx="5" fill="var(--bar-track)"/>'
+            f'<rect x="254" y="5" width="{w:.1f}" height="20" rx="5" fill="{color}"/>'
+            f'<text x="{254 + w + 10:.1f}" y="19" font-size="12" font-family="var(--font-mono)" font-weight="700" fill="{color}">{val:.4f}</text>'
             f"</g>"
         )
     axis = (
-        '<text x="248" y="205" font-size="10.5" font-family="var(--font-mono)" fill="var(--text-muted)">0.85</text>'
-        '<text x="361" y="205" text-anchor="middle" font-size="10.5" font-family="var(--font-mono)" fill="var(--text-muted)">0.90</text>'
-        '<text x="475" y="205" text-anchor="middle" font-size="10.5" font-family="var(--font-mono)" fill="var(--text-muted)">0.95</text>'
-        '<text x="588" y="205" text-anchor="end" font-size="10.5" font-family="var(--font-mono)" fill="var(--text-muted)">1.00 (eje truncado 0.85–1.00)</text>'
+        '<text x="254" y="212" font-size="10.5" font-family="var(--font-mono)" fill="var(--text-muted)">0.85</text>'
+        '<text x="367" y="212" text-anchor="middle" font-size="10.5" font-family="var(--font-mono)" fill="var(--text-muted)">0.90</text>'
+        '<text x="481" y="212" text-anchor="middle" font-size="10.5" font-family="var(--font-mono)" fill="var(--text-muted)">0.95</text>'
+        '<text x="594" y="212" text-anchor="end" font-size="10.5" font-family="var(--font-mono)" fill="var(--text-muted)">1.00 (eje truncado 0.85–1.00)</text>'
     )
     return (
-        '<svg class="chart-svg" viewBox="0 0 680 218" role="img" '
+        '<svg class="chart-svg" viewBox="0 0 700 226" role="img" '
         'aria-label="Similitud coseno espacial Grad-CAM aciertos vs errores" xmlns="http://www.w3.org/2000/svg">'
         + "".join(rows_svg)
         + axis
@@ -774,18 +793,19 @@ def _svg_ood_categories_chart(ood_data: dict[str, Any]) -> str:
         reverse=True,
     )
     row_h = 46
-    height = 38 + len(cats) * row_h + 12
+    height = 46 + len(cats) * row_h + 14
+    bg = f'<rect x="1" y="1" width="668" height="{height - 2}" rx="10" fill="var(--svg-zone)" stroke="var(--border)" stroke-width="1"/>'
     legend = (
-        '<g transform="translate(195, 8)">'
+        '<g transform="translate(196, 14)">'
         '<rect x="0" y="0" width="12" height="12" rx="3" fill="var(--accent)"/>'
         '<text x="18" y="10" font-size="11.5" fill="var(--text-muted)">Pipeline Demo (G + ResNet-18) @τ=0.70</text>'
-        '<rect x="278" y="0" width="12" height="12" rx="3" fill="var(--accent-2)"/>'
-        '<text x="296" y="10" font-size="11.5" fill="var(--text-muted)">ResNet-18 directo @τ=0.70</text>'
+        '<rect x="282" y="0" width="12" height="12" rx="3" fill="var(--accent-2)"/>'
+        '<text x="300" y="10" font-size="11.5" fill="var(--text-muted)">ResNet-18 directo</text>'
         "</g>"
     )
     rows_svg: list[str] = []
     for i, c in enumerate(cats):
-        y = 34 + i * row_h
+        y = 42 + i * row_h
         name = c["Categoría OOD"]
         p_val = float(c["Rechazo R18 pipeline @0.70 (%)"])
         d_val = float(c["Rechazo R18 directo @0.70 (%)"])
@@ -793,18 +813,19 @@ def _svg_ood_categories_chart(ood_data: dict[str, Any]) -> str:
         dw = (d_val / 100.0) * 340.0
         rows_svg.append(
             f'<g transform="translate(0, {y})">'
-            f'<text x="182" y="19" text-anchor="end" font-size="11.5" font-family="var(--font-mono)" font-weight="600" fill="var(--text)">{_esc(name)}</text>'
-            f'<rect x="195" y="2" width="340" height="13" rx="4" fill="var(--bar-track)"/>'
-            f'<rect x="195" y="2" width="{pw:.1f}" height="13" rx="4" fill="var(--accent)"/>'
-            f'<text x="{195 + pw + 7:.1f}" y="12.5" font-size="10.5" font-family="var(--font-mono)" font-weight="700" fill="var(--accent)">{p_val:.1f}%</text>'
-            f'<rect x="195" y="19" width="340" height="11" rx="4" fill="var(--bar-track)"/>'
-            f'<rect x="195" y="19" width="{dw:.1f}" height="11" rx="4" fill="var(--accent-2)"/>'
-            f'<text x="{195 + dw + 7:.1f}" y="28.5" font-size="10.5" font-family="var(--font-mono)" fill="var(--accent-2)">{d_val:.1f}%</text>'
+            f'<text x="184" y="19" text-anchor="end" font-size="11.5" font-family="var(--font-mono)" font-weight="600" fill="var(--text)">{_esc(name)}</text>'
+            f'<rect x="196" y="2" width="340" height="13" rx="4" fill="var(--bar-track)"/>'
+            f'<rect x="196" y="2" width="{pw:.1f}" height="13" rx="4" fill="var(--accent)"/>'
+            f'<text x="{196 + pw + 8:.1f}" y="12.5" font-size="10.5" font-family="var(--font-mono)" font-weight="700" fill="var(--accent)">{p_val:.1f}%</text>'
+            f'<rect x="196" y="19" width="340" height="11" rx="4" fill="var(--bar-track)"/>'
+            f'<rect x="196" y="19" width="{dw:.1f}" height="11" rx="4" fill="var(--accent-2)"/>'
+            f'<text x="{196 + dw + 8:.1f}" y="28.5" font-size="10.5" font-family="var(--font-mono)" fill="var(--accent-2)">{d_val:.1f}%</text>'
             f"</g>"
         )
     return (
-        f'<svg class="chart-svg" viewBox="0 0 640 {height}" role="img" '
+        f'<svg class="chart-svg" viewBox="0 0 670 {height}" role="img" '
         f'aria-label="Tasa de rechazo OOD por categoría a umbral 0.70" xmlns="http://www.w3.org/2000/svg">'
+        + bg
         + legend
         + "".join(rows_svg)
         + "</svg>"
@@ -820,9 +841,10 @@ def _svg_onnx_benchmark_chart(bench: dict[str, Any]) -> str:
     ]
     max_ms = max(bench["pytorch_cpu"][k]["mean_ms"] for _, k in stages)
     row_h = 62
-    height = 40 + len(stages) * row_h + 16
+    height = 48 + len(stages) * row_h + 16
+    bg = f'<rect x="1" y="1" width="708" height="{height - 2}" rx="10" fill="var(--svg-zone)" stroke="var(--border)" stroke-width="1"/>'
     legend = (
-        '<g transform="translate(175, 8)">'
+        '<g transform="translate(178, 14)">'
         '<rect x="0" y="0" width="12" height="12" rx="3" fill="var(--bar-track-strong)"/>'
         '<text x="18" y="10" font-size="11.5" fill="var(--text-muted)">PyTorch CPU (ms)</text>'
         '<rect x="155" y="0" width="12" height="12" rx="3" fill="var(--accent-2)"/>'
@@ -831,7 +853,7 @@ def _svg_onnx_benchmark_chart(bench: dict[str, Any]) -> str:
     )
     rows_svg: list[str] = []
     for i, (label, key) in enumerate(stages):
-        y = 38 + i * row_h
+        y = 44 + i * row_h
         pt = bench["pytorch_cpu"][key]
         ox = bench["onnxruntime_cpu"][key]
         sp = bench["speedup"][key]
@@ -839,18 +861,19 @@ def _svg_onnx_benchmark_chart(bench: dict[str, Any]) -> str:
         ox_w = (ox["mean_ms"] / max_ms) * 320.0
         rows_svg.append(
             f'<g transform="translate(0, {y})">'
-            f'<text x="164" y="23" text-anchor="end" font-size="12" font-weight="700" fill="var(--text)">{_esc(label)}</text>'
-            f'<rect x="175" y="2" width="320" height="16" rx="4" fill="var(--bar-track)"/>'
-            f'<rect x="175" y="2" width="{pt_w:.1f}" height="16" rx="4" fill="var(--bar-track-strong)"/>'
-            f'<text x="{175 + pt_w + 8:.1f}" y="14" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">{pt["mean_ms"]:.2f} ms ({pt["fps"]:.2f} FPS)</text>'
-            f'<rect x="175" y="23" width="320" height="16" rx="4" fill="var(--bar-track)"/>'
-            f'<rect x="175" y="23" width="{ox_w:.1f}" height="16" rx="4" fill="var(--accent-2)"/>'
-            f'<text x="{175 + ox_w + 8:.1f}" y="35" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--accent-2)">{ox["mean_ms"]:.2f} ms ({ox["fps"]:.2f} FPS · {sp:.2f}×)</text>'
+            f'<text x="166" y="23" text-anchor="end" font-size="12" font-weight="700" fill="var(--text)">{_esc(label)}</text>'
+            f'<rect x="178" y="2" width="320" height="16" rx="4" fill="var(--bar-track)"/>'
+            f'<rect x="178" y="2" width="{pt_w:.1f}" height="16" rx="4" fill="var(--bar-track-strong)"/>'
+            f'<text x="{178 + pt_w + 10:.1f}" y="14" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">{pt["mean_ms"]:.2f} ms ({pt["fps"]:.2f} FPS)</text>'
+            f'<rect x="178" y="23" width="320" height="16" rx="4" fill="var(--bar-track)"/>'
+            f'<rect x="178" y="23" width="{ox_w:.1f}" height="16" rx="4" fill="var(--accent-2)"/>'
+            f'<text x="{178 + ox_w + 10:.1f}" y="35" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--accent-2)">{ox["mean_ms"]:.2f} ms ({ox["fps"]:.2f} FPS · {sp:.2f}×)</text>'
             f"</g>"
         )
     return (
-        f'<svg class="chart-svg" viewBox="0 0 675 {height}" role="img" '
+        f'<svg class="chart-svg" viewBox="0 0 710 {height}" role="img" '
         f'aria-label="Comparativa de latencia PyTorch CPU versus ONNX Runtime CPU" xmlns="http://www.w3.org/2000/svg">'
+        + bg
         + legend
         + "".join(rows_svg)
         + "</svg>"
@@ -1388,68 +1411,50 @@ def build_report_html() -> str:
     total_errors = metrics_pretrain["error_analysis"]["pretrained"]["total_errors"]
 
     return f"""<!DOCTYPE html>
-<html lang="es" data-theme="light">
+<html lang="es">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="color-scheme" content="dark"/>
 <title>Handwritten Font cGAN — Reporte Técnico Interactivo</title>
 <style>
 :root {{
-  --bg: #f6f7f9;
-  --surface: #ffffff;
-  --surface-alt: #f0f3f7;
-  --text: #141923;
-  --text-muted: #526074;
-  --border: #dce3ec;
-  --accent: #1d4ed8;
-  --accent-soft: #e8efff;
-  --accent-2: #0f766e;
-  --accent-2-soft: #e6f6f4;
-  --accent-3: #7c3aed;
-  --warning: #b45309;
-  --warning-soft: #fef3c7;
-  --danger: #be123c;
-  --danger-soft: #ffe4e6;
-  --bar-track: #e6ebf2;
-  --bar-track-strong: #94a3b8;
-  --bar-neutral: #475569;
-  --svg-zone: #f8fafc;
-  --svg-arrow: #334155;
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
-  --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.07);
+  --bg: #080d17;
+  --surface: #101827;
+  --surface-alt: #162135;
+  --surface-hover: #1c2a42;
+  --text: #f1f5f9;
+  --text-muted: #9eb0c8;
+  --border: #24334a;
+  --border-strong: #334866;
+  --accent: #60a5fa;
+  --accent-solid: #2563eb;
+  --accent-soft: rgba(96, 165, 250, 0.14);
+  --accent-2: #2dd4bf;
+  --accent-2-soft: rgba(45, 212, 191, 0.14);
+  --accent-3: #c084fc;
+  --warning: #fbbf24;
+  --warning-soft: rgba(251, 191, 36, 0.13);
+  --danger: #fb7185;
+  --danger-soft: rgba(251, 113, 133, 0.14);
+  --bar-track: #1e2c42;
+  --bar-track-strong: #64748b;
+  --bar-neutral: #94a3b8;
+  --svg-zone: #0c1322;
+  --svg-card: #131e31;
+  --svg-arrow: #cbd5e1;
+  --svg-grid: #24354f;
+  --plate-bg: #f8fafc;
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.34);
+  --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.48);
   --radius: 14px;
   --sidebar-w: 264px;
   --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, "Cascadia Code", Consolas, "Liberation Mono", monospace;
 }}
 
-[data-theme="dark"] {{
-  --bg: #0b111c;
-  --surface: #121a28;
-  --surface-alt: #182334;
-  --text: #edf2f7;
-  --text-muted: #9aa9bf;
-  --border: #253348;
-  --accent: #60a5fa;
-  --accent-soft: rgba(96, 165, 250, 0.14);
-  --accent-2: #2dd4bf;
-  --accent-2-soft: rgba(45, 212, 191, 0.14);
-  --accent-3: #c084fc;
-  --warning: #fbbf24;
-  --warning-soft: rgba(251, 191, 36, 0.14);
-  --danger: #fb7185;
-  --danger-soft: rgba(251, 113, 133, 0.14);
-  --bar-track: #1f2d42;
-  --bar-track-strong: #64748b;
-  --bar-neutral: #94a3b8;
-  --svg-zone: #0f1724;
-  --svg-arrow: #cbd5e1;
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.28);
-  --shadow-md: 0 10px 28px rgba(0, 0, 0, 0.42);
-}}
-
 *, *::before, *::after {{ box-sizing: border-box; }}
-html {{ scroll-behavior: smooth; }}
+html {{ scroll-behavior: smooth; color-scheme: dark; }}
 body {{
   margin: 0;
   font-family: var(--font-sans);
@@ -1458,6 +1463,54 @@ body {{
   line-height: 1.62;
   font-size: 15.5px;
   -webkit-font-smoothing: antialiased;
+}}
+
+/* Barra fija de progreso de lectura */
+.reading-progress {{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  z-index: 90;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
+  box-shadow: 0 0 10px rgba(96, 165, 250, 0.45);
+  pointer-events: none;
+  transition: width 0.08s linear;
+}}
+
+/* Botón discreto Volver Arriba */
+.back-to-top {{
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 50;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: rgba(16, 24, 39, 0.92);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease, border-color 0.15s, color 0.15s;
+}}
+.back-to-top.is-visible {{
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}}
+.back-to-top:hover {{
+  border-color: var(--accent);
+  color: var(--accent);
 }}
 
 /* Layout principal */
@@ -1548,7 +1601,7 @@ body {{
   flex-shrink: 0;
 }}
 .nav-link.is-active .nav-num {{
-  background: var(--accent);
+  background: var(--accent-solid);
   color: #ffffff;
 }}
 
@@ -1558,36 +1611,18 @@ body {{
   border-top: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  gap: 10px;
-}}
-
-.theme-btn {{
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   gap: 8px;
-  width: 100%;
-  padding: 9px 12px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: var(--surface-alt);
-  color: var(--text);
-  font-family: var(--font-sans);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
-}}
-.theme-btn:hover {{
-  border-color: var(--accent);
 }}
 
 .meta-pill {{
   font-size: 11.5px;
   color: var(--text-muted);
   font-family: var(--font-mono);
-  line-height: 1.45;
-  padding: 0 4px;
+  line-height: 1.5;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
 }}
 
 /* Topbar móvil */
@@ -1710,7 +1745,7 @@ body {{
 }}
 .kpi-card.emphasis {{
   background: var(--accent-soft);
-  border-color: rgba(29, 78, 216, 0.25);
+  border-color: rgba(96, 165, 250, 0.34);
 }}
 .kpi-label {{
   font-size: 11.5px;
@@ -1751,7 +1786,7 @@ body {{
   font-size: 12px;
   font-weight: 800;
   color: #ffffff;
-  background: var(--accent);
+  background: var(--accent-solid);
   padding: 3px 9px;
   border-radius: 7px;
   flex-shrink: 0;
@@ -1947,7 +1982,7 @@ tbody tr:hover {{ background: var(--surface-alt); }}
 }}
 .exp-btn:hover {{ border-color: var(--accent); }}
 .exp-btn.is-active {{
-  background: var(--accent);
+  background: var(--accent-solid);
   color: #ffffff;
   border-color: var(--accent);
 }}
@@ -2053,7 +2088,7 @@ tbody tr:hover {{ background: var(--surface-alt); }}
   border-color: var(--accent);
 }}
 
-/* Figuras + Lightbox trigger */
+/* Figuras + marco lámina para PNGs sobre fondo oscuro */
 .fig-card {{
   margin: 0;
   display: flex;
@@ -2064,17 +2099,19 @@ tbody tr:hover {{ background: var(--surface-alt); }}
   position: relative;
   display: block;
   width: 100%;
-  padding: 10px;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  background: #ffffff;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: var(--plate-bg);
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.06), 0 8px 22px rgba(0, 0, 0, 0.34);
   cursor: zoom-in;
   overflow: hidden;
-  transition: border-color 0.16s, transform 0.16s;
+  transition: border-color 0.16s, transform 0.16s, box-shadow 0.16s;
 }}
 .fig-trigger:hover {{
   border-color: var(--accent);
   transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.48), 0 0 0 1px var(--accent);
 }}
 .fig-trigger img {{
   display: block;
@@ -2087,13 +2124,14 @@ tbody tr:hover {{ background: var(--surface-alt); }}
 }}
 .fig-zoom-hint {{
   position: absolute;
-  right: 12px;
-  bottom: 12px;
-  background: rgba(15, 23, 42, 0.78);
-  color: #ffffff;
+  right: 14px;
+  bottom: 14px;
+  background: rgba(8, 13, 23, 0.86);
+  color: #f8fafc;
+  border: 1px solid rgba(255, 255, 255, 0.16);
   font-size: 11px;
   font-weight: 600;
-  padding: 4px 9px;
+  padding: 4px 10px;
   border-radius: 999px;
   opacity: 0;
   transition: opacity 0.16s;
@@ -2117,64 +2155,117 @@ tbody tr:hover {{ background: var(--surface-alt); }}
 }}
 .ttf-header p {{ margin: 2px 0 0; }}
 
-/* Modal Lightbox */
+/* Modal Lightbox con navegación ← / → y marco lámina */
 .lightbox {{
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: rgba(8, 12, 20, 0.88);
+  background: rgba(4, 7, 14, 0.90);
+  backdrop-filter: blur(4px);
   display: none;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: 20px;
 }}
 .lightbox.is-open {{ display: flex; }}
 .lightbox-dialog {{
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   border-radius: 16px;
-  max-width: min(1160px, 95vw);
+  width: min(1160px, 95vw);
   max-height: 92vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 28px 72px rgba(0, 0, 0, 0.68);
 }}
 .lightbox-bar {{
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
+  flex-wrap: wrap;
   padding: 12px 18px;
   border-bottom: 1px solid var(--border);
-}}
-.lightbox-title {{ font-weight: 700; font-size: 14.5px; }}
-.lightbox-close {{
-  border: 1px solid var(--border);
   background: var(--surface-alt);
+}}
+.lightbox-head-left {{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}}
+.lightbox-counter {{
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  white-space: nowrap;
+}}
+.lightbox-title {{
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text);
+}}
+.lightbox-actions {{
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+}}
+.lightbox-nav-btn,
+.lightbox-close {{
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
   color: var(--text);
   border-radius: 8px;
-  padding: 5px 11px;
-  font-size: 13px;
+  padding: 6px 11px;
+  font-family: var(--font-sans);
+  font-size: 12.5px;
   font-weight: 700;
   cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}}
+.lightbox-nav-btn:hover,
+.lightbox-close:hover {{
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--surface-hover);
 }}
 .lightbox-body {{
-  padding: 16px;
-  background: #ffffff;
+  padding: 18px;
+  background: var(--bg);
   overflow: auto;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }}
-.lightbox-body img {{
+.lightbox-plate {{
+  background: var(--plate-bg);
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
   max-width: 100%;
-  max-height: 74vh;
+}}
+.lightbox-plate img {{
+  display: block;
+  max-width: 100%;
+  max-height: 70vh;
+  width: auto;
   height: auto;
+  margin: 0 auto;
+  border-radius: 6px;
 }}
 .lightbox-caption {{
-  padding: 10px 18px;
+  padding: 11px 18px;
   font-size: 13px;
   color: var(--text-muted);
   border-top: 1px solid var(--border);
+  background: var(--surface-alt);
 }}
 
 /* Footer */
@@ -2200,12 +2291,13 @@ tbody tr:hover {{ background: var(--surface-alt); }}
   .sidebar {{ display: none; }}
   .mobile-bar {{ display: flex; }}
   .mobile-nav-strip {{ display: flex; }}
-  .main {{ padding: 20px 16px 56px; }}
+  .main {{ padding: 20px 16px 64px; }}
   .two-col, .three-col, .four-col {{ grid-template-columns: 1fr; }}
   .kpi-grid {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
+  .back-to-top {{ right: 14px; bottom: 14px; }}
 }}
 @media print {{
-  .sidebar, .mobile-bar, .mobile-nav-strip, .fig-zoom-hint, .exp-toolbar, .tab-bar {{ display: none !important; }}
+  .sidebar, .mobile-bar, .mobile-nav-strip, .fig-zoom-hint, .exp-toolbar, .tab-bar, .reading-progress, .back-to-top {{ display: none !important; }}
   .app-shell {{ display: block; }}
   .main {{ max-width: 100%; padding: 0; }}
   .tab-panel {{ display: block !important; margin-bottom: 14px; }}
@@ -2214,12 +2306,14 @@ tbody tr:hover {{ background: var(--surface-alt); }}
 </head>
 <body>
 
+<div class="reading-progress" id="reading-progress" aria-hidden="true"></div>
+
 <div class="mobile-bar">
   <div>
     <div class="brand-kicker">Handwritten Font cGAN</div>
     <strong style="font-size:14px;">Reporte Técnico Interactivo</strong>
   </div>
-  <button type="button" class="theme-btn" style="width:auto;" data-theme-toggle>Tema Oscuro</button>
+  <span class="pill accent">100 % Offline</span>
 </div>
 <nav class="mobile-nav-strip" aria-label="Secciones móvil">
   <a href="#sec-1">1. Resumen</a>
@@ -2250,7 +2344,6 @@ tbody tr:hover {{ background: var(--surface-alt); }}
     </ul>
 
     <div class="sidebar-footer">
-      <button type="button" class="theme-btn" data-theme-toggle>Cambiar a Tema Oscuro</button>
       <div class="meta-pill">
         SEED={SEED} · {IMG_SIZE}×{IMG_SIZE}<br/>
         100 % Offline · 0 CDNs<br/>
@@ -2926,15 +3019,26 @@ tbody tr:hover {{ background: var(--surface-alt); }}
   </main>
 </div>
 
+<button type="button" class="back-to-top" id="back-to-top" aria-label="Volver arriba">↑ Arriba</button>
+
 <!-- Modal Lightbox -->
 <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-labelledby="lightbox-title" hidden>
   <div class="lightbox-dialog">
     <div class="lightbox-bar">
-      <span class="lightbox-title" id="lightbox-title"></span>
-      <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Cerrar vista ampliada">Cerrar (ESC)</button>
+      <div class="lightbox-head-left">
+        <span class="lightbox-counter" id="lightbox-counter">1 / 1</span>
+        <span class="lightbox-title" id="lightbox-title"></span>
+      </div>
+      <div class="lightbox-actions">
+        <button type="button" class="lightbox-nav-btn" id="lightbox-prev" aria-label="Imagen anterior">← Anterior</button>
+        <button type="button" class="lightbox-nav-btn" id="lightbox-next" aria-label="Imagen siguiente">Siguiente →</button>
+        <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Cerrar vista ampliada">Cerrar (ESC)</button>
+      </div>
     </div>
     <div class="lightbox-body">
-      <img id="lightbox-img" src="" alt=""/>
+      <div class="lightbox-plate">
+        <img id="lightbox-img" src="" alt=""/>
+      </div>
     </div>
     <div class="lightbox-caption" id="lightbox-caption"></div>
   </div>
@@ -2946,36 +3050,32 @@ tbody tr:hover {{ background: var(--surface-alt); }}
 
   var EXPERIMENTS = {experiments_json};
 
-  /* 1. Selector de tema Claro / Oscuro */
-  var root = document.documentElement;
-  var themeButtons = Array.prototype.slice.call(document.querySelectorAll("[data-theme-toggle]"));
+  /* 1. Barra de progreso de lectura + botón Volver Arriba */
+  var progressBar = document.getElementById("reading-progress");
+  var backToTopBtn = document.getElementById("back-to-top");
 
-  function applyTheme(theme) {{
-    root.setAttribute("data-theme", theme);
-    try {{
-      window.localStorage.setItem("hfcgan-report-theme", theme);
-    }} catch (e) {{
-      /* localStorage puede estar deshabilitado en modo file:// estricto */
+  function updateScrollUi() {{
+    var docEl = document.documentElement;
+    var scrollTop = window.pageYOffset || docEl.scrollTop || 0;
+    var maxScroll = Math.max(1, docEl.scrollHeight - window.innerHeight);
+    var pct = Math.min(100, Math.max(0, (scrollTop / maxScroll) * 100));
+    if (progressBar) {{
+      progressBar.style.width = pct.toFixed(2) + "%";
     }}
-    themeButtons.forEach(function (btn) {{
-      btn.textContent = theme === "dark" ? "Cambiar a Tema Claro" : "Cambiar a Tema Oscuro";
-    }});
+    if (backToTopBtn) {{
+      backToTopBtn.classList.toggle("is-visible", scrollTop > 320);
+    }}
   }}
 
-  var savedTheme = "light";
-  try {{
-    savedTheme = window.localStorage.getItem("hfcgan-report-theme") || "light";
-  }} catch (e) {{
-    savedTheme = "light";
-  }}
-  applyTheme(savedTheme === "dark" ? "dark" : "light");
+  window.addEventListener("scroll", updateScrollUi, {{ passive: true }});
+  window.addEventListener("resize", updateScrollUi, {{ passive: true }});
+  updateScrollUi();
 
-  themeButtons.forEach(function (btn) {{
-    btn.addEventListener("click", function () {{
-      var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
-      applyTheme(next);
+  if (backToTopBtn) {{
+    backToTopBtn.addEventListener("click", function () {{
+      window.scrollTo({{ top: 0, behavior: "smooth" }});
     }});
-  }});
+  }}
 
   /* 2. Scrollspy para barra lateral y barra móvil */
   var sections = Array.prototype.slice.call(document.querySelectorAll(".report-section"));
@@ -3113,20 +3213,42 @@ tbody tr:hover {{ background: var(--surface-alt); }}
     }});
   }});
 
-  /* 5. Lightbox modal para todas las figuras */
+  /* 5. Lightbox modal con navegación ← / → para todas las figuras */
   var lightbox = document.getElementById("lightbox");
   var lbImg = document.getElementById("lightbox-img");
   var lbTitle = document.getElementById("lightbox-title");
   var lbCaption = document.getElementById("lightbox-caption");
+  var lbCounter = document.getElementById("lightbox-counter");
+  var lbPrev = document.getElementById("lightbox-prev");
+  var lbNext = document.getElementById("lightbox-next");
   var lbClose = document.getElementById("lightbox-close");
+  var triggers = Array.prototype.slice.call(document.querySelectorAll("[data-lightbox-src]"));
+  var lbItems = triggers.map(function (el) {{
+    return {{
+      src: el.getAttribute("data-lightbox-src") || "",
+      title: el.getAttribute("data-lightbox-title") || "",
+      caption: el.getAttribute("data-lightbox-caption") || ""
+    }};
+  }});
+  var currentLbIndex = 0;
   var lastFocused = null;
 
-  function openLightbox(src, title, caption) {{
+  function showLightboxAt(idx) {{
+    if (!lbItems.length) {{ return; }}
+    currentLbIndex = ((idx % lbItems.length) + lbItems.length) % lbItems.length;
+    var item = lbItems[currentLbIndex];
+    lbImg.setAttribute("src", item.src);
+    lbImg.setAttribute("alt", item.title);
+    lbTitle.textContent = item.title;
+    lbCaption.textContent = item.caption;
+    if (lbCounter) {{
+      lbCounter.textContent = (currentLbIndex + 1) + " / " + lbItems.length;
+    }}
+  }}
+
+  function openLightbox(idx) {{
     lastFocused = document.activeElement;
-    lbImg.setAttribute("src", src);
-    lbImg.setAttribute("alt", title);
-    lbTitle.textContent = title;
-    lbCaption.textContent = caption;
+    showLightboxAt(idx);
     lightbox.hidden = false;
     lightbox.classList.add("is-open");
     document.body.style.overflow = "hidden";
@@ -3143,16 +3265,18 @@ tbody tr:hover {{ background: var(--surface-alt); }}
     }}
   }}
 
-  document.querySelectorAll("[data-lightbox-src]").forEach(function (trigger) {{
+  triggers.forEach(function (trigger, idx) {{
     trigger.addEventListener("click", function () {{
-      openLightbox(
-        trigger.getAttribute("data-lightbox-src"),
-        trigger.getAttribute("data-lightbox-title") || "",
-        trigger.getAttribute("data-lightbox-caption") || ""
-      );
+      openLightbox(idx);
     }});
   }});
 
+  if (lbPrev) {{
+    lbPrev.addEventListener("click", function () {{ showLightboxAt(currentLbIndex - 1); }});
+  }}
+  if (lbNext) {{
+    lbNext.addEventListener("click", function () {{ showLightboxAt(currentLbIndex + 1); }});
+  }}
   lbClose.addEventListener("click", closeLightbox);
   lightbox.addEventListener("click", function (ev) {{
     if (ev.target === lightbox) {{
@@ -3160,8 +3284,15 @@ tbody tr:hover {{ background: var(--surface-alt); }}
     }}
   }});
   document.addEventListener("keydown", function (ev) {{
-    if (ev.key === "Escape" && lightbox.classList.contains("is-open")) {{
+    if (!lightbox.classList.contains("is-open")) {{ return; }}
+    if (ev.key === "Escape") {{
       closeLightbox();
+    }} else if (ev.key === "ArrowLeft") {{
+      ev.preventDefault();
+      showLightboxAt(currentLbIndex - 1);
+    }} else if (ev.key === "ArrowRight") {{
+      ev.preventDefault();
+      showLightboxAt(currentLbIndex + 1);
     }}
   }});
 }})();

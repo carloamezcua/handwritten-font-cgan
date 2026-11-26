@@ -1,66 +1,48 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="light">
+<html lang="es">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="color-scheme" content="dark"/>
 <title>Handwritten Font cGAN — Reporte Técnico Interactivo</title>
 <style>
 :root {
-  --bg: #f6f7f9;
-  --surface: #ffffff;
-  --surface-alt: #f0f3f7;
-  --text: #141923;
-  --text-muted: #526074;
-  --border: #dce3ec;
-  --accent: #1d4ed8;
-  --accent-soft: #e8efff;
-  --accent-2: #0f766e;
-  --accent-2-soft: #e6f6f4;
-  --accent-3: #7c3aed;
-  --warning: #b45309;
-  --warning-soft: #fef3c7;
-  --danger: #be123c;
-  --danger-soft: #ffe4e6;
-  --bar-track: #e6ebf2;
-  --bar-track-strong: #94a3b8;
-  --bar-neutral: #475569;
-  --svg-zone: #f8fafc;
-  --svg-arrow: #334155;
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
-  --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.07);
+  --bg: #080d17;
+  --surface: #101827;
+  --surface-alt: #162135;
+  --surface-hover: #1c2a42;
+  --text: #f1f5f9;
+  --text-muted: #9eb0c8;
+  --border: #24334a;
+  --border-strong: #334866;
+  --accent: #60a5fa;
+  --accent-solid: #2563eb;
+  --accent-soft: rgba(96, 165, 250, 0.14);
+  --accent-2: #2dd4bf;
+  --accent-2-soft: rgba(45, 212, 191, 0.14);
+  --accent-3: #c084fc;
+  --warning: #fbbf24;
+  --warning-soft: rgba(251, 191, 36, 0.13);
+  --danger: #fb7185;
+  --danger-soft: rgba(251, 113, 133, 0.14);
+  --bar-track: #1e2c42;
+  --bar-track-strong: #64748b;
+  --bar-neutral: #94a3b8;
+  --svg-zone: #0c1322;
+  --svg-card: #131e31;
+  --svg-arrow: #cbd5e1;
+  --svg-grid: #24354f;
+  --plate-bg: #f8fafc;
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.34);
+  --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.48);
   --radius: 14px;
   --sidebar-w: 264px;
   --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, "Cascadia Code", Consolas, "Liberation Mono", monospace;
 }
 
-[data-theme="dark"] {
-  --bg: #0b111c;
-  --surface: #121a28;
-  --surface-alt: #182334;
-  --text: #edf2f7;
-  --text-muted: #9aa9bf;
-  --border: #253348;
-  --accent: #60a5fa;
-  --accent-soft: rgba(96, 165, 250, 0.14);
-  --accent-2: #2dd4bf;
-  --accent-2-soft: rgba(45, 212, 191, 0.14);
-  --accent-3: #c084fc;
-  --warning: #fbbf24;
-  --warning-soft: rgba(251, 191, 36, 0.14);
-  --danger: #fb7185;
-  --danger-soft: rgba(251, 113, 133, 0.14);
-  --bar-track: #1f2d42;
-  --bar-track-strong: #64748b;
-  --bar-neutral: #94a3b8;
-  --svg-zone: #0f1724;
-  --svg-arrow: #cbd5e1;
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.28);
-  --shadow-md: 0 10px 28px rgba(0, 0, 0, 0.42);
-}
-
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; color-scheme: dark; }
 body {
   margin: 0;
   font-family: var(--font-sans);
@@ -69,6 +51,54 @@ body {
   line-height: 1.62;
   font-size: 15.5px;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Barra fija de progreso de lectura */
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  z-index: 90;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
+  box-shadow: 0 0 10px rgba(96, 165, 250, 0.45);
+  pointer-events: none;
+  transition: width 0.08s linear;
+}
+
+/* Botón discreto Volver Arriba */
+.back-to-top {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 50;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: rgba(16, 24, 39, 0.92);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease, border-color 0.15s, color 0.15s;
+}
+.back-to-top.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.back-to-top:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 /* Layout principal */
@@ -159,7 +189,7 @@ body {
   flex-shrink: 0;
 }
 .nav-link.is-active .nav-num {
-  background: var(--accent);
+  background: var(--accent-solid);
   color: #ffffff;
 }
 
@@ -169,36 +199,18 @@ body {
   border-top: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  gap: 10px;
-}
-
-.theme-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   gap: 8px;
-  width: 100%;
-  padding: 9px 12px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: var(--surface-alt);
-  color: var(--text);
-  font-family: var(--font-sans);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
-}
-.theme-btn:hover {
-  border-color: var(--accent);
 }
 
 .meta-pill {
   font-size: 11.5px;
   color: var(--text-muted);
   font-family: var(--font-mono);
-  line-height: 1.45;
-  padding: 0 4px;
+  line-height: 1.5;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
 }
 
 /* Topbar móvil */
@@ -321,7 +333,7 @@ body {
 }
 .kpi-card.emphasis {
   background: var(--accent-soft);
-  border-color: rgba(29, 78, 216, 0.25);
+  border-color: rgba(96, 165, 250, 0.34);
 }
 .kpi-label {
   font-size: 11.5px;
@@ -362,7 +374,7 @@ body {
   font-size: 12px;
   font-weight: 800;
   color: #ffffff;
-  background: var(--accent);
+  background: var(--accent-solid);
   padding: 3px 9px;
   border-radius: 7px;
   flex-shrink: 0;
@@ -558,7 +570,7 @@ tbody tr:hover { background: var(--surface-alt); }
 }
 .exp-btn:hover { border-color: var(--accent); }
 .exp-btn.is-active {
-  background: var(--accent);
+  background: var(--accent-solid);
   color: #ffffff;
   border-color: var(--accent);
 }
@@ -664,7 +676,7 @@ tbody tr:hover { background: var(--surface-alt); }
   border-color: var(--accent);
 }
 
-/* Figuras + Lightbox trigger */
+/* Figuras + marco lámina para PNGs sobre fondo oscuro */
 .fig-card {
   margin: 0;
   display: flex;
@@ -675,17 +687,19 @@ tbody tr:hover { background: var(--surface-alt); }
   position: relative;
   display: block;
   width: 100%;
-  padding: 10px;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  background: #ffffff;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: var(--plate-bg);
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.06), 0 8px 22px rgba(0, 0, 0, 0.34);
   cursor: zoom-in;
   overflow: hidden;
-  transition: border-color 0.16s, transform 0.16s;
+  transition: border-color 0.16s, transform 0.16s, box-shadow 0.16s;
 }
 .fig-trigger:hover {
   border-color: var(--accent);
   transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.48), 0 0 0 1px var(--accent);
 }
 .fig-trigger img {
   display: block;
@@ -698,13 +712,14 @@ tbody tr:hover { background: var(--surface-alt); }
 }
 .fig-zoom-hint {
   position: absolute;
-  right: 12px;
-  bottom: 12px;
-  background: rgba(15, 23, 42, 0.78);
-  color: #ffffff;
+  right: 14px;
+  bottom: 14px;
+  background: rgba(8, 13, 23, 0.86);
+  color: #f8fafc;
+  border: 1px solid rgba(255, 255, 255, 0.16);
   font-size: 11px;
   font-weight: 600;
-  padding: 4px 9px;
+  padding: 4px 10px;
   border-radius: 999px;
   opacity: 0;
   transition: opacity 0.16s;
@@ -728,64 +743,117 @@ tbody tr:hover { background: var(--surface-alt); }
 }
 .ttf-header p { margin: 2px 0 0; }
 
-/* Modal Lightbox */
+/* Modal Lightbox con navegación ← / → y marco lámina */
 .lightbox {
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: rgba(8, 12, 20, 0.88);
+  background: rgba(4, 7, 14, 0.90);
+  backdrop-filter: blur(4px);
   display: none;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: 20px;
 }
 .lightbox.is-open { display: flex; }
 .lightbox-dialog {
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   border-radius: 16px;
-  max-width: min(1160px, 95vw);
+  width: min(1160px, 95vw);
   max-height: 92vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 28px 72px rgba(0, 0, 0, 0.68);
 }
 .lightbox-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
+  flex-wrap: wrap;
   padding: 12px 18px;
   border-bottom: 1px solid var(--border);
-}
-.lightbox-title { font-weight: 700; font-size: 14.5px; }
-.lightbox-close {
-  border: 1px solid var(--border);
   background: var(--surface-alt);
+}
+.lightbox-head-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.lightbox-counter {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  white-space: nowrap;
+}
+.lightbox-title {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text);
+}
+.lightbox-actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+}
+.lightbox-nav-btn,
+.lightbox-close {
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
   color: var(--text);
   border-radius: 8px;
-  padding: 5px 11px;
-  font-size: 13px;
+  padding: 6px 11px;
+  font-family: var(--font-sans);
+  font-size: 12.5px;
   font-weight: 700;
   cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.lightbox-nav-btn:hover,
+.lightbox-close:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--surface-hover);
 }
 .lightbox-body {
-  padding: 16px;
-  background: #ffffff;
+  padding: 18px;
+  background: var(--bg);
   overflow: auto;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.lightbox-body img {
+.lightbox-plate {
+  background: var(--plate-bg);
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
   max-width: 100%;
-  max-height: 74vh;
+}
+.lightbox-plate img {
+  display: block;
+  max-width: 100%;
+  max-height: 70vh;
+  width: auto;
   height: auto;
+  margin: 0 auto;
+  border-radius: 6px;
 }
 .lightbox-caption {
-  padding: 10px 18px;
+  padding: 11px 18px;
   font-size: 13px;
   color: var(--text-muted);
   border-top: 1px solid var(--border);
+  background: var(--surface-alt);
 }
 
 /* Footer */
@@ -811,12 +879,13 @@ tbody tr:hover { background: var(--surface-alt); }
   .sidebar { display: none; }
   .mobile-bar { display: flex; }
   .mobile-nav-strip { display: flex; }
-  .main { padding: 20px 16px 56px; }
+  .main { padding: 20px 16px 64px; }
   .two-col, .three-col, .four-col { grid-template-columns: 1fr; }
   .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .back-to-top { right: 14px; bottom: 14px; }
 }
 @media print {
-  .sidebar, .mobile-bar, .mobile-nav-strip, .fig-zoom-hint, .exp-toolbar, .tab-bar { display: none !important; }
+  .sidebar, .mobile-bar, .mobile-nav-strip, .fig-zoom-hint, .exp-toolbar, .tab-bar, .reading-progress, .back-to-top { display: none !important; }
   .app-shell { display: block; }
   .main { max-width: 100%; padding: 0; }
   .tab-panel { display: block !important; margin-bottom: 14px; }
@@ -825,12 +894,14 @@ tbody tr:hover { background: var(--surface-alt); }
 </head>
 <body>
 
+<div class="reading-progress" id="reading-progress" aria-hidden="true"></div>
+
 <div class="mobile-bar">
   <div>
     <div class="brand-kicker">Handwritten Font cGAN</div>
     <strong style="font-size:14px;">Reporte Técnico Interactivo</strong>
   </div>
-  <button type="button" class="theme-btn" style="width:auto;" data-theme-toggle>Tema Oscuro</button>
+  <span class="pill accent">100 % Offline</span>
 </div>
 <nav class="mobile-nav-strip" aria-label="Secciones móvil">
   <a href="#sec-1">1. Resumen</a>
@@ -861,11 +932,10 @@ tbody tr:hover { background: var(--surface-alt); }
     </ul>
 
     <div class="sidebar-footer">
-      <button type="button" class="theme-btn" data-theme-toggle>Cambiar a Tema Oscuro</button>
       <div class="meta-pill">
         SEED=42 · 128×128<br/>
         100 % Offline · 0 CDNs<br/>
-        Build: 2026-11-25 17:04
+        Build: 2026-11-25 18:13
       </div>
     </div>
   </aside>
@@ -954,7 +1024,7 @@ tbody tr:hover { background: var(--surface-alt); }
         <h3>Arquitectura End-to-End (Flujo Tensorial <span class="mono">1×128×128</span>)</h3>
         <div class="svg-wrap">
           
-    <svg class="arch-svg" viewBox="0 0 1120 390" role="img" aria-label="Diagrama de arquitectura End-to-End de Handwritten Font cGAN" xmlns="http://www.w3.org/2000/svg">
+    <svg class="arch-svg" viewBox="0 0 1180 398" role="img" aria-label="Diagrama de arquitectura End-to-End de Handwritten Font cGAN" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
           <path d="M 0 1 L 10 5 L 0 9 z" fill="var(--svg-arrow)"/>
@@ -962,119 +1032,125 @@ tbody tr:hover { background: var(--surface-alt); }
         <marker id="arrow-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
           <path d="M 0 1 L 10 5 L 0 9 z" fill="var(--accent)"/>
         </marker>
+        <marker id="arrow-teal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 10 5 L 0 9 z" fill="var(--accent-2)"/>
+        </marker>
         <marker id="arrow-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
           <path d="M 0 1 L 10 5 L 0 9 z" fill="var(--text-muted)"/>
         </marker>
       </defs>
 
-      <!-- Fondo de etapa entrenamiento vs inferencia -->
-      <rect x="215" y="16" width="335" height="236" rx="14" fill="var(--svg-zone)" stroke="var(--border)" stroke-dasharray="5 5"/>
-      <text x="230" y="36" font-size="11" font-weight="700" fill="var(--text-muted)" letter-spacing="0.06em">SÍNTESIS CONDICIONAL (G)</text>
+      <!-- Placa de fondo oscura unificada -->
+      <rect x="2" y="2" width="1176" height="394" rx="14" fill="var(--svg-zone)" stroke="var(--border)" stroke-width="1"/>
 
-      <rect x="695" y="16" width="408" height="358" rx="14" fill="var(--svg-zone)" stroke="var(--border)" stroke-dasharray="5 5"/>
-      <text x="710" y="36" font-size="11" font-weight="700" fill="var(--text-muted)" letter-spacing="0.06em">AUDITORÍA, EXPLICABILIDAD Y EXPORTACIÓN</text>
+      <!-- Zonas lógicas -->
+      <rect x="214" y="16" width="336" height="238" rx="14" fill="var(--surface)" stroke="var(--border-strong)" stroke-dasharray="5 5"/>
+      <text x="230" y="36" font-size="10.5" font-weight="700" fill="var(--text-muted)" letter-spacing="0.07em">SÍNTESIS CONDICIONAL (G)</text>
+
+      <rect x="694" y="16" width="470" height="364" rx="14" fill="var(--surface)" stroke="var(--border-strong)" stroke-dasharray="5 5"/>
+      <text x="710" y="36" font-size="10.5" font-weight="700" fill="var(--text-muted)" letter-spacing="0.07em">AUDITORÍA, EXPLICABILIDAD Y EXPORTACIÓN</text>
 
       <!-- Nodo 1: Entrada x -->
       <g transform="translate(18, 92)">
-        <rect width="166" height="96" rx="12" fill="var(--surface)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="83" y="26" text-anchor="middle" font-size="13" font-weight="700" fill="var(--text)">Entrada x</text>
-        <text x="83" y="45" text-anchor="middle" font-size="11.5" font-family="var(--font-mono)" fill="var(--accent)">1 × 128 × 128</text>
-        <text x="83" y="66" text-anchor="middle" font-size="11" fill="var(--text-muted)">Lato-Regular / Canvas</text>
-        <text x="83" y="82" text-anchor="middle" font-size="11" fill="var(--text-muted)">/ Webcam ROI [-1, 1]</text>
+        <rect width="166" height="98" rx="12" fill="var(--svg-card)" stroke="var(--accent)" stroke-width="1.8"/>
+        <text x="83" y="27" text-anchor="middle" font-size="13" font-weight="700" fill="var(--text)">Entrada x</text>
+        <text x="83" y="47" text-anchor="middle" font-size="11.5" font-family="var(--font-mono)" fill="var(--accent)">1 × 128 × 128</text>
+        <text x="83" y="68" text-anchor="middle" font-size="11" fill="var(--text-muted)">Lato-Regular / Canvas</text>
+        <text x="83" y="84" text-anchor="middle" font-size="11" fill="var(--text-muted)">/ Webcam ROI [-1, 1]</text>
       </g>
 
       <!-- Nodo 1b: Referencias estilo -->
-      <g transform="translate(18, 224)">
-        <rect width="166" height="72" rx="12" fill="var(--surface)" stroke="var(--accent-2)" stroke-width="1.6" stroke-dasharray="4 3"/>
+      <g transform="translate(18, 226)">
+        <rect width="166" height="74" rx="12" fill="var(--svg-card)" stroke="var(--accent-2)" stroke-width="1.6" stroke-dasharray="4 3"/>
         <text x="83" y="25" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">K=4 Refs de Estilo</text>
-        <text x="83" y="43" text-anchor="middle" font-size="11" font-family="var(--font-mono)" fill="var(--accent-2)">[4, 1, 128, 128]</text>
-        <text x="83" y="59" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">Solo StyleUNet + AdaIN</text>
+        <text x="83" y="44" text-anchor="middle" font-size="11" font-family="var(--font-mono)" fill="var(--accent-2)">[4, 1, 128, 128]</text>
+        <text x="83" y="61" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">Solo StyleUNet + AdaIN</text>
       </g>
 
       <!-- Nodo 2: Generador G -->
       <g transform="translate(232, 54)">
-        <rect width="300" height="178" rx="14" fill="var(--surface)" stroke="var(--accent)" stroke-width="2.2"/>
-        <rect x="0" y="0" width="300" height="32" rx="14" fill="var(--accent)"/>
-        <rect x="0" y="18" width="300" height="14" fill="var(--accent)"/>
+        <rect width="300" height="182" rx="14" fill="var(--svg-card)" stroke="var(--accent)" stroke-width="2"/>
+        <rect x="0" y="0" width="300" height="33" rx="14" fill="var(--accent-solid)"/>
+        <rect x="0" y="19" width="300" height="14" fill="var(--accent-solid)"/>
         <text x="150" y="21" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">Generador G (Pix2Pix / StyleUNet)</text>
-        <text x="150" y="56" text-anchor="middle" font-size="12" font-weight="600" fill="var(--text)">U-Net 7 Enc + 7 Dec + Skip Connections</text>
-        <text x="150" y="76" text-anchor="middle" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">Pix2Pix: 41.82M · StyleUNet: 44.18M</text>
-        <line x1="20" y1="90" x2="280" y2="90" stroke="var(--border)"/>
-        <text x="150" y="110" text-anchor="middle" font-size="11" fill="var(--text)">StyleEncoder (sin InstanceNorm) → z_style (128-d)</text>
-        <text x="150" y="128" text-anchor="middle" font-size="11" fill="var(--text)">6 bloques AdaIN2d + pérdida L1 + InkDiff</text>
-        <rect x="40" y="140" width="220" height="24" rx="6" fill="var(--accent-soft)"/>
-        <text x="150" y="156" text-anchor="middle" font-size="11" font-weight="700" fill="var(--accent)">ONNX CPU: 16.86 ms (59.30 FPS)</text>
+        <text x="150" y="57" text-anchor="middle" font-size="12" font-weight="600" fill="var(--text)">U-Net 7 Enc + 7 Dec + Skip Connections</text>
+        <text x="150" y="77" text-anchor="middle" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">Pix2Pix: 41.82M · StyleUNet: 44.18M</text>
+        <line x1="18" y1="91" x2="282" y2="91" stroke="var(--border-strong)"/>
+        <text x="150" y="111" text-anchor="middle" font-size="11" fill="var(--text)">StyleEncoder (sin InstanceNorm) → z_style (128-d)</text>
+        <text x="150" y="129" text-anchor="middle" font-size="11" fill="var(--text)">6 bloques AdaIN2d + pérdida L1 + InkDiff</text>
+        <rect x="34" y="143" width="232" height="25" rx="7" fill="var(--accent-soft)" stroke="rgba(96,165,250,0.28)"/>
+        <text x="150" y="159.5" text-anchor="middle" font-size="11" font-family="var(--font-mono)" font-weight="700" fill="var(--accent)">ONNX CPU: 16.86 ms (59.30 FPS)</text>
       </g>
 
       <!-- Nodo 3: Discriminador PatchGAN (solo train) -->
-      <g transform="translate(262, 286)">
-        <rect width="240" height="74" rx="12" fill="var(--surface)" stroke="var(--text-muted)" stroke-width="1.4" stroke-dasharray="5 4"/>
-        <text x="120" y="24" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">Discriminador PatchGAN 70×70</text>
-        <text x="120" y="42" text-anchor="middle" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">[x, y/ŷ] → logits 14×14 (2.76M)</text>
-        <text x="120" y="59" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">Solo entrenamiento · BCE (0.9) + λL1=100</text>
+      <g transform="translate(254, 288)">
+        <rect width="256" height="78" rx="12" fill="var(--svg-card)" stroke="var(--text-muted)" stroke-width="1.4" stroke-dasharray="5 4"/>
+        <text x="128" y="25" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">Discriminador PatchGAN 70×70</text>
+        <text x="128" y="44" text-anchor="middle" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">[x, y/ŷ] → logits 14×14 (2.76M)</text>
+        <text x="128" y="62" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">Solo entrenamiento · BCE (0.9) + λL1=100</text>
       </g>
 
       <!-- Nodo 4: Salida y_hat -->
       <g transform="translate(566, 98)">
-        <rect width="108" height="84" rx="12" fill="var(--surface)" stroke="var(--accent-2)" stroke-width="2"/>
-        <text x="54" y="28" text-anchor="middle" font-size="14" font-weight="800" fill="var(--text)">Glifo ŷ</text>
-        <text x="54" y="48" text-anchor="middle" font-size="11" font-family="var(--font-mono)" fill="var(--accent-2)">1×128×128</text>
-        <text x="54" y="66" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">Salida Tanh</text>
+        <rect width="108" height="86" rx="12" fill="var(--svg-card)" stroke="var(--accent-2)" stroke-width="2"/>
+        <text x="54" y="29" text-anchor="middle" font-size="14" font-weight="800" fill="var(--text)">Glifo ŷ</text>
+        <text x="54" y="50" text-anchor="middle" font-size="11" font-family="var(--font-mono)" fill="var(--accent-2)">1×128×128</text>
+        <text x="54" y="68" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">Salida Tanh</text>
       </g>
 
-      <!-- Nodo 5: Jueces CNN -->
-      <g transform="translate(712, 54)">
-        <rect width="194" height="118" rx="12" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.8"/>
-        <text x="97" y="24" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--text)">Jueces Congelados</text>
-        <text x="97" y="45" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--accent)">ResNet-18 (11.21M)</text>
-        <text x="97" y="61" text-anchor="middle" font-size="10.5" font-family="var(--font-mono)" fill="var(--text-muted)">75 clases · Emb 512-d · 4.69 ms</text>
-        <line x1="16" y1="71" x2="178" y2="71" stroke="var(--border)"/>
-        <text x="97" y="88" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--accent-2)">EfficientNet-B0 (4.10M)</text>
-        <text x="97" y="104" text-anchor="middle" font-size="10.5" font-family="var(--font-mono)" fill="var(--text-muted)">75 clases · Emb 1280-d (X-val)</text>
+      <!-- Nodo 5: Jueces CNN (ampliado para margen holgado) -->
+      <g transform="translate(710, 54)">
+        <rect width="234" height="122" rx="12" fill="var(--svg-card)" stroke="var(--accent)" stroke-width="1.8"/>
+        <text x="117" y="24" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--text)">Jueces Congelados</text>
+        <text x="117" y="46" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--accent)">ResNet-18 (11.21M)</text>
+        <text x="117" y="62" text-anchor="middle" font-size="10" font-family="var(--font-mono)" fill="var(--text-muted)">75 clases · Emb 512-d · 4.69 ms</text>
+        <line x1="18" y1="74" x2="216" y2="74" stroke="var(--border-strong)"/>
+        <text x="117" y="92" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--accent-2)">EfficientNet-B0 (4.10M)</text>
+        <text x="117" y="108" text-anchor="middle" font-size="10" font-family="var(--font-mono)" fill="var(--text-muted)">75 clases · Emb 1280-d (X-val)</text>
       </g>
 
       <!-- Nodo 6: Grad-CAM + OOD -->
-      <g transform="translate(926, 54)">
-        <rect width="162" height="118" rx="12" fill="var(--surface)" stroke="var(--accent-2)" stroke-width="1.6"/>
-        <text x="81" y="24" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">Explicabilidad &amp; OOD</text>
-        <text x="81" y="46" text-anchor="middle" font-size="11" fill="var(--text)">Grad-CAM Espacial</text>
-        <text x="81" y="62" text-anchor="middle" font-size="10.5" font-family="var(--font-mono)" fill="var(--accent-2)">cos = 0.9895 (ZS)</text>
-        <line x1="16" y1="72" x2="146" y2="72" stroke="var(--border)"/>
-        <text x="81" y="90" text-anchor="middle" font-size="11" fill="var(--text)">Filtro OOD (τ = 0.70)</text>
-        <text x="81" y="106" text-anchor="middle" font-size="10.5" font-family="var(--font-mono)" fill="var(--accent)">AUROC 0.9435 · 81.9%</text>
+      <g transform="translate(964, 54)">
+        <rect width="184" height="122" rx="12" fill="var(--svg-card)" stroke="var(--accent-2)" stroke-width="1.6"/>
+        <text x="92" y="24" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">Explicabilidad &amp; OOD</text>
+        <text x="92" y="46" text-anchor="middle" font-size="11" fill="var(--text)">Grad-CAM Espacial</text>
+        <text x="92" y="62" text-anchor="middle" font-size="10.2" font-family="var(--font-mono)" fill="var(--accent-2)">cos = 0.9895 (ZS)</text>
+        <line x1="16" y1="74" x2="168" y2="74" stroke="var(--border-strong)"/>
+        <text x="92" y="92" text-anchor="middle" font-size="11" fill="var(--text)">Filtro OOD (τ = 0.70)</text>
+        <text x="92" y="108" text-anchor="middle" font-size="10.2" font-family="var(--font-mono)" fill="var(--accent)">AUROC 0.9435 · 81.9%</text>
       </g>
 
       <!-- Nodo 7: Demo en vivo ONNX -->
-      <g transform="translate(712, 192)">
-        <rect width="376" height="72" rx="12" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.6"/>
-        <text x="188" y="24" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--text)">Demo OpenCV Tiempo Real (ONNX Runtime CPU)</text>
-        <text x="188" y="44" text-anchor="middle" font-size="11" font-family="var(--font-mono)" fill="var(--accent)">21.07 ms (p95: 24.00 ms) · 47.45 FPS · Speedup 1.69×</text>
-        <text x="188" y="60" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">Canvas teclado / Dibujo libre / Webcam ROI · Alerta OK / OOD</text>
+      <g transform="translate(710, 196)">
+        <rect width="438" height="74" rx="12" fill="var(--svg-card)" stroke="var(--accent)" stroke-width="1.6"/>
+        <text x="219" y="24" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--text)">Demo OpenCV Tiempo Real (ONNX Runtime CPU)</text>
+        <text x="219" y="44" text-anchor="middle" font-size="11" font-family="var(--font-mono)" fill="var(--accent)">21.07 ms (p95: 24.00 ms) · 47.45 FPS · Speedup 1.69×</text>
+        <text x="219" y="62" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">Canvas teclado / Dibujo libre / Webcam ROI · Alerta OK / OOD</text>
       </g>
 
       <!-- Nodo 8: Vectorización TTF -->
-      <g transform="translate(712, 282)">
-        <rect width="376" height="76" rx="12" fill="var(--surface)" stroke="var(--accent-3)" stroke-width="1.8"/>
-        <text x="188" y="24" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--text)">Exportación Tipografía Instalable (.ttf)</text>
-        <text x="188" y="44" text-anchor="middle" font-size="11" fill="var(--text)">vtracer (SVG) → Cu2QuPen → fontTools (75–84 glifos)</text>
-        <text x="188" y="61" text-anchor="middle" font-size="10.5" font-family="var(--font-mono)" fill="var(--accent-3)">Tabla OpenType name: AI-SYNTHETIC / PERSONAL-STYLUS</text>
+      <g transform="translate(710, 288)">
+        <rect width="438" height="78" rx="12" fill="var(--svg-card)" stroke="var(--accent-3)" stroke-width="1.8"/>
+        <text x="219" y="25" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--text)">Exportación Tipografía Instalable (.ttf)</text>
+        <text x="219" y="45" text-anchor="middle" font-size="11" fill="var(--text)">vtracer (SVG) → Cu2QuPen → fontTools (75–84 glifos)</text>
+        <text x="219" y="63" text-anchor="middle" font-size="10.5" font-family="var(--font-mono)" fill="var(--accent-3)">Tabla OpenType name: AI-SYNTHETIC / PERSONAL-STYLUS</text>
       </g>
 
       <!-- Flechas -->
-      <line x1="184" y1="140" x2="229" y2="140" stroke="var(--accent)" stroke-width="2.2" marker-end="url(#arrow-accent)"/>
-      <path d="M 184 260 L 208 260 L 208 190 L 229 190" fill="none" stroke="var(--accent-2)" stroke-width="1.8" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
-      <line x1="532" y1="140" x2="563" y2="140" stroke="var(--accent)" stroke-width="2.2" marker-end="url(#arrow-accent)"/>
+      <line x1="184" y1="141" x2="229" y2="141" stroke="var(--accent)" stroke-width="2.2" marker-end="url(#arrow-accent)"/>
+      <path d="M 184 263 L 208 263 L 208 192 L 229 192" fill="none" stroke="var(--accent-2)" stroke-width="1.8" stroke-dasharray="4 3" marker-end="url(#arrow-teal)"/>
+      <line x1="532" y1="141" x2="563" y2="141" stroke="var(--accent)" stroke-width="2.2" marker-end="url(#arrow-accent)"/>
       <!-- y_hat -> Jueces -->
-      <path d="M 674 126 L 693 126 L 693 112 L 709 112" fill="none" stroke="var(--svg-arrow)" stroke-width="2" marker-end="url(#arrow)"/>
+      <path d="M 674 126 L 692 126 L 692 115 L 707 115" fill="none" stroke="var(--svg-arrow)" stroke-width="2" marker-end="url(#arrow)"/>
       <!-- Jueces -> GradCAM/OOD -->
-      <line x1="906" y1="112" x2="923" y2="112" stroke="var(--svg-arrow)" stroke-width="1.8" marker-end="url(#arrow)"/>
+      <line x1="944" y1="115" x2="961" y2="115" stroke="var(--svg-arrow)" stroke-width="1.8" marker-end="url(#arrow)"/>
       <!-- y_hat -> Demo -->
-      <path d="M 674 150 L 693 150 L 693 228 L 709 228" fill="none" stroke="var(--svg-arrow)" stroke-width="1.8" marker-end="url(#arrow)"/>
+      <path d="M 674 150 L 692 150 L 692 233 L 707 233" fill="none" stroke="var(--svg-arrow)" stroke-width="1.8" marker-end="url(#arrow)"/>
       <!-- y_hat -> TTF -->
-      <path d="M 620 182 L 620 320 L 709 320" fill="none" stroke="var(--svg-arrow)" stroke-width="1.8" marker-end="url(#arrow)"/>
+      <path d="M 620 184 L 620 327 L 707 327" fill="none" stroke="var(--svg-arrow)" stroke-width="1.8" marker-end="url(#arrow)"/>
       <!-- x & y_hat -> PatchGAN (train only) -->
-      <path d="M 101 188 L 101 334 L 259 334" fill="none" stroke="var(--text-muted)" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#arrow-muted)"/>
-      <path d="M 594 182 L 594 312 L 505 312" fill="none" stroke="var(--text-muted)" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#arrow-muted)"/>
+      <path d="M 101 190 L 101 336 L 251 336" fill="none" stroke="var(--text-muted)" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#arrow-muted)"/>
+      <path d="M 594 184 L 594 316 L 513 316" fill="none" stroke="var(--text-muted)" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#arrow-muted)"/>
     </svg>
     
         </div>
@@ -1202,7 +1278,7 @@ tbody tr:hover { background: var(--surface-alt); }
           </table>
         </div>
         <div class="svg-wrap" style="margin-top:14px;">
-          <svg class="chart-svg" viewBox="0 0 740 286" role="img" aria-label="Parámetros por arquitectura en millones" xmlns="http://www.w3.org/2000/svg"><g transform="translate(0, 16)"><text x="210" y="18" text-anchor="end" font-size="12" font-weight="600" fill="var(--text)">UNetGenerator</text><rect x="222" y="5" width="360" height="20" rx="5" fill="var(--bar-track)"/><rect x="222" y="5" width="340.8" height="20" rx="5" fill="var(--bar-neutral)"/><text x="570.8" y="19" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--text)">41.82M (41,823,425)</text></g><g transform="translate(0, 58)"><text x="210" y="18" text-anchor="end" font-size="12" font-weight="600" fill="var(--text)">PatchGANDiscriminator</text><rect x="222" y="5" width="360" height="20" rx="5" fill="var(--bar-track)"/><rect x="222" y="5" width="22.5" height="20" rx="5" fill="var(--bar-neutral)"/><text x="252.5" y="19" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--text)">2.76M (2,764,609)</text></g><g transform="translate(0, 100)"><text x="210" y="18" text-anchor="end" font-size="12" font-weight="600" fill="var(--text)">StyleUNetGenerator</text><rect x="222" y="5" width="360" height="20" rx="5" fill="var(--bar-track)"/><rect x="222" y="5" width="360.0" height="20" rx="5" fill="var(--accent)"/><text x="590.0" y="19" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--text)">44.18M (44,184,737)</text></g><g transform="translate(0, 142)"><text x="210" y="18" text-anchor="end" font-size="12" font-weight="600" fill="var(--text)">StyleEncoder (submódulo)</text><rect x="222" y="5" width="360" height="20" rx="5" fill="var(--bar-track)"/><rect x="222" y="5" width="14.6" height="20" rx="5" fill="var(--bar-neutral)"/><text x="244.6" y="19" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--text)">1.79M (1,787,360)</text></g><g transform="translate(0, 184)"><text x="210" y="18" text-anchor="end" font-size="12" font-weight="600" fill="var(--text)">ResNet18Judge</text><rect x="222" y="5" width="360" height="20" rx="5" fill="var(--bar-track)"/><rect x="222" y="5" width="91.3" height="20" rx="5" fill="var(--accent-2)"/><text x="321.3" y="19" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--text)">11.21M (11,208,715)</text></g><g transform="translate(0, 226)"><text x="210" y="18" text-anchor="end" font-size="12" font-weight="600" fill="var(--text)">EfficientNetB0Judge</text><rect x="222" y="5" width="360" height="20" rx="5" fill="var(--bar-track)"/><rect x="222" y="5" width="33.4" height="20" rx="5" fill="var(--accent-2)"/><text x="263.4" y="19" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--text)">4.10M (4,103,047)</text></g></svg>
+          <svg class="chart-svg" viewBox="0 0 780 288" role="img" aria-label="Parámetros por arquitectura en millones" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="1" width="778" height="286" rx="10" fill="var(--svg-zone)" stroke="var(--border)" stroke-width="1"/><g transform="translate(0, 18)"><text x="218" y="18" text-anchor="end" font-size="12" font-weight="600" fill="var(--text)">UNetGenerator</text><rect x="230" y="5" width="355" height="20" rx="5" fill="var(--bar-track)"/><rect x="230" y="5" width="336.0" height="20" rx="5" fill="var(--bar-neutral)"/><text x="576.0" y="19" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--text)">41.82M (41,823,425)</text></g><g transform="translate(0, 60)"><text x="218" y="18" text-anchor="end" font-size="12" font-weight="600" fill="var(--text)">PatchGANDiscriminator</text><rect x="230" y="5" width="355" height="20" rx="5" fill="var(--bar-track)"/><rect x="230" y="5" width="22.2" height="20" rx="5" fill="var(--bar-neutral)"/><text x="262.2" y="19" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--text)">2.76M (2,764,609)</text></g><g transform="translate(0, 102)"><text x="218" y="18" text-anchor="end" font-size="12" font-weight="600" fill="var(--text)">StyleUNetGenerator</text><rect x="230" y="5" width="355" height="20" rx="5" fill="var(--bar-track)"/><rect x="230" y="5" width="355.0" height="20" rx="5" fill="var(--accent)"/><text x="595.0" y="19" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--text)">44.18M (44,184,737)</text></g><g transform="translate(0, 144)"><text x="218" y="18" text-anchor="end" font-size="12" font-weight="600" fill="var(--text)">StyleEncoder (submódulo)</text><rect x="230" y="5" width="355" height="20" rx="5" fill="var(--bar-track)"/><rect x="230" y="5" width="14.4" height="20" rx="5" fill="var(--bar-neutral)"/><text x="254.4" y="19" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--text)">1.79M (1,787,360)</text></g><g transform="translate(0, 186)"><text x="218" y="18" text-anchor="end" font-size="12" font-weight="600" fill="var(--text)">ResNet18Judge</text><rect x="230" y="5" width="355" height="20" rx="5" fill="var(--bar-track)"/><rect x="230" y="5" width="90.1" height="20" rx="5" fill="var(--accent-2)"/><text x="330.1" y="19" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--text)">11.21M (11,208,715)</text></g><g transform="translate(0, 228)"><text x="218" y="18" text-anchor="end" font-size="12" font-weight="600" fill="var(--text)">EfficientNetB0Judge</text><rect x="230" y="5" width="355" height="20" rx="5" fill="var(--bar-track)"/><rect x="230" y="5" width="32.9" height="20" rx="5" fill="var(--accent-2)"/><text x="272.9" y="19" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--text)">4.10M (4,103,047)</text></g></svg>
         </div>
       </div>
 
@@ -1356,7 +1432,7 @@ tbody tr:hover { background: var(--surface-alt); }
             exacta de <strong>31.95 pp</strong> asociada a signos con muy baja área de tinta.
           </p>
           <div class="svg-wrap">
-            <svg class="chart-svg" viewBox="0 0 680 270" role="img" aria-label="Macro-F1 por subgrupo en validación" xmlns="http://www.w3.org/2000/svg"><g transform="translate(54, 8)"><rect x="0" y="0" width="12" height="12" rx="3" fill="var(--bar-track-strong)"/><text x="18" y="10" font-size="11.5" fill="var(--text-muted)">Referencia y (techo)</text><rect x="175" y="0" width="12" height="12" rx="3" fill="var(--accent)"/><text x="193" y="10" font-size="11.5" fill="var(--text-muted)">pix2pix_pretrained (ResNet-18 Macro-F1)</text><rect x="465" y="0" width="12" height="12" rx="3" fill="var(--danger)"/><text x="483" y="10" font-size="11.5" fill="var(--danger)">Brecha máx: 31.95 pp</text></g><line x1="54" y1="224.0" x2="662" y2="224.0" stroke="var(--border)" stroke-dasharray="3 3"/><text x="46" y="228.0" text-anchor="end" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">0%</text><line x1="54" y1="175.0" x2="662" y2="175.0" stroke="var(--border)" stroke-dasharray="3 3"/><text x="46" y="179.0" text-anchor="end" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">25%</text><line x1="54" y1="126.0" x2="662" y2="126.0" stroke="var(--border)" stroke-dasharray="3 3"/><text x="46" y="130.0" text-anchor="end" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">50%</text><line x1="54" y1="77.0" x2="662" y2="77.0" stroke="var(--border)" stroke-dasharray="3 3"/><text x="46" y="81.0" text-anchor="end" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">75%</text><line x1="54" y1="28.0" x2="662" y2="28.0" stroke="var(--border)" stroke-dasharray="3 3"/><text x="46" y="32.0" text-anchor="end" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">100%</text><rect x="78.1" y="50.8" width="42.1" height="173.2" rx="5" fill="var(--bar-track-strong)"/><text x="99.2" y="44.8" text-anchor="middle" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">88.4%</text><rect x="128.2" y="71.6" width="42.1" height="152.4" rx="5" fill="var(--accent)"/><text x="149.3" y="65.6" text-anchor="middle" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--accent)">77.8%</text><text x="124.2" y="244" text-anchor="middle" font-size="12" font-weight="600" fill="var(--text)">Mayúsculas (A-Z)</text><rect x="228.6" y="39.3" width="42.1" height="184.7" rx="5" fill="var(--bar-track-strong)"/><text x="249.7" y="33.3" text-anchor="middle" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">94.2%</text><rect x="278.7" y="82.4" width="42.1" height="141.6" rx="5" fill="var(--accent)"/><text x="299.8" y="76.4" text-anchor="middle" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--accent)">72.2%</text><text x="274.7" y="244" text-anchor="middle" font-size="12" font-weight="600" fill="var(--text)">Minúsculas (a-z)</text><rect x="379.1" y="54.8" width="42.1" height="169.2" rx="5" fill="var(--bar-track-strong)"/><text x="400.1" y="48.8" text-anchor="middle" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">86.3%</text><rect x="429.2" y="101.5" width="42.1" height="122.5" rx="5" fill="var(--accent)"/><text x="450.3" y="95.5" text-anchor="middle" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--accent)">62.5%</text><text x="425.2" y="244" text-anchor="middle" font-size="12" font-weight="600" fill="var(--text)">Dígitos (0-9)</text><rect x="529.6" y="32.9" width="42.1" height="191.1" rx="5" fill="var(--bar-track-strong)"/><text x="550.7" y="26.9" text-anchor="middle" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">97.5%</text><rect x="579.7" y="134.2" width="42.1" height="89.8" rx="5" fill="var(--danger)"/><text x="600.8" y="128.2" text-anchor="middle" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--danger)">45.8%</text><text x="575.7" y="244" text-anchor="middle" font-size="12" font-weight="600" fill="var(--text)">Signos</text></svg>
+            <svg class="chart-svg" viewBox="0 0 700 282" role="img" aria-label="Macro-F1 por subgrupo en validación" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="1" width="698" height="280" rx="10" fill="var(--svg-zone)" stroke="var(--border)" stroke-width="1"/><g transform="translate(56, 14)"><rect x="0" y="0" width="12" height="12" rx="3" fill="var(--bar-track-strong)"/><text x="18" y="10" font-size="11.5" fill="var(--text-muted)">Referencia y (techo)</text><rect x="172" y="0" width="12" height="12" rx="3" fill="var(--accent)"/><text x="190" y="10" font-size="11.5" fill="var(--text-muted)">pix2pix_pretrained (Macro-F1)</text><rect x="425" y="0" width="12" height="12" rx="3" fill="var(--danger)"/><text x="443" y="10" font-size="11.5" font-weight="700" fill="var(--danger)">Brecha máx: 31.95 pp</text></g><line x1="56" y1="232.0" x2="680" y2="232.0" stroke="var(--svg-grid)" stroke-dasharray="3 3"/><text x="48" y="236.0" text-anchor="end" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">0%</text><line x1="56" y1="183.5" x2="680" y2="183.5" stroke="var(--svg-grid)" stroke-dasharray="3 3"/><text x="48" y="187.5" text-anchor="end" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">25%</text><line x1="56" y1="135.0" x2="680" y2="135.0" stroke="var(--svg-grid)" stroke-dasharray="3 3"/><text x="48" y="139.0" text-anchor="end" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">50%</text><line x1="56" y1="86.5" x2="680" y2="86.5" stroke="var(--svg-grid)" stroke-dasharray="3 3"/><text x="48" y="90.5" text-anchor="end" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">75%</text><line x1="56" y1="38.0" x2="680" y2="38.0" stroke="var(--svg-grid)" stroke-dasharray="3 3"/><text x="48" y="42.0" text-anchor="end" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">100%</text><rect x="80.7" y="60.5" width="43.3" height="171.5" rx="5" fill="var(--bar-track-strong)"/><text x="102.3" y="54.5" text-anchor="middle" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">88.4%</text><rect x="132.0" y="81.1" width="43.3" height="150.9" rx="5" fill="var(--accent)"/><text x="153.6" y="75.1" text-anchor="middle" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--accent)">77.8%</text><text x="128.0" y="254" text-anchor="middle" font-size="12" font-weight="600" fill="var(--text)">Mayúsculas (A-Z)</text><rect x="235.2" y="49.2" width="43.3" height="182.8" rx="5" fill="var(--bar-track-strong)"/><text x="256.9" y="43.2" text-anchor="middle" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">94.2%</text><rect x="286.5" y="91.9" width="43.3" height="140.1" rx="5" fill="var(--accent)"/><text x="308.1" y="85.9" text-anchor="middle" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--accent)">72.2%</text><text x="282.5" y="254" text-anchor="middle" font-size="12" font-weight="600" fill="var(--text)">Minúsculas (a-z)</text><rect x="389.7" y="64.5" width="43.3" height="167.5" rx="5" fill="var(--bar-track-strong)"/><text x="411.4" y="58.5" text-anchor="middle" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">86.3%</text><rect x="441.0" y="110.8" width="43.3" height="121.2" rx="5" fill="var(--accent)"/><text x="462.6" y="104.8" text-anchor="middle" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--accent)">62.5%</text><text x="437.0" y="254" text-anchor="middle" font-size="12" font-weight="600" fill="var(--text)">Dígitos (0-9)</text><rect x="544.2" y="42.8" width="43.3" height="189.2" rx="5" fill="var(--bar-track-strong)"/><text x="565.9" y="36.8" text-anchor="middle" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">97.5%</text><rect x="595.5" y="143.1" width="43.3" height="88.9" rx="5" fill="var(--danger)"/><text x="617.1" y="137.1" text-anchor="middle" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--danger)">45.8%</text><text x="591.5" y="254" text-anchor="middle" font-size="12" font-weight="600" fill="var(--text)">Signos</text></svg>
           </div>
         </div>
 
@@ -1366,7 +1442,7 @@ tbody tr:hover { background: var(--surface-alt); }
             El 65.4 % (306/468) se concentra en artefactos Zero-Shot de símbolos complejos no vistos; en <span class="mono">val</span> dominan trazos ambiguos y similitudes morfológicas.
           </p>
           <div class="svg-wrap">
-            <svg class="chart-svg" viewBox="0 0 680 258" role="img" aria-label="Taxonomía de 468 errores en evaluación pretrain" xmlns="http://www.w3.org/2000/svg"><g transform="translate(0, 14)"><text x="242" y="17" text-anchor="end" font-size="11.5" font-weight="600" fill="var(--text)">Artefacto Zero-Shot (unseen)</text><rect x="254" y="4" width="300" height="19" rx="5" fill="var(--bar-track)"/><rect x="254" y="4" width="300.0" height="19" rx="5" fill="var(--danger)"/><text x="562.0" y="17.5" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--text)">306 (65.4%)</text></g><g transform="translate(0, 52)"><text x="242" y="17" text-anchor="end" font-size="11.5" font-weight="600" fill="var(--text)">Trazo ambiguo (baja confianza)</text><rect x="254" y="4" width="300" height="19" rx="5" fill="var(--bar-track)"/><rect x="254" y="4" width="52.9" height="19" rx="5" fill="var(--warning)"/><text x="314.9" y="17.5" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--text)">54 (11.5%)</text></g><g transform="translate(0, 90)"><text x="242" y="17" text-anchor="end" font-size="11.5" font-weight="600" fill="var(--text)">Trazos morfológicamente similares</text><rect x="254" y="4" width="300" height="19" rx="5" fill="var(--bar-track)"/><rect x="254" y="4" width="52.9" height="19" rx="5" fill="var(--warning)"/><text x="314.9" y="17.5" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--text)">54 (11.5%)</text></g><g transform="translate(0, 128)"><text x="242" y="17" text-anchor="end" font-size="11.5" font-weight="600" fill="var(--text)">Confusión estructural de forma</text><rect x="254" y="4" width="300" height="19" rx="5" fill="var(--bar-track)"/><rect x="254" y="4" width="26.5" height="19" rx="5" fill="var(--accent)"/><text x="288.5" y="17.5" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--text)">27 (5.8%)</text></g><g transform="translate(0, 166)"><text x="242" y="17" text-anchor="end" font-size="11.5" font-weight="600" fill="var(--text)">Confusión mayús./minús.</text><rect x="254" y="4" width="300" height="19" rx="5" fill="var(--bar-track)"/><rect x="254" y="4" width="17.6" height="19" rx="5" fill="var(--accent)"/><text x="279.6" y="17.5" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--text)">18 (3.8%)</text></g><g transform="translate(0, 204)"><text x="242" y="17" text-anchor="end" font-size="11.5" font-weight="600" fill="var(--text)">Signo delgado / puntuación</text><rect x="254" y="4" width="300" height="19" rx="5" fill="var(--bar-track)"/><rect x="254" y="4" width="8.8" height="19" rx="5" fill="var(--accent)"/><text x="270.8" y="17.5" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--text)">9 (1.9%)</text></g></svg>
+            <svg class="chart-svg" viewBox="0 0 700 270" role="img" aria-label="Taxonomía de 468 errores en evaluación pretrain" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="1" width="698" height="268" rx="10" fill="var(--svg-zone)" stroke="var(--border)" stroke-width="1"/><g transform="translate(0, 18)"><text x="248" y="17" text-anchor="end" font-size="11.5" font-weight="600" fill="var(--text)">Artefacto Zero-Shot (unseen)</text><rect x="260" y="4" width="295" height="19" rx="5" fill="var(--bar-track)"/><rect x="260" y="4" width="295.0" height="19" rx="5" fill="var(--danger)"/><text x="565.0" y="17.5" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--text)">306 (65.4%)</text></g><g transform="translate(0, 57)"><text x="248" y="17" text-anchor="end" font-size="11.5" font-weight="600" fill="var(--text)">Trazo ambiguo (baja confianza)</text><rect x="260" y="4" width="295" height="19" rx="5" fill="var(--bar-track)"/><rect x="260" y="4" width="52.1" height="19" rx="5" fill="var(--warning)"/><text x="322.1" y="17.5" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--text)">54 (11.5%)</text></g><g transform="translate(0, 96)"><text x="248" y="17" text-anchor="end" font-size="11.5" font-weight="600" fill="var(--text)">Trazos morfológicamente similares</text><rect x="260" y="4" width="295" height="19" rx="5" fill="var(--bar-track)"/><rect x="260" y="4" width="52.1" height="19" rx="5" fill="var(--warning)"/><text x="322.1" y="17.5" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--text)">54 (11.5%)</text></g><g transform="translate(0, 135)"><text x="248" y="17" text-anchor="end" font-size="11.5" font-weight="600" fill="var(--text)">Confusión estructural de forma</text><rect x="260" y="4" width="295" height="19" rx="5" fill="var(--bar-track)"/><rect x="260" y="4" width="26.0" height="19" rx="5" fill="var(--accent)"/><text x="296.0" y="17.5" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--text)">27 (5.8%)</text></g><g transform="translate(0, 174)"><text x="248" y="17" text-anchor="end" font-size="11.5" font-weight="600" fill="var(--text)">Confusión mayús./minús.</text><rect x="260" y="4" width="295" height="19" rx="5" fill="var(--bar-track)"/><rect x="260" y="4" width="17.4" height="19" rx="5" fill="var(--accent)"/><text x="287.4" y="17.5" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--text)">18 (3.8%)</text></g><g transform="translate(0, 213)"><text x="248" y="17" text-anchor="end" font-size="11.5" font-weight="600" fill="var(--text)">Signo delgado / puntuación</text><rect x="260" y="4" width="295" height="19" rx="5" fill="var(--bar-track)"/><rect x="260" y="4" width="8.7" height="19" rx="5" fill="var(--accent)"/><text x="278.7" y="17.5" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--text)">9 (1.9%)</text></g></svg>
           </div>
         </div>
       </div>
@@ -1457,7 +1533,7 @@ tbody tr:hover { background: var(--surface-alt); }
             atiende exactamente los mismos rasgos estructurales que en la referencia real (<span class="mono">cos = 0.9895</span>).
           </p>
           <div class="svg-wrap">
-            <svg class="chart-svg" viewBox="0 0 680 218" role="img" aria-label="Similitud coseno espacial Grad-CAM aciertos vs errores" xmlns="http://www.w3.org/2000/svg"><g transform="translate(0, 22)"><text x="235" y="18" text-anchor="end" font-size="12" font-weight="600" fill="var(--text)">val — Aciertos (ŷ correcto)</text><rect x="248" y="5" width="340" height="20" rx="5" fill="var(--bar-track)"/><rect x="248" y="5" width="295.3" height="20" rx="5" fill="var(--accent-2)"/><text x="551.3" y="19" font-size="12" font-family="var(--font-mono)" font-weight="700" fill="var(--accent-2)">0.9803</text></g><g transform="translate(0, 64)"><text x="235" y="18" text-anchor="end" font-size="12" font-weight="600" fill="var(--text)">val — Errores (ŷ incorrecto)</text><rect x="248" y="5" width="340" height="20" rx="5" fill="var(--bar-track)"/><rect x="248" y="5" width="253.6" height="20" rx="5" fill="var(--warning)"/><text x="509.6" y="19" font-size="12" font-family="var(--font-mono)" font-weight="700" fill="var(--warning)">0.9619</text></g><g transform="translate(0, 106)"><text x="235" y="18" text-anchor="end" font-size="12" font-weight="600" fill="var(--text)">test_unseen — Aciertos Zero-Shot</text><rect x="248" y="5" width="340" height="20" rx="5" fill="var(--bar-track)"/><rect x="248" y="5" width="316.2" height="20" rx="5" fill="var(--accent-2)"/><text x="572.2" y="19" font-size="12" font-family="var(--font-mono)" font-weight="700" fill="var(--accent-2)">0.9895</text></g><g transform="translate(0, 148)"><text x="235" y="18" text-anchor="end" font-size="12" font-weight="600" fill="var(--text)">test_unseen — Errores Zero-Shot</text><rect x="248" y="5" width="340" height="20" rx="5" fill="var(--bar-track)"/><rect x="248" y="5" width="171.6" height="20" rx="5" fill="var(--danger)"/><text x="427.6" y="19" font-size="12" font-family="var(--font-mono)" font-weight="700" fill="var(--danger)">0.9257</text></g><text x="248" y="205" font-size="10.5" font-family="var(--font-mono)" fill="var(--text-muted)">0.85</text><text x="361" y="205" text-anchor="middle" font-size="10.5" font-family="var(--font-mono)" fill="var(--text-muted)">0.90</text><text x="475" y="205" text-anchor="middle" font-size="10.5" font-family="var(--font-mono)" fill="var(--text-muted)">0.95</text><text x="588" y="205" text-anchor="end" font-size="10.5" font-family="var(--font-mono)" fill="var(--text-muted)">1.00 (eje truncado 0.85–1.00)</text></svg>
+            <svg class="chart-svg" viewBox="0 0 700 226" role="img" aria-label="Similitud coseno espacial Grad-CAM aciertos vs errores" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="1" width="698" height="224" rx="10" fill="var(--svg-zone)" stroke="var(--border)" stroke-width="1"/><line x1="254" y1="18" x2="254" y2="194" stroke="var(--svg-grid)" stroke-dasharray="3 3"/><line x1="367" y1="18" x2="367" y2="194" stroke="var(--svg-grid)" stroke-dasharray="3 3"/><line x1="481" y1="18" x2="481" y2="194" stroke="var(--svg-grid)" stroke-dasharray="3 3"/><line x1="594" y1="18" x2="594" y2="194" stroke="var(--svg-grid)" stroke-dasharray="3 3"/><g transform="translate(0, 24)"><text x="242" y="18" text-anchor="end" font-size="12" font-weight="600" fill="var(--text)">val — Aciertos (ŷ correcto)</text><rect x="254" y="5" width="340" height="20" rx="5" fill="var(--bar-track)"/><rect x="254" y="5" width="295.3" height="20" rx="5" fill="var(--accent-2)"/><text x="559.3" y="19" font-size="12" font-family="var(--font-mono)" font-weight="700" fill="var(--accent-2)">0.9803</text></g><g transform="translate(0, 66)"><text x="242" y="18" text-anchor="end" font-size="12" font-weight="600" fill="var(--text)">val — Errores (ŷ incorrecto)</text><rect x="254" y="5" width="340" height="20" rx="5" fill="var(--bar-track)"/><rect x="254" y="5" width="253.6" height="20" rx="5" fill="var(--warning)"/><text x="517.6" y="19" font-size="12" font-family="var(--font-mono)" font-weight="700" fill="var(--warning)">0.9619</text></g><g transform="translate(0, 108)"><text x="242" y="18" text-anchor="end" font-size="12" font-weight="600" fill="var(--text)">test_unseen — Aciertos Zero-Shot</text><rect x="254" y="5" width="340" height="20" rx="5" fill="var(--bar-track)"/><rect x="254" y="5" width="316.2" height="20" rx="5" fill="var(--accent-2)"/><text x="580.2" y="19" font-size="12" font-family="var(--font-mono)" font-weight="700" fill="var(--accent-2)">0.9895</text></g><g transform="translate(0, 150)"><text x="242" y="18" text-anchor="end" font-size="12" font-weight="600" fill="var(--text)">test_unseen — Errores Zero-Shot</text><rect x="254" y="5" width="340" height="20" rx="5" fill="var(--bar-track)"/><rect x="254" y="5" width="171.6" height="20" rx="5" fill="var(--danger)"/><text x="435.6" y="19" font-size="12" font-family="var(--font-mono)" font-weight="700" fill="var(--danger)">0.9257</text></g><text x="254" y="212" font-size="10.5" font-family="var(--font-mono)" fill="var(--text-muted)">0.85</text><text x="367" y="212" text-anchor="middle" font-size="10.5" font-family="var(--font-mono)" fill="var(--text-muted)">0.90</text><text x="481" y="212" text-anchor="middle" font-size="10.5" font-family="var(--font-mono)" fill="var(--text-muted)">0.95</text><text x="594" y="212" text-anchor="end" font-size="10.5" font-family="var(--font-mono)" fill="var(--text-muted)">1.00 (eje truncado 0.85–1.00)</text></svg>
           </div>
         </div>
 
@@ -1552,7 +1628,7 @@ tbody tr:hover { background: var(--surface-alt); }
         <div class="card">
           <h3>Rechazo OOD por Categoría a <span class="mono">τ = 0.70</span></h3>
           <div class="svg-wrap">
-            <svg class="chart-svg" viewBox="0 0 640 326" role="img" aria-label="Tasa de rechazo OOD por categoría a umbral 0.70" xmlns="http://www.w3.org/2000/svg"><g transform="translate(195, 8)"><rect x="0" y="0" width="12" height="12" rx="3" fill="var(--accent)"/><text x="18" y="10" font-size="11.5" fill="var(--text-muted)">Pipeline Demo (G + ResNet-18) @τ=0.70</text><rect x="278" y="0" width="12" height="12" rx="3" fill="var(--accent-2)"/><text x="296" y="10" font-size="11.5" fill="var(--text-muted)">ResNet-18 directo @τ=0.70</text></g><g transform="translate(0, 34)"><text x="182" y="19" text-anchor="end" font-size="11.5" font-family="var(--font-mono)" font-weight="600" fill="var(--text)">garabatos</text><rect x="195" y="2" width="340" height="13" rx="4" fill="var(--bar-track)"/><rect x="195" y="2" width="340.0" height="13" rx="4" fill="var(--accent)"/><text x="542.0" y="12.5" font-size="10.5" font-family="var(--font-mono)" font-weight="700" fill="var(--accent)">100.0%</text><rect x="195" y="19" width="340" height="11" rx="4" fill="var(--bar-track)"/><rect x="195" y="19" width="283.2" height="11" rx="4" fill="var(--accent-2)"/><text x="485.2" y="28.5" font-size="10.5" font-family="var(--font-mono)" fill="var(--accent-2)">83.3%</text></g><g transform="translate(0, 80)"><text x="182" y="19" text-anchor="end" font-size="11.5" font-family="var(--font-mono)" font-weight="600" fill="var(--text)">simbolos_ineditos</text><rect x="195" y="2" width="340" height="13" rx="4" fill="var(--bar-track)"/><rect x="195" y="2" width="340.0" height="13" rx="4" fill="var(--accent)"/><text x="542.0" y="12.5" font-size="10.5" font-family="var(--font-mono)" font-weight="700" fill="var(--accent)">100.0%</text><rect x="195" y="19" width="340" height="11" rx="4" fill="var(--bar-track)"/><rect x="195" y="19" width="255.0" height="11" rx="4" fill="var(--accent-2)"/><text x="457.0" y="28.5" font-size="10.5" font-family="var(--font-mono)" fill="var(--accent-2)">75.0%</text></g><g transform="translate(0, 126)"><text x="182" y="19" text-anchor="end" font-size="11.5" font-family="var(--font-mono)" font-weight="600" fill="var(--text)">rotacion_extrema</text><rect x="195" y="2" width="340" height="13" rx="4" fill="var(--bar-track)"/><rect x="195" y="2" width="311.8" height="13" rx="4" fill="var(--accent)"/><text x="513.8" y="12.5" font-size="10.5" font-family="var(--font-mono)" font-weight="700" fill="var(--accent)">91.7%</text><rect x="195" y="19" width="340" height="11" rx="4" fill="var(--bar-track)"/><rect x="195" y="19" width="226.8" height="11" rx="4" fill="var(--accent-2)"/><text x="428.8" y="28.5" font-size="10.5" font-family="var(--font-mono)" fill="var(--accent-2)">66.7%</text></g><g transform="translate(0, 172)"><text x="182" y="19" text-anchor="end" font-size="11.5" font-family="var(--font-mono)" font-weight="600" fill="var(--text)">ruido_puro</text><rect x="195" y="2" width="340" height="13" rx="4" fill="var(--bar-track)"/><rect x="195" y="2" width="311.8" height="13" rx="4" fill="var(--accent)"/><text x="513.8" y="12.5" font-size="10.5" font-family="var(--font-mono)" font-weight="700" fill="var(--accent)">91.7%</text><rect x="195" y="19" width="340" height="11" rx="4" fill="var(--bar-track)"/><rect x="195" y="19" width="198.2" height="11" rx="4" fill="var(--accent-2)"/><text x="400.2" y="28.5" font-size="10.5" font-family="var(--font-mono)" fill="var(--accent-2)">58.3%</text></g><g transform="translate(0, 218)"><text x="182" y="19" text-anchor="end" font-size="11.5" font-family="var(--font-mono)" font-weight="600" fill="var(--text)">sombra_bajo_contraste</text><rect x="195" y="2" width="340" height="13" rx="4" fill="var(--bar-track)"/><rect x="195" y="2" width="255.0" height="13" rx="4" fill="var(--accent)"/><text x="457.0" y="12.5" font-size="10.5" font-family="var(--font-mono)" font-weight="700" fill="var(--accent)">75.0%</text><rect x="195" y="19" width="340" height="11" rx="4" fill="var(--bar-track)"/><rect x="195" y="19" width="340.0" height="11" rx="4" fill="var(--accent-2)"/><text x="542.0" y="28.5" font-size="10.5" font-family="var(--font-mono)" fill="var(--accent-2)">100.0%</text></g><g transform="translate(0, 264)"><text x="182" y="19" text-anchor="end" font-size="11.5" font-family="var(--font-mono)" font-weight="600" fill="var(--text)">desenfoque_corte</text><rect x="195" y="2" width="340" height="13" rx="4" fill="var(--bar-track)"/><rect x="195" y="2" width="113.2" height="13" rx="4" fill="var(--accent)"/><text x="315.2" y="12.5" font-size="10.5" font-family="var(--font-mono)" font-weight="700" fill="var(--accent)">33.3%</text><rect x="195" y="19" width="340" height="11" rx="4" fill="var(--bar-track)"/><rect x="195" y="19" width="283.2" height="11" rx="4" fill="var(--accent-2)"/><text x="485.2" y="28.5" font-size="10.5" font-family="var(--font-mono)" fill="var(--accent-2)">83.3%</text></g></svg>
+            <svg class="chart-svg" viewBox="0 0 670 336" role="img" aria-label="Tasa de rechazo OOD por categoría a umbral 0.70" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="1" width="668" height="334" rx="10" fill="var(--svg-zone)" stroke="var(--border)" stroke-width="1"/><g transform="translate(196, 14)"><rect x="0" y="0" width="12" height="12" rx="3" fill="var(--accent)"/><text x="18" y="10" font-size="11.5" fill="var(--text-muted)">Pipeline Demo (G + ResNet-18) @τ=0.70</text><rect x="282" y="0" width="12" height="12" rx="3" fill="var(--accent-2)"/><text x="300" y="10" font-size="11.5" fill="var(--text-muted)">ResNet-18 directo</text></g><g transform="translate(0, 42)"><text x="184" y="19" text-anchor="end" font-size="11.5" font-family="var(--font-mono)" font-weight="600" fill="var(--text)">garabatos</text><rect x="196" y="2" width="340" height="13" rx="4" fill="var(--bar-track)"/><rect x="196" y="2" width="340.0" height="13" rx="4" fill="var(--accent)"/><text x="544.0" y="12.5" font-size="10.5" font-family="var(--font-mono)" font-weight="700" fill="var(--accent)">100.0%</text><rect x="196" y="19" width="340" height="11" rx="4" fill="var(--bar-track)"/><rect x="196" y="19" width="283.2" height="11" rx="4" fill="var(--accent-2)"/><text x="487.2" y="28.5" font-size="10.5" font-family="var(--font-mono)" fill="var(--accent-2)">83.3%</text></g><g transform="translate(0, 88)"><text x="184" y="19" text-anchor="end" font-size="11.5" font-family="var(--font-mono)" font-weight="600" fill="var(--text)">simbolos_ineditos</text><rect x="196" y="2" width="340" height="13" rx="4" fill="var(--bar-track)"/><rect x="196" y="2" width="340.0" height="13" rx="4" fill="var(--accent)"/><text x="544.0" y="12.5" font-size="10.5" font-family="var(--font-mono)" font-weight="700" fill="var(--accent)">100.0%</text><rect x="196" y="19" width="340" height="11" rx="4" fill="var(--bar-track)"/><rect x="196" y="19" width="255.0" height="11" rx="4" fill="var(--accent-2)"/><text x="459.0" y="28.5" font-size="10.5" font-family="var(--font-mono)" fill="var(--accent-2)">75.0%</text></g><g transform="translate(0, 134)"><text x="184" y="19" text-anchor="end" font-size="11.5" font-family="var(--font-mono)" font-weight="600" fill="var(--text)">rotacion_extrema</text><rect x="196" y="2" width="340" height="13" rx="4" fill="var(--bar-track)"/><rect x="196" y="2" width="311.8" height="13" rx="4" fill="var(--accent)"/><text x="515.8" y="12.5" font-size="10.5" font-family="var(--font-mono)" font-weight="700" fill="var(--accent)">91.7%</text><rect x="196" y="19" width="340" height="11" rx="4" fill="var(--bar-track)"/><rect x="196" y="19" width="226.8" height="11" rx="4" fill="var(--accent-2)"/><text x="430.8" y="28.5" font-size="10.5" font-family="var(--font-mono)" fill="var(--accent-2)">66.7%</text></g><g transform="translate(0, 180)"><text x="184" y="19" text-anchor="end" font-size="11.5" font-family="var(--font-mono)" font-weight="600" fill="var(--text)">ruido_puro</text><rect x="196" y="2" width="340" height="13" rx="4" fill="var(--bar-track)"/><rect x="196" y="2" width="311.8" height="13" rx="4" fill="var(--accent)"/><text x="515.8" y="12.5" font-size="10.5" font-family="var(--font-mono)" font-weight="700" fill="var(--accent)">91.7%</text><rect x="196" y="19" width="340" height="11" rx="4" fill="var(--bar-track)"/><rect x="196" y="19" width="198.2" height="11" rx="4" fill="var(--accent-2)"/><text x="402.2" y="28.5" font-size="10.5" font-family="var(--font-mono)" fill="var(--accent-2)">58.3%</text></g><g transform="translate(0, 226)"><text x="184" y="19" text-anchor="end" font-size="11.5" font-family="var(--font-mono)" font-weight="600" fill="var(--text)">sombra_bajo_contraste</text><rect x="196" y="2" width="340" height="13" rx="4" fill="var(--bar-track)"/><rect x="196" y="2" width="255.0" height="13" rx="4" fill="var(--accent)"/><text x="459.0" y="12.5" font-size="10.5" font-family="var(--font-mono)" font-weight="700" fill="var(--accent)">75.0%</text><rect x="196" y="19" width="340" height="11" rx="4" fill="var(--bar-track)"/><rect x="196" y="19" width="340.0" height="11" rx="4" fill="var(--accent-2)"/><text x="544.0" y="28.5" font-size="10.5" font-family="var(--font-mono)" fill="var(--accent-2)">100.0%</text></g><g transform="translate(0, 272)"><text x="184" y="19" text-anchor="end" font-size="11.5" font-family="var(--font-mono)" font-weight="600" fill="var(--text)">desenfoque_corte</text><rect x="196" y="2" width="340" height="13" rx="4" fill="var(--bar-track)"/><rect x="196" y="2" width="113.2" height="13" rx="4" fill="var(--accent)"/><text x="317.2" y="12.5" font-size="10.5" font-family="var(--font-mono)" font-weight="700" fill="var(--accent)">33.3%</text><rect x="196" y="19" width="340" height="11" rx="4" fill="var(--bar-track)"/><rect x="196" y="19" width="283.2" height="11" rx="4" fill="var(--accent-2)"/><text x="487.2" y="28.5" font-size="10.5" font-family="var(--font-mono)" fill="var(--accent-2)">83.3%</text></g></svg>
           </div>
           <p class="muted" style="margin:6px 0 0;">
             En <span class="mono">desenfoque_corte</span> el rechazo del pipeline baja a 33.3 % porque la U-Net restaura trazos ligeramente borrosos hacia letras legibles.
@@ -1567,7 +1643,7 @@ tbody tr:hover { background: var(--surface-alt); }
         </p>
 
         <div class="svg-wrap">
-          <svg class="chart-svg" viewBox="0 0 675 242" role="img" aria-label="Comparativa de latencia PyTorch CPU versus ONNX Runtime CPU" xmlns="http://www.w3.org/2000/svg"><g transform="translate(175, 8)"><rect x="0" y="0" width="12" height="12" rx="3" fill="var(--bar-track-strong)"/><text x="18" y="10" font-size="11.5" fill="var(--text-muted)">PyTorch CPU (ms)</text><rect x="155" y="0" width="12" height="12" rx="3" fill="var(--accent-2)"/><text x="173" y="10" font-size="11.5" fill="var(--text-muted)">ONNX Runtime CPU (ms · menor es mejor)</text></g><g transform="translate(0, 38)"><text x="164" y="23" text-anchor="end" font-size="12" font-weight="700" fill="var(--text)">Generador G (UNet)</text><rect x="175" y="2" width="320" height="16" rx="4" fill="var(--bar-track)"/><rect x="175" y="2" width="261.9" height="16" rx="4" fill="var(--bar-track-strong)"/><text x="444.9" y="14" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">29.14 ms (34.31 FPS)</text><rect x="175" y="23" width="320" height="16" rx="4" fill="var(--bar-track)"/><rect x="175" y="23" width="151.5" height="16" rx="4" fill="var(--accent-2)"/><text x="334.5" y="35" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--accent-2)">16.86 ms (59.30 FPS · 1.73×)</text></g><g transform="translate(0, 100)"><text x="164" y="23" text-anchor="end" font-size="12" font-weight="700" fill="var(--text)">Juez (ResNet-18)</text><rect x="175" y="2" width="320" height="16" rx="4" fill="var(--bar-track)"/><rect x="175" y="2" width="76.1" height="16" rx="4" fill="var(--bar-track-strong)"/><text x="259.1" y="14" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">8.47 ms (118.08 FPS)</text><rect x="175" y="23" width="320" height="16" rx="4" fill="var(--bar-track)"/><rect x="175" y="23" width="42.1" height="16" rx="4" fill="var(--accent-2)"/><text x="225.1" y="35" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--accent-2)">4.69 ms (213.22 FPS · 1.81×)</text></g><g transform="translate(0, 162)"><text x="164" y="23" text-anchor="end" font-size="12" font-weight="700" fill="var(--text)">Pipeline (G + Juez)</text><rect x="175" y="2" width="320" height="16" rx="4" fill="var(--bar-track)"/><rect x="175" y="2" width="320.0" height="16" rx="4" fill="var(--bar-track-strong)"/><text x="503.0" y="14" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">35.61 ms (28.08 FPS)</text><rect x="175" y="23" width="320" height="16" rx="4" fill="var(--bar-track)"/><rect x="175" y="23" width="189.3" height="16" rx="4" fill="var(--accent-2)"/><text x="372.3" y="35" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--accent-2)">21.07 ms (47.45 FPS · 1.69×)</text></g></svg>
+          <svg class="chart-svg" viewBox="0 0 710 250" role="img" aria-label="Comparativa de latencia PyTorch CPU versus ONNX Runtime CPU" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="1" width="708" height="248" rx="10" fill="var(--svg-zone)" stroke="var(--border)" stroke-width="1"/><g transform="translate(178, 14)"><rect x="0" y="0" width="12" height="12" rx="3" fill="var(--bar-track-strong)"/><text x="18" y="10" font-size="11.5" fill="var(--text-muted)">PyTorch CPU (ms)</text><rect x="155" y="0" width="12" height="12" rx="3" fill="var(--accent-2)"/><text x="173" y="10" font-size="11.5" fill="var(--text-muted)">ONNX Runtime CPU (ms · menor es mejor)</text></g><g transform="translate(0, 44)"><text x="166" y="23" text-anchor="end" font-size="12" font-weight="700" fill="var(--text)">Generador G (UNet)</text><rect x="178" y="2" width="320" height="16" rx="4" fill="var(--bar-track)"/><rect x="178" y="2" width="261.9" height="16" rx="4" fill="var(--bar-track-strong)"/><text x="449.9" y="14" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">29.14 ms (34.31 FPS)</text><rect x="178" y="23" width="320" height="16" rx="4" fill="var(--bar-track)"/><rect x="178" y="23" width="151.5" height="16" rx="4" fill="var(--accent-2)"/><text x="339.5" y="35" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--accent-2)">16.86 ms (59.30 FPS · 1.73×)</text></g><g transform="translate(0, 106)"><text x="166" y="23" text-anchor="end" font-size="12" font-weight="700" fill="var(--text)">Juez (ResNet-18)</text><rect x="178" y="2" width="320" height="16" rx="4" fill="var(--bar-track)"/><rect x="178" y="2" width="76.1" height="16" rx="4" fill="var(--bar-track-strong)"/><text x="264.1" y="14" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">8.47 ms (118.08 FPS)</text><rect x="178" y="23" width="320" height="16" rx="4" fill="var(--bar-track)"/><rect x="178" y="23" width="42.1" height="16" rx="4" fill="var(--accent-2)"/><text x="230.1" y="35" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--accent-2)">4.69 ms (213.22 FPS · 1.81×)</text></g><g transform="translate(0, 168)"><text x="166" y="23" text-anchor="end" font-size="12" font-weight="700" fill="var(--text)">Pipeline (G + Juez)</text><rect x="178" y="2" width="320" height="16" rx="4" fill="var(--bar-track)"/><rect x="178" y="2" width="320.0" height="16" rx="4" fill="var(--bar-track-strong)"/><text x="508.0" y="14" font-size="11" font-family="var(--font-mono)" fill="var(--text-muted)">35.61 ms (28.08 FPS)</text><rect x="178" y="23" width="320" height="16" rx="4" fill="var(--bar-track)"/><rect x="178" y="23" width="189.3" height="16" rx="4" fill="var(--accent-2)"/><text x="377.3" y="35" font-size="11.5" font-family="var(--font-mono)" font-weight="700" fill="var(--accent-2)">21.07 ms (47.45 FPS · 1.69×)</text></g></svg>
         </div>
 
         <div class="table-wrap" style="margin-top:12px;">
@@ -1655,20 +1731,31 @@ tbody tr:hover { background: var(--surface-alt); }
 
     <footer class="report-footer">
       <span><strong>Handwritten Font cGAN</strong> · Reporte Técnico Autocontenido generado por <span class="mono">src/export/build_report.py</span></span>
-      <span class="mono">Cero dependencias externas · 100 % Offline · 2026-11-25 17:04</span>
+      <span class="mono">Cero dependencias externas · 100 % Offline · 2026-11-25 18:13</span>
     </footer>
   </main>
 </div>
+
+<button type="button" class="back-to-top" id="back-to-top" aria-label="Volver arriba">↑ Arriba</button>
 
 <!-- Modal Lightbox -->
 <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-labelledby="lightbox-title" hidden>
   <div class="lightbox-dialog">
     <div class="lightbox-bar">
-      <span class="lightbox-title" id="lightbox-title"></span>
-      <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Cerrar vista ampliada">Cerrar (ESC)</button>
+      <div class="lightbox-head-left">
+        <span class="lightbox-counter" id="lightbox-counter">1 / 1</span>
+        <span class="lightbox-title" id="lightbox-title"></span>
+      </div>
+      <div class="lightbox-actions">
+        <button type="button" class="lightbox-nav-btn" id="lightbox-prev" aria-label="Imagen anterior">← Anterior</button>
+        <button type="button" class="lightbox-nav-btn" id="lightbox-next" aria-label="Imagen siguiente">Siguiente →</button>
+        <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Cerrar vista ampliada">Cerrar (ESC)</button>
+      </div>
     </div>
     <div class="lightbox-body">
-      <img id="lightbox-img" src="" alt=""/>
+      <div class="lightbox-plate">
+        <img id="lightbox-img" src="" alt=""/>
+      </div>
     </div>
     <div class="lightbox-caption" id="lightbox-caption"></div>
   </div>
@@ -1680,36 +1767,32 @@ tbody tr:hover { background: var(--surface-alt); }
 
   var EXPERIMENTS = {"real_val": {"title": "Dominio Stylus Real — Validación (64 clases vistas)", "subtitle": "data/real_pairs/val (64 muestras reales con stylus · 0 % de traslape con el entrenamiento de los jueces).", "note": "style_unet_finetuned (mejor época 4, StyleEncoder congelado) iguala exactamente el techo humano de las muestras reales en ResNet-18 (89.06 % Acc / 85.94 % Macro-F1), mientras style_unet_fewshot alcanza 84.38 % sin ningún fine-tuning.", "rows": [{"key": "reference_y", "label": "Referencia y (techo stylus real)", "tag": "Techo humano", "r18_acc": 89.06, "eff_acc": 84.38, "r18_f1": 86.2, "eff_f1": 81.25, "l1": null, "fid": 0.0, "highlight": false}, {"key": "pix2pix_pretrained", "label": "pix2pix_pretrained", "tag": "Base sintética", "r18_acc": 71.88, "eff_acc": 71.88, "r18_f1": 67.45, "eff_f1": 67.97, "l1": 0.0947, "fid": 145.25, "highlight": false}, {"key": "pix2pix_scratch", "label": "pix2pix_scratch", "tag": "150 ep. desde cero", "r18_acc": 75.0, "eff_acc": 67.19, "r18_f1": 69.27, "eff_f1": 59.64, "l1": 0.057, "fid": 94.87, "highlight": false}, {"key": "pix2pix_finetuned", "label": "pix2pix_finetuned", "tag": "100 ep, lr=1e-4", "r18_acc": 62.5, "eff_acc": 56.25, "r18_f1": 56.38, "eff_f1": 47.5, "l1": 0.055, "fid": 121.14, "highlight": false}, {"key": "style_unet_fewshot", "label": "style_unet_fewshot", "tag": "0 ep. FT · 4 refs", "r18_acc": 84.38, "eff_acc": 73.44, "r18_f1": 80.99, "eff_f1": 69.79, "l1": 0.0639, "fid": 141.47, "highlight": false}, {"key": "style_unet_finetuned", "label": "style_unet_finetuned", "tag": "Mejor ep. 4 · StyleEnc cong.", "r18_acc": 89.06, "eff_acc": 79.69, "r18_f1": 85.94, "eff_f1": 74.95, "l1": 0.0646, "fid": 126.18, "highlight": true}]}, "real_unseen": {"title": "Dominio Stylus Real — Zero-Shot (11 clases inéditas)", "subtitle": "data/real_pairs/test_unseen (44 muestras · 11 símbolos jamás vistos por el generador: G, Q, k, z, 4, 8, ?, &, +, ;, )).", "note": "Cada clase en test_unseen pesa ~9.09 pp en Accuracy. StyleUNet dispara Zero-Shot de 9.09 % (pix2pix_finetuned) a 72.73 % (+63.64 pp) y reduce el FID de dominio de 499.83 a 302.42.", "rows": [{"key": "reference_y", "label": "Referencia y (techo stylus real)", "tag": "Techo humano", "r18_acc": 86.36, "eff_acc": 81.82, "r18_f1": 85.28, "eff_f1": 78.79, "l1": null, "fid": 0.0, "highlight": false}, {"key": "pix2pix_pretrained", "label": "pix2pix_pretrained", "tag": "Base sintética", "r18_acc": 27.27, "eff_acc": 45.45, "r18_f1": 27.27, "eff_f1": 42.42, "l1": 0.0981, "fid": 407.37, "highlight": false}, {"key": "pix2pix_scratch", "label": "pix2pix_scratch", "tag": "150 ep. desde cero", "r18_acc": 27.27, "eff_acc": 9.09, "r18_f1": 27.27, "eff_f1": 3.03, "l1": 0.0691, "fid": 469.96, "highlight": false}, {"key": "pix2pix_finetuned", "label": "pix2pix_finetuned", "tag": "100 ep, lr=1e-4", "r18_acc": 9.09, "eff_acc": 27.27, "r18_f1": 9.09, "eff_f1": 21.82, "l1": 0.0667, "fid": 499.83, "highlight": false}, {"key": "style_unet_fewshot", "label": "style_unet_fewshot", "tag": "0 ep. FT · 4 refs", "r18_acc": 54.55, "eff_acc": 45.45, "r18_f1": 54.55, "eff_f1": 42.42, "l1": 0.0676, "fid": 307.42, "highlight": false}, {"key": "style_unet_finetuned", "label": "style_unet_finetuned", "tag": "Mejor ep. 4 · StyleEnc cong.", "r18_acc": 72.73, "eff_acc": 45.45, "r18_f1": 72.73, "eff_f1": 42.42, "l1": 0.0728, "fid": 302.42, "highlight": true}]}, "syn_val": {"title": "Dominio Sintético Multi-Fuente — Validación (64 clases vistas)", "subtitle": "data/synthetic_pairs/val (576 pares de 3 fuentes Google Fonts OFL completamente inéditas para generador y jueces).", "note": "Datos leídos directamente desde results/eval/metrics_pretrain.json. El generador preentrenado alcanza 71.88 % Acc (ResNet-18) / 68.75 % (EfficientNet-B0) con FID de dominio 133.24.", "rows": [{"key": "reference_y", "label": "Referencia y (techo sintético)", "tag": "Techo fuentes OFL", "r18_acc": 87.67, "eff_acc": 85.07, "r18_f1": 87.58, "eff_f1": 85.3, "l1": null, "fid": 0.0, "highlight": false}, {"key": "pix2pix_pretrained", "label": "pix2pix_pretrained", "tag": "60 ep, 14 fuentes", "r18_acc": 71.88, "eff_acc": 68.75, "r18_f1": 67.45, "eff_f1": 64.58, "l1": 0.1104, "fid": 133.24, "highlight": true}]}, "syn_unseen": {"title": "Dominio Sintético Multi-Fuente — Zero-Shot (11 clases inéditas)", "subtitle": "data/synthetic_pairs/test_unseen (561 pares · 11 símbolos reservados fuera del entrenamiento del generador).", "note": "Transparencia sobre judge_split: 462/561 referencias sintéticas pertenecen a fuentes de entrenamiento de los jueces (100.00 % Acc), mientras las 99 de fuentes inéditas (judge_split=val) alcanzan 89.90 % Acc. El generador nunca vio ninguno de los 11 símbolos.", "rows": [{"key": "reference_y", "label": "Referencia y (techo sintético)", "tag": "Techo fuentes OFL", "r18_acc": 98.22, "eff_acc": 97.68, "r18_f1": 98.99, "eff_f1": 98.61, "l1": null, "fid": 0.0, "highlight": false}, {"key": "pix2pix_pretrained", "label": "pix2pix_pretrained", "tag": "60 ep, 14 fuentes", "r18_acc": 45.45, "eff_acc": 54.55, "r18_f1": 45.45, "eff_f1": 50.0, "l1": 0.0994, "fid": 358.22, "highlight": true}]}};
 
-  /* 1. Selector de tema Claro / Oscuro */
-  var root = document.documentElement;
-  var themeButtons = Array.prototype.slice.call(document.querySelectorAll("[data-theme-toggle]"));
+  /* 1. Barra de progreso de lectura + botón Volver Arriba */
+  var progressBar = document.getElementById("reading-progress");
+  var backToTopBtn = document.getElementById("back-to-top");
 
-  function applyTheme(theme) {
-    root.setAttribute("data-theme", theme);
-    try {
-      window.localStorage.setItem("hfcgan-report-theme", theme);
-    } catch (e) {
-      /* localStorage puede estar deshabilitado en modo file:// estricto */
+  function updateScrollUi() {
+    var docEl = document.documentElement;
+    var scrollTop = window.pageYOffset || docEl.scrollTop || 0;
+    var maxScroll = Math.max(1, docEl.scrollHeight - window.innerHeight);
+    var pct = Math.min(100, Math.max(0, (scrollTop / maxScroll) * 100));
+    if (progressBar) {
+      progressBar.style.width = pct.toFixed(2) + "%";
     }
-    themeButtons.forEach(function (btn) {
-      btn.textContent = theme === "dark" ? "Cambiar a Tema Claro" : "Cambiar a Tema Oscuro";
-    });
+    if (backToTopBtn) {
+      backToTopBtn.classList.toggle("is-visible", scrollTop > 320);
+    }
   }
 
-  var savedTheme = "light";
-  try {
-    savedTheme = window.localStorage.getItem("hfcgan-report-theme") || "light";
-  } catch (e) {
-    savedTheme = "light";
-  }
-  applyTheme(savedTheme === "dark" ? "dark" : "light");
+  window.addEventListener("scroll", updateScrollUi, { passive: true });
+  window.addEventListener("resize", updateScrollUi, { passive: true });
+  updateScrollUi();
 
-  themeButtons.forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
-      applyTheme(next);
+  if (backToTopBtn) {
+    backToTopBtn.addEventListener("click", function () {
+      window.scrollTo({ top: 0, behavior: "smooth" });
     });
-  });
+  }
 
   /* 2. Scrollspy para barra lateral y barra móvil */
   var sections = Array.prototype.slice.call(document.querySelectorAll(".report-section"));
@@ -1847,20 +1930,42 @@ tbody tr:hover { background: var(--surface-alt); }
     });
   });
 
-  /* 5. Lightbox modal para todas las figuras */
+  /* 5. Lightbox modal con navegación ← / → para todas las figuras */
   var lightbox = document.getElementById("lightbox");
   var lbImg = document.getElementById("lightbox-img");
   var lbTitle = document.getElementById("lightbox-title");
   var lbCaption = document.getElementById("lightbox-caption");
+  var lbCounter = document.getElementById("lightbox-counter");
+  var lbPrev = document.getElementById("lightbox-prev");
+  var lbNext = document.getElementById("lightbox-next");
   var lbClose = document.getElementById("lightbox-close");
+  var triggers = Array.prototype.slice.call(document.querySelectorAll("[data-lightbox-src]"));
+  var lbItems = triggers.map(function (el) {
+    return {
+      src: el.getAttribute("data-lightbox-src") || "",
+      title: el.getAttribute("data-lightbox-title") || "",
+      caption: el.getAttribute("data-lightbox-caption") || ""
+    };
+  });
+  var currentLbIndex = 0;
   var lastFocused = null;
 
-  function openLightbox(src, title, caption) {
+  function showLightboxAt(idx) {
+    if (!lbItems.length) { return; }
+    currentLbIndex = ((idx % lbItems.length) + lbItems.length) % lbItems.length;
+    var item = lbItems[currentLbIndex];
+    lbImg.setAttribute("src", item.src);
+    lbImg.setAttribute("alt", item.title);
+    lbTitle.textContent = item.title;
+    lbCaption.textContent = item.caption;
+    if (lbCounter) {
+      lbCounter.textContent = (currentLbIndex + 1) + " / " + lbItems.length;
+    }
+  }
+
+  function openLightbox(idx) {
     lastFocused = document.activeElement;
-    lbImg.setAttribute("src", src);
-    lbImg.setAttribute("alt", title);
-    lbTitle.textContent = title;
-    lbCaption.textContent = caption;
+    showLightboxAt(idx);
     lightbox.hidden = false;
     lightbox.classList.add("is-open");
     document.body.style.overflow = "hidden";
@@ -1877,16 +1982,18 @@ tbody tr:hover { background: var(--surface-alt); }
     }
   }
 
-  document.querySelectorAll("[data-lightbox-src]").forEach(function (trigger) {
+  triggers.forEach(function (trigger, idx) {
     trigger.addEventListener("click", function () {
-      openLightbox(
-        trigger.getAttribute("data-lightbox-src"),
-        trigger.getAttribute("data-lightbox-title") || "",
-        trigger.getAttribute("data-lightbox-caption") || ""
-      );
+      openLightbox(idx);
     });
   });
 
+  if (lbPrev) {
+    lbPrev.addEventListener("click", function () { showLightboxAt(currentLbIndex - 1); });
+  }
+  if (lbNext) {
+    lbNext.addEventListener("click", function () { showLightboxAt(currentLbIndex + 1); });
+  }
   lbClose.addEventListener("click", closeLightbox);
   lightbox.addEventListener("click", function (ev) {
     if (ev.target === lightbox) {
@@ -1894,8 +2001,15 @@ tbody tr:hover { background: var(--surface-alt); }
     }
   });
   document.addEventListener("keydown", function (ev) {
-    if (ev.key === "Escape" && lightbox.classList.contains("is-open")) {
+    if (!lightbox.classList.contains("is-open")) { return; }
+    if (ev.key === "Escape") {
       closeLightbox();
+    } else if (ev.key === "ArrowLeft") {
+      ev.preventDefault();
+      showLightboxAt(currentLbIndex - 1);
+    } else if (ev.key === "ArrowRight") {
+      ev.preventDefault();
+      showLightboxAt(currentLbIndex + 1);
     }
   });
 })();
